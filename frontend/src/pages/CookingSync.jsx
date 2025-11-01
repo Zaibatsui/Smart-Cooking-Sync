@@ -1297,21 +1297,6 @@ const CookingSync = () => {
                                   ⏳ Countdown
                                 </Badge>
                               )}
-                              {isInOven && isDish && (() => {
-                                const dish = dishes.find(d => d.id === item.id);
-                                const method = dish?.cookingMethod || 'Oven';
-                                const statusConfig = {
-                                  'Oven': { label: 'In Oven', color: 'bg-orange-600' },
-                                  'Air Fryer': { label: 'In Air Fryer', color: 'bg-blue-600' },
-                                  'Microwave': { label: 'In Microwave', color: 'bg-yellow-600' }
-                                };
-                                const config = statusConfig[method];
-                                return (
-                                  <Badge className={`${config.color} text-white text-xs px-2 py-1 font-medium`}>
-                                    ✓ {config.label}
-                                  </Badge>
-                                );
-                              })()}
                             </div>
                             
                             {/* Dish Name on Separate Line */}
