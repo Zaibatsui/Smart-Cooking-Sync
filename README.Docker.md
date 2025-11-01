@@ -205,7 +205,7 @@ docker-compose up -d
 docker-compose logs service-name
 
 # Check if port is in use
-sudo netstat -tlnp | grep :3000
+sudo netstat -tlnp | grep :3001
 
 # Remove and recreate
 docker-compose down -v
@@ -224,7 +224,7 @@ docker-compose logs mongodb
 ### Frontend Can't Connect to Backend
 1. Check REACT_APP_BACKEND_URL in .env
 2. Ensure backend is running: `docker-compose ps`
-3. Test backend API: `curl http://localhost:8001/api/`
+3. Test backend API: `curl http://localhost:8002/api/`
 
 ## Performance Tuning
 
