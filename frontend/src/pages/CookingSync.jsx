@@ -182,13 +182,12 @@ const CookingSync = () => {
 
   // Check for finished timers on mount and trigger alarms
   useEffect(() => {
-    if (savedData?.timers && alarmEnabled) {
+    if (alarmEnabled) {
       Object.keys(timers).forEach(dishId => {
         const timer = timers[dishId];
-        const savedTimer = savedData.timers[dishId];
         
-        // If timer finished while app was closed
-        if (timer.remaining === 0 && savedTimer?.isRunning) {
+        // If timer finished (was running and now at 0)
+        if (timer.remaining === 0 && timer.total > 0) {
           setTimeout(() => {
             setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
             startAlarm(dishId);
