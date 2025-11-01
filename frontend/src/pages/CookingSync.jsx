@@ -1056,19 +1056,10 @@ const CookingSync = () => {
                                     Will finish with all other dishes
                                   </p>
                                 </div>
-                              ) : isNextToStart && !finishedDishIds.length ? (
-                                // Show Start Timer button for next dish(es)
-                                <Button
-                                  onClick={startNextDishes}
-                                  className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-                                >
-                                  <Play className="w-5 h-5 mr-2" />
-                                  {isMultipleStart ? `Start ${nextDishes.length} Timers` : 'Start Timer'}
-                                </Button>
                               ) : (
-                                // Waiting to start
+                                // Waiting for previous dishes to be added
                                 <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
-                                  ⏸️ Waiting to start...
+                                  ⏸️ Waiting for alarm...
                                 </div>
                               )}
                             </div>
