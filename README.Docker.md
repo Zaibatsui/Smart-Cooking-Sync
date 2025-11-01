@@ -36,9 +36,9 @@ docker-compose logs -f
 
 ### 4. Access the Application
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8001/api
-- **API Docs**: http://localhost:8001/docs
+- **Frontend**: http://localhost:3001
+- **Backend API**: http://localhost:8002/api
+- **API Docs**: http://localhost:8002/docs
 
 ## Production Deployment on Proxmox
 
