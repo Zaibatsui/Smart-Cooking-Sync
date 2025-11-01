@@ -73,7 +73,7 @@ chmod +x deploy.sh
 MONGO_PASSWORD=your-secure-password-here
 
 # Backend URL (change if using reverse proxy)
-BACKEND_URL=http://your-server-ip:8001
+BACKEND_URL=http://your-server-ip:8002
 
 # Database name (can leave as is)
 DB_NAME=cooking_sync
@@ -82,15 +82,15 @@ DB_NAME=cooking_sync
 ### Port Configuration
 
 Default ports in `docker-compose.yml`:
-- Frontend: 3000
-- Backend: 8001  
+- Frontend: 3001
+- Backend: 8002  
 - MongoDB: 27017 (internal only)
 
 To change ports, edit `docker-compose.yml`:
 ```yaml
 ports:
   - "YOUR_PORT:80"  # Frontend
-  - "YOUR_PORT:8001"  # Backend
+  - "YOUR_PORT:8002"  # Backend
 ```
 
 ## 🔒 Production Setup
