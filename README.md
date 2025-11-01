@@ -350,11 +350,11 @@ services:
 # Check all services
 docker-compose ps
 
-# Frontend health
-curl http://localhost:3001/health
+# Frontend health (replace YOUR_SERVER_IP with your server's IP)
+curl http://YOUR_SERVER_IP:3001/health
 
-# Backend health
-curl http://localhost:8002/api/
+# Backend health (replace YOUR_SERVER_IP with your server's IP)
+curl http://YOUR_SERVER_IP:8002/api/
 ```
 
 ### Production Deployment
