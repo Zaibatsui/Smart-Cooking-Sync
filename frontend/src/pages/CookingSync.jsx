@@ -255,8 +255,14 @@ const CookingSync = () => {
             // Alert when done
             if (updated[dishId].remaining === 0) {
               const dish = dishes.find(d => d.id === dishId);
+              
+              // Play alarm sound if enabled
+              if (alarmEnabled) {
+                playAlarmSound();
+              }
+              
               toast({
-                title: 'Dish Ready!',
+                title: 'Dish Ready! 🔔',
                 description: `${dish?.name || 'Your dish'} is done cooking!`,
                 variant: 'default'
               });
@@ -270,7 +276,33 @@ const CookingSync = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [dishes]);
+  }, [dishes, alarmEnabled]);
+
+  // Function to play alarm sound
+  const playAlarmSound = () => {
+    // Create an oscillator for a pleasant beep sound
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Play 3 beeps
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800; // Hz
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+      }, i * 400); // 400ms between beeps
+    }
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
