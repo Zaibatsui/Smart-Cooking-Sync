@@ -105,9 +105,12 @@ const CookingSync = () => {
     oscillator.stop(audioContext.currentTime + 0.4);
   };
 
+  // Ref to store alarm interval (using ref to avoid stale closure issues)
+  const alarmIntervalRefObj = useRef(null);
+
   // Function to start continuous alarm
   const startAlarm = () => {
-    if (alarmIntervalId) return; // Already playing
+    if (alarmIntervalRefObj.current) return; // Already playing
     
     // Play initial beep
     playSingleBeep();
@@ -117,14 +120,16 @@ const CookingSync = () => {
       playSingleBeep();
     }, 500);
     
-    setAlarmIntervalId(intervalId);
+    alarmIntervalRefObj.current = intervalId;
+    setAlarmIntervalRef(intervalId);
   };
 
   // Function to stop alarm
   const stopAlarm = () => {
-    if (alarmIntervalId) {
-      clearInterval(alarmIntervalId);
-      setAlarmIntervalId(null);
+    if (alarmIntervalRefObj.current) {
+      clearInterval(alarmIntervalRefObj.current);
+      alarmIntervalRefObj.current = null;
+      setAlarmIntervalRef(null);
     }
   };
 
