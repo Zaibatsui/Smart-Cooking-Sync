@@ -315,12 +315,15 @@ Create a `.env` file with:
 # MongoDB password (REQUIRED - change this!)
 MONGO_PASSWORD=your-secure-password-here
 
-# Backend URL for frontend
-BACKEND_URL=http://localhost:8002
+# Backend URL for frontend (REQUIRED - use your server's IP address)
+BACKEND_URL=http://YOUR_SERVER_IP:8002
+# Example: BACKEND_URL=http://192.168.1.100:8002
 
 # Database name
 DB_NAME=cooking_sync
 ```
+
+**IMPORTANT:** Replace `YOUR_SERVER_IP` with your actual server's IP address. Do NOT use `localhost` unless you're only accessing the app from the server itself.
 
 ### Port Configuration
 
