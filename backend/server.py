@@ -78,10 +78,43 @@ class CookingPlanResponse(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+
+# Helper functions for temperature conversion and adjustment
+def normalize_to_fan(temp_celsius: float, oven_type: str) -> float:
+    """Normalize temperature to Fan oven equivalent"""
+    if oven_type == "Fan":
+        return temp_celsius
+    elif oven_type == "Electric":
+        return temp_celsius - 20
+    elif oven_type == "Gas":
+        # Approximate conversion from gas marks to Celsius, then to Fan
+        return temp_celsius - 20
+    return temp_celsius
+
+
+def adjust_cooking_time(original_time: int, original_temp: float, new_temp: float) -> int:
+    """Adjust cooking time based on temperature difference"""
+    if original_temp == 0:
+        return original_time
+    
+    # Time adjustment is inversely proportional to temperature
+    # Higher temp = shorter time, lower temp = longer time
+    time_factor = original_temp / new_temp if new_temp != 0 else 1
+    adjusted_time = int(original_time * time_factor)
+    
+    return max(1, adjusted_time)  # Ensure at least 1 minute
+
+
+def round_to_nearest_ten(value: float) -> float:
+    """Round to nearest 10"""
+    return round(value / 10) * 10
+
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Smart Cooking Sync API"}
+
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
@@ -95,6 +128,7 @@ async def create_status_check(input: StatusCheckCreate):
     _ = await db.status_checks.insert_one(doc)
     return status_obj
 
+
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
     # Exclude MongoDB's _id field from the query results
@@ -106,6 +140,119 @@ async def get_status_checks():
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
     
     return status_checks
+
+
+# Dishes CRUD endpoints
+@api_router.post("/dishes", response_model=Dish)
+async def create_dish(dish_data: DishCreate):
+    """Add a new dish"""
+    dish_obj = Dish(**dish_data.model_dump())
+    
+    # Convert to dict and serialize datetime to ISO string for MongoDB
+    doc = dish_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.dishes.insert_one(doc)
+    return dish_obj
+
+
+@api_router.get("/dishes", response_model=List[Dish])
+async def get_dishes():
+    """Retrieve all dishes"""
+    dishes = await db.dishes.find({}, {"_id": 0}).to_list(1000)
+    
+    # Convert ISO string timestamps back to datetime objects
+    for dish in dishes:
+        if isinstance(dish.get('created_at'), str):
+            dish['created_at'] = datetime.fromisoformat(dish['created_at'])
+    
+    return dishes
+
+
+@api_router.delete("/dishes/{dish_id}")
+async def delete_dish(dish_id: str):
+    """Delete a specific dish"""
+    result = await db.dishes.delete_one({"id": dish_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Dish not found")
+    
+    return {"message": "Dish deleted successfully", "id": dish_id}
+
+
+@api_router.delete("/dishes")
+async def clear_all_dishes():
+    """Clear all dishes"""
+    result = await db.dishes.delete_many({})
+    return {"message": "All dishes cleared", "deleted_count": result.deleted_count}
+
+
+@api_router.post("/cooking-plan/calculate", response_model=CookingPlanResponse)
+async def calculate_cooking_plan(request: CookingPlanRequest):
+    """Calculate optimal cooking plan based on user's oven type"""
+    
+    # Fetch all dishes
+    dishes = await db.dishes.find({}, {"_id": 0}).to_list(1000)
+    
+    if not dishes:
+        raise HTTPException(status_code=400, detail="No dishes found")
+    
+    # Normalize all temperatures to Fan equivalent
+    normalized_temps = []
+    for dish in dishes:
+        normalized_temp = normalize_to_fan(dish['temperature'], dish['ovenType'])
+        normalized_temps.append(normalized_temp)
+    
+    # Calculate optimal temperature (average of normalized temps)
+    avg_temp = sum(normalized_temps) / len(normalized_temps)
+    optimal_fan_temp = round_to_nearest_ten(avg_temp)
+    
+    # Convert optimal temp to user's oven type
+    user_oven_type = request.user_oven_type
+    if user_oven_type == "Fan":
+        optimal_temp = optimal_fan_temp
+    elif user_oven_type == "Electric":
+        optimal_temp = optimal_fan_temp + 20
+    elif user_oven_type == "Gas":
+        optimal_temp = optimal_fan_temp + 20
+    else:
+        optimal_temp = optimal_fan_temp
+    
+    optimal_temp = round_to_nearest_ten(optimal_temp)
+    
+    # Calculate adjusted times and order dishes
+    adjusted_dishes = []
+    for idx, dish in enumerate(dishes):
+        original_temp = dish['temperature']
+        original_time = dish['cookingTime']
+        
+        # Adjust time based on temperature difference
+        adjusted_time = adjust_cooking_time(original_time, original_temp, optimal_temp)
+        
+        adjusted_dishes.append({
+            "id": dish['id'],
+            "name": dish['name'],
+            "originalTemp": original_temp,
+            "adjustedTemp": optimal_temp,
+            "originalTime": original_time,
+            "adjustedTime": adjusted_time,
+            "order": idx + 1
+        })
+    
+    # Sort by adjusted time (longest first)
+    adjusted_dishes.sort(key=lambda x: x['adjustedTime'], reverse=True)
+    
+    # Update order after sorting
+    for idx, dish in enumerate(adjusted_dishes):
+        dish['order'] = idx + 1
+    
+    total_time = max(d['adjustedTime'] for d in adjusted_dishes) if adjusted_dishes else 0
+    
+    return {
+        "optimal_temp": optimal_temp,
+        "adjusted_dishes": adjusted_dishes,
+        "total_time": total_time
+    }
 
 # Include the router in the main app
 app.include_router(api_router)
