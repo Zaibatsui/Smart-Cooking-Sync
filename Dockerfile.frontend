@@ -13,8 +13,8 @@ RUN yarn install --frozen-lockfile || yarn install
 # Copy frontend source
 COPY frontend/ .
 
-# Set build-time environment variable
-ARG REACT_APP_BACKEND_URL=http://localhost:8002
+# Set build-time environment variable (empty for relative URLs)
+ARG REACT_APP_BACKEND_URL=
 ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
 
 # Build the app
