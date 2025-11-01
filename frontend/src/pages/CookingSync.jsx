@@ -669,32 +669,47 @@ const CookingSync = () => {
                                   {formatTime(timer.remaining)}
                                 </span>
                                 <div className="flex gap-2">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => toggleTimer(dish.id)}
-                                    disabled={timer.remaining === 0}
-                                    className="dark:border-gray-600 dark:hover:bg-gray-700"
-                                  >
-                                    {timer.isRunning ? (
-                                      <Pause className="w-4 h-4" />
-                                    ) : (
-                                      <Play className="w-4 h-4" />
-                                    )}
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => resetTimer(dish.id)}
-                                    className="dark:border-gray-600 dark:hover:bg-gray-700"
-                                  >
-                                    <RotateCcw className="w-4 h-4" />
-                                  </Button>
+                                  {activeAlarms[dish.id] ? (
+                                    <Button
+                                      size="sm"
+                                      onClick={() => stopAlarm(dish.id)}
+                                      className="bg-red-500 hover:bg-red-600 text-white animate-pulse"
+                                    >
+                                      🔔 Stop Alarm
+                                    </Button>
+                                  ) : (
+                                    <>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => toggleTimer(dish.id)}
+                                        disabled={timer.remaining === 0}
+                                        className="dark:border-gray-600 dark:hover:bg-gray-700"
+                                      >
+                                        {timer.isRunning ? (
+                                          <Pause className="w-4 h-4" />
+                                        ) : (
+                                          <Play className="w-4 h-4" />
+                                        )}
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => resetTimer(dish.id)}
+                                        className="dark:border-gray-600 dark:hover:bg-gray-700"
+                                      >
+                                        <RotateCcw className="w-4 h-4" />
+                                      </Button>
+                                    </>
+                                  )}
                                 </div>
                               </div>
                               <Progress value={progress} className="h-2" />
-                              {timer.remaining === 0 && (
+                              {timer.remaining === 0 && !activeAlarms[dish.id] && (
                                 <Badge className="bg-green-500 text-white">Done!</Badge>
+                              )}
+                              {activeAlarms[dish.id] && (
+                                <Badge className="bg-red-500 text-white animate-pulse">🔔 ALARM RINGING!</Badge>
                               )}
                             </div>
                           ) : (
