@@ -29,14 +29,14 @@ services:
       - MONGO_URL=mongodb://admin:${MONGO_PASSWORD:-changeme123}@mongodb:27017/cooking_sync?authSource=admin
       - DB_NAME=cooking_sync
     ports:
-      - "8001:8001"
+      - "8002:8002"
     depends_on:
       mongodb:
         condition: service_healthy
     networks:
       - cooking-sync-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/api/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8002/api/"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -46,11 +46,11 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
       args:
-        - REACT_APP_BACKEND_URL=${BACKEND_URL:-http://localhost:8001}
+        - REACT_APP_BACKEND_URL=${BACKEND_URL:-http://localhost:8002}
     container_name: cooking-sync-frontend
     restart: unless-stopped
     ports:
-      - "3000:80"
+      - "3001:80"
     depends_on:
       - backend
     networks:
