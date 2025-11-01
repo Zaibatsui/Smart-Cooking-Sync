@@ -605,20 +605,12 @@ const CookingSync = () => {
 
                     <div className="mt-6 flex gap-3">
                       <Button
-                        onClick={startAllCooking}
-                        disabled={cookingStarted}
-                        className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-all duration-300"
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        Start All Timers
-                      </Button>
-                      <Button
                         onClick={resetAll}
                         variant="outline"
                         className="border-emerald-300 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
                       >
                         <RotateCcw className="w-4 h-4 mr-2" />
-                        Reset
+                        Reset All
                       </Button>
                     </div>
                   </CardContent>
