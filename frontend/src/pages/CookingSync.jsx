@@ -106,7 +106,8 @@ const CookingSync = () => {
   };
 
   // Load saved data from localStorage including timers
-  useEffect(() => {
+  // Use useLayoutEffect to ensure this runs BEFORE any useEffect (including saves)
+  useLayoutEffect(() => {
     const saved = localStorage.getItem('cookingSyncData');
     if (saved) {
       try {
