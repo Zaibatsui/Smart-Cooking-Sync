@@ -319,7 +319,7 @@ const CookingSync = () => {
     }
   };
 
-  // Start the cooking plan - just sets started flag, dishes start individually
+  // Start the cooking plan - auto-starts first dish(es)
   const startCookingPlan = () => {
     if (!cookingPlan || cookingPlan.timeline.length === 0) return;
     
@@ -330,10 +330,24 @@ const CookingSync = () => {
     setTimers({});
     stopAlarm();
     
-    toast({
-      title: 'Cooking Plan Started!',
-      description: 'Click "Start Timer" on first dish to begin'
-    });
+    // Auto-start first dish(es)
+    const firstDishes = getNextDishesToStart();
+    if (firstDishes.length > 0) {
+      const newTimers = {};
+      firstDishes.forEach(dish => {
+        newTimers[dish.id] = {
+          remaining: dish.adjustedTime * 60,
+          total: dish.adjustedTime * 60
+        };
+      });
+      setTimers(newTimers);
+      
+      const dishNames = firstDishes.map(d => d.name).join(', ');
+      toast({
+        title: 'Cooking Plan Started!',
+        description: `Timer started for: ${dishNames}`
+      });
+    }
   };
 
   // Stop cooking plan
