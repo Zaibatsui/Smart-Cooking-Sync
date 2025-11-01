@@ -459,13 +459,13 @@ const CookingSync = () => {
   // Timer countdown effect - handles all countdown timers
   useEffect(() => {
     // Don't run if cooking hasn't started or if an alarm is already active
-    if (!cookingStarted || activeAlarmDishId) return;
+    if (!cookingStarted || finishedDishIds.length > 0) return;
     
     const interval = setInterval(() => {
       setTimers(prev => {
         const updated = { ...prev };
         let hasChanges = false;
-        let alarmTriggeredDishId = null;
+        const newlyFinishedDishIds = [];
 
         Object.keys(updated).forEach(dishId => {
           const timer = updated[dishId];
@@ -480,25 +480,26 @@ const CookingSync = () => {
 
             // Check if this timer just hit 0
             if (updated[dishId].remaining === 0) {
-              alarmTriggeredDishId = dishId;
+              newlyFinishedDishIds.push(dishId);
             }
           }
         });
 
-        // If a timer hit 0, trigger alarm
-        if (alarmTriggeredDishId) {
-          const dish = cookingPlan?.timeline.find(d => d.id === alarmTriggeredDishId);
-          
-          // Set this as the currently alarming dish
-          setActiveAlarmDishId(alarmTriggeredDishId);
+        // If any timer hit 0, trigger alarm
+        if (newlyFinishedDishIds.length > 0) {
+          setFinishedDishIds(newlyFinishedDishIds);
           
           // Play alarm sound
           if (alarmEnabled) {
             startAlarm();
           }
           
+          const dishNames = newlyFinishedDishIds
+            .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
+            .join(', ');
+          
           toast({
-            title: `${dish?.name} Ready! 🔔`,
+            title: `${dishNames} Ready! 🔔`,
             description: 'Click "Stop Alarm" to continue',
             variant: 'default'
           });
@@ -509,7 +510,7 @@ const CookingSync = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cookingStarted, activeAlarmDishId, cookingPlan, alarmEnabled]);
+  }, [cookingStarted, finishedDishIds, cookingPlan, alarmEnabled]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
