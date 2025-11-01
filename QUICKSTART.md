@@ -22,21 +22,27 @@ That's it! The script handles everything automatically.
 
 ## 🔐 Important First Step
 
-When prompted, edit the `.env` file to set a secure MongoDB password:
+When prompted, edit the `.env` file to set:
+
+1. **A secure MongoDB password**
+2. **Your server's IP address for BACKEND_URL**
 
 ```bash
 nano .env
 ```
 
-Change this line:
+Change these lines:
 ```
-MONGO_PASSWORD=changeme123
+MONGO_PASSWORD=changeme123          → your-super-secure-password-here
+BACKEND_URL=http://192.168.1.56:8002 → http://YOUR_SERVER_IP:8002
 ```
 
-To something secure:
+**Example:** If your server IP is 192.168.1.100:
 ```
-MONGO_PASSWORD=your-super-secure-password-here
+BACKEND_URL=http://192.168.1.100:8002
 ```
+
+**IMPORTANT:** Replace with YOUR actual server IP address!
 
 ## 🌐 Access Your App
 
