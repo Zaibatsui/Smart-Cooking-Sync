@@ -235,57 +235,56 @@ const CookingSync = () => {
     }
   }, [theme]);
 
-  // Calculate optimal cooking plan
-  const cookingPlan = useMemo(() => {
-    if (dishes.length === 0) return null;
+  // Calculate optimal cooking plan using backend API
+  const [cookingPlan, setCookingPlan] = useState(null);
+  const [calculatingPlan, setCalculatingPlan] = useState(false);
 
-    // Normalize all temperatures to user's oven type baseline
-    const normalizedDishes = dishes.map(dish => {
-      const normalizedTemp = normalizeToFan(dish.temperature, dish.ovenType, dish.unit);
-      return {
-        ...dish,
-        normalizedTemp
-      };
-    });
+  useEffect(() => {
+    const calculatePlan = async () => {
+      if (dishes.length === 0) {
+        setCookingPlan(null);
+        return;
+      }
 
-    // Find optimal common temperature (average of normalized temps)
-    const avgTemp = Math.round(
-      normalizedDishes.reduce((sum, d) => sum + d.normalizedTemp, 0) / normalizedDishes.length
-    );
-    
-    // Round to nearest 10°C (ovens work in 10°C increments)
-    const commonTemp = roundToNearestTen(avgTemp);
+      try {
+        setCalculatingPlan(true);
+        const planData = await cookingPlanAPI.calculate(userOvenType);
+        
+        // Transform backend response to match frontend format
+        const timeline = planData.adjusted_dishes.map(dish => {
+          const originalDish = dishes.find(d => d.id === dish.id);
+          return {
+            ...originalDish,
+            id: dish.id,
+            name: dish.name,
+            adjustedTime: dish.adjustedTime,
+            originalTime: dish.originalTime,
+            normalizedTemp: dish.originalTemp,
+            timeDifference: dish.adjustedTime - dish.originalTime,
+            startDelay: planData.total_time - dish.adjustedTime,
+            finishTime: planData.total_time
+          };
+        });
 
-    // Adjust cooking times based on temperature difference
-    const adjustedDishes = normalizedDishes.map(dish => {
-      const adjustedTime = adjustCookingTime(
-        dish.cookingTime,
-        dish.normalizedTemp,
-        commonTemp
-      );
-      return {
-        ...dish,
-        adjustedTime,
-        timeDifference: adjustedTime - dish.cookingTime
-      };
-    });
-
-    // Sort by adjusted cooking time (longest first)
-    const sorted = [...adjustedDishes].sort((a, b) => b.adjustedTime - a.adjustedTime);
-
-    // Calculate start times (all finish together)
-    const maxTime = sorted[0].adjustedTime;
-    const timeline = sorted.map(dish => ({
-      ...dish,
-      startDelay: maxTime - dish.adjustedTime,
-      finishTime: maxTime
-    }));
-
-    return {
-      commonTemp,
-      timeline,
-      totalTime: maxTime
+        setCookingPlan({
+          commonTemp: planData.optimal_temp,
+          timeline,
+          totalTime: planData.total_time
+        });
+      } catch (error) {
+        console.error('Error calculating cooking plan:', error);
+        toast({
+          title: 'Calculation Error',
+          description: 'Failed to calculate cooking plan',
+          variant: 'destructive'
+        });
+        setCookingPlan(null);
+      } finally {
+        setCalculatingPlan(false);
+      }
     };
+
+    calculatePlan();
   }, [dishes, userOvenType]);
 
   const handleAddDish = () => {
