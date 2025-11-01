@@ -95,8 +95,8 @@ const CookingSync = () => {
   const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
   const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
   const [masterTimerStarted, setMasterTimerStarted] = useState(false); // Master timer state
-  const [masterStartTime, setMasterStartTime] = useState(null); // When master timer started
-  const [masterTick, setMasterTick] = useState(0); // Force re-render counter
+  const [startedDishes, setStartedDishes] = useState([]); // Track which dishes have been started (in order)
+  const [nextDishAlarmActive, setNextDishAlarmActive] = useState(false); // Alarm for next dish
   const [editingDish, setEditingDish] = useState(null); // Dish being edited
   const [editTime, setEditTime] = useState(''); // Edited time value
 
