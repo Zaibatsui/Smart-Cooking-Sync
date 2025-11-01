@@ -1158,7 +1158,7 @@ const CookingSync = () => {
                           
                           {hasMicrowave && (
                             <div className="flex-1 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
-                              <p className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">⚡ Wave</p>
+                              <p className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">⚡ Microwave</p>
                               <p className="text-xs text-slate-600 dark:text-gray-400">Time only</p>
                             </div>
                           )}
