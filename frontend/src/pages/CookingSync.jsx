@@ -1081,10 +1081,10 @@ const CookingSync = () => {
                       const methodCount = [hasOven, hasAirFryer, hasMicrowave].filter(Boolean).length;
                       
                       return (
-                        <div className="flex gap-2 overflow-x-auto">
-                          {/* Compact temperature cards - all on one line */}
+                        <div className="flex gap-2 w-full">
+                          {/* Temperature cards - expand to fill width */}
                           {hasOven && (
-                            <div className="flex-shrink-0 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg min-w-[90px]">
+                            <div className="flex-1 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg">
                               <p className="text-xs text-orange-700 dark:text-orange-400 font-medium mb-0.5">🔥 Oven</p>
                               <p className="text-xs text-slate-600 dark:text-gray-400">{userOvenType}</p>
                               <p className="text-lg font-bold text-orange-600 dark:text-orange-400">
@@ -1094,7 +1094,7 @@ const CookingSync = () => {
                           )}
                           
                           {hasAirFryer && (
-                            <div className="flex-shrink-0 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg min-w-[90px]">
+                            <div className="flex-1 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
                               <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mb-0.5">💨 Fryer</p>
                               <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                                 {cookingPlan.optimal_airfryer_temp || cookingPlan.commonTemp}°
@@ -1103,14 +1103,14 @@ const CookingSync = () => {
                           )}
                           
                           {hasMicrowave && (
-                            <div className="flex-shrink-0 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg min-w-[90px]">
+                            <div className="flex-1 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
                               <p className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">⚡ Wave</p>
                               <p className="text-xs text-slate-600 dark:text-gray-400">Time only</p>
                             </div>
                           )}
                           
                           {/* Total Time */}
-                          <div className="flex-shrink-0 p-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg min-w-[90px]">
+                          <div className="flex-1 p-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg">
                             <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-0.5">Total</p>
                             <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime}m</p>
                           </div>
