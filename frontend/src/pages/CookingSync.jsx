@@ -500,47 +500,36 @@ const CookingSync = () => {
     });
   };
 
-  // Start cooking a specific dish (acknowledge alarm and start elapsed timer)
+  // Start cooking a specific dish (user clicked "Start Cooking" button)
   const startDishCooking = (dishId) => {
     if (!cookingPlan) return;
     
-    const dish = cookingPlan.timeline.find(d => d.id === dishId);
+    const dishIndex = cookingPlan.timeline.findIndex(d => d.id === dishId);
+    const dish = cookingPlan.timeline[dishIndex];
     if (!dish) return;
-    
-    // Stop alarm for this dish
-    stopAlarm(dishId);
-    setNextDishAlarmActive(false);
     
     // Mark this dish as started
     setStartedDishes(prev => [...prev, {
       id: dishId,
       startTime: Date.now(),
-      targetDuration: dish.adjustedTime * 60 // in seconds
+      targetDuration: dish.adjustedTime * 60
     }]);
     
-    // Remove countdown timer for this dish
-    setTimers(prev => {
-      const updated = { ...prev };
-      delete updated[dishId];
-      return updated;
-    });
-    
     // Find next dish in sequence
-    const currentIndex = cookingPlan.timeline.findIndex(d => d.id === dishId);
-    const nextDish = cookingPlan.timeline[currentIndex + 1];
+    const nextDish = cookingPlan.timeline[dishIndex + 1];
     
     if (nextDish) {
       // Calculate time until next dish (difference in startDelay)
       const timeUntilNext = (nextDish.startDelay - dish.startDelay) * 60; // in seconds
       
-      // Start countdown for next dish
+      // Start countdown on THIS dish for when next dish needs to be added
       setTimers({
-        [nextDish.id]: {
+        [dishId]: {
           remaining: timeUntilNext,
           total: timeUntilNext,
           isRunning: true,
           startTime: Date.now(),
-          isCountdownToStart: true
+          isCountdownToNextDish: true
         }
       });
     }
@@ -549,6 +538,29 @@ const CookingSync = () => {
       title: `${dish.name} Cooking Started`,
       description: `Cook for ${dish.adjustedTime} minutes at ${cookingPlan.commonTemp}°C`
     });
+  };
+
+  // Stop alarm on a dish (doesn't start next dish)
+  const stopDishAlarm = (dishId) => {
+    stopAlarm(dishId);
+    setActiveAlarms(prev => {
+      const updated = { ...prev };
+      delete updated[dishId];
+      return updated;
+    });
+    
+    // Check if this is the last dish
+    const dishIndex = cookingPlan?.timeline.findIndex(d => d.id === dishId);
+    const isLastDish = dishIndex === cookingPlan?.timeline.length - 1;
+    
+    if (isLastDish) {
+      // Show completion message
+      toast({
+        title: '🎉 Enjoy Your Meal!',
+        description: 'All dishes are done. Bon appétit!',
+        variant: 'default'
+      });
+    }
   };
 
   // Get elapsed cooking time for a started dish (in seconds)
