@@ -47,9 +47,9 @@ chmod +x deploy.sh
 
 ### 3️⃣ Access Your App
 
-- **Frontend**: http://your-server-ip:3000
-- **Backend API**: http://your-server-ip:8001/api
-- **API Docs**: http://your-server-ip:8001/docs
+- **Frontend**: http://your-server-ip:3001
+- **Backend API**: http://your-server-ip:8002/api
+- **API Docs**: http://your-server-ip:8002/docs
 
 ## 🎯 Common Commands
 
