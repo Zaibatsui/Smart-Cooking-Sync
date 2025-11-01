@@ -583,6 +583,18 @@ const CookingSync = () => {
     return () => clearInterval(interval);
   }, [dishes, alarmEnabled]);
 
+  // Master timer effect - triggers re-render every second for countdown display
+  useEffect(() => {
+    if (!masterTimerStarted) return;
+
+    const interval = setInterval(() => {
+      // Force re-render to update countdown displays
+      setMasterStartTime(prev => prev);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [masterTimerStarted]);
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
