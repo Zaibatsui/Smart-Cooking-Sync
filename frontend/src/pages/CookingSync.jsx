@@ -244,13 +244,31 @@ const CookingSync = () => {
   };
 
   const toggleTimer = (dishId) => {
-    setTimers(prev => ({
-      ...prev,
-      [dishId]: {
-        ...prev[dishId],
-        isRunning: !prev[dishId].isRunning
+    setTimers(prev => {
+      const timer = prev[dishId];
+      const now = Date.now();
+      
+      if (timer.isRunning) {
+        // Pausing - keep remaining time as is
+        return {
+          ...prev,
+          [dishId]: {
+            ...timer,
+            isRunning: false
+          }
+        };
+      } else {
+        // Resuming - set new start time based on remaining time
+        return {
+          ...prev,
+          [dishId]: {
+            ...timer,
+            isRunning: true,
+            startTime: now - ((timer.total - timer.remaining) * 1000)
+          }
+        };
       }
-    }));
+    });
   };
 
   const resetTimer = (dishId) => {
