@@ -909,12 +909,10 @@ const CookingSync = () => {
                       />
                     </div>
                     
-                    {/* Oven Type - Hidden for Microwave */}
-                    {formData.cookingMethod !== 'Microwave' && (
+                    {/* Oven Type - Only shown for Oven cooking method */}
+                    {formData.cookingMethod === 'Oven' && (
                       <div>
-                        <Label htmlFor="ovenType" className="text-sm">
-                          {formData.cookingMethod === 'Air Fryer' ? 'Air Fryer Type' : 'Oven Type'}
-                        </Label>
+                        <Label htmlFor="ovenType" className="text-sm">Oven Type</Label>
                         <Select
                           value={formData.ovenType}
                           onValueChange={(value) => setFormData({ ...formData, ovenType: value })}
