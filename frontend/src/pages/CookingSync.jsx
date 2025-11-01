@@ -191,32 +191,6 @@ const CookingSync = () => {
     });
   };
 
-  const startAllCooking = () => {
-    if (!cookingPlan) return;
-
-    const newTimers = {};
-    cookingPlan.timeline.forEach(dish => {
-      // Start with delay consideration
-      setTimeout(() => {
-        setTimers(prev => ({
-          ...prev,
-          [dish.id]: {
-            remaining: dish.adjustedTime * 60,
-            total: dish.adjustedTime * 60,
-            isRunning: true
-          }
-        }));
-        
-        toast({
-          title: 'Cooking Started',
-          description: `Timer started for ${dish.name}`
-        });
-      }, dish.startDelay * 60 * 1000); // Convert minutes to milliseconds
-    });
-
-    setCookingStarted(true);
-  };
-
   const toggleTimer = (dishId) => {
     setTimers(prev => ({
       ...prev,
