@@ -819,7 +819,7 @@ const CookingSync = () => {
                       </div>
 
                       {/* Alarm Active Indicator */}
-                      {activeAlarmDishId && (
+                      {finishedDishIds.length > 0 && (
                         <div className="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-3 text-center">
                           <p className="text-red-800 dark:text-red-300 font-medium text-sm">
                             🔔 Alarm Ringing - Stop alarm to continue
