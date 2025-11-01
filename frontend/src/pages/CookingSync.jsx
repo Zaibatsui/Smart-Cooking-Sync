@@ -106,74 +106,27 @@ const CookingSync = () => {
   };
 
   // Function to start continuous alarm
-  const startAlarm = (dishId) => {
-    setAlarmIntervals(prev => {
-      if (prev[dishId]) return prev; // Already playing
-      
-      // Play initial beep
-      playSingleBeep();
-      
-      // Continue playing beeps every 500ms
-      const intervalId = setInterval(() => {
-        playSingleBeep();
-      }, 500);
-      
-      return { ...prev, [dishId]: intervalId };
-    });
-  };
-
-  // Function to stop alarm for specific dish
-  const stopAlarm = (dishId) => {
-    setAlarmIntervals(prev => {
-      if (prev[dishId]) {
-        clearInterval(prev[dishId]);
-        const newIntervals = { ...prev };
-        delete newIntervals[dishId];
-        return newIntervals;
-      }
-      return prev;
-    });
-    setActiveAlarms(prev => {
-      const newAlarms = { ...prev };
-      delete newAlarms[dishId];
-      return newAlarms;
-    });
-  };
-
-  // Function to stop all alarms
-  const stopAllAlarms = () => {
-    Object.keys(alarmIntervals).forEach(dishId => {
-      clearInterval(alarmIntervals[dishId]);
-    });
-    setAlarmIntervals({});
-    setActiveAlarms({});
-  };
-
-  // Check for finished timers on mount and trigger alarms
-  useEffect(() => {
-    if (alarmEnabled) {
-      Object.keys(timers).forEach(dishId => {
-        const timer = timers[dishId];
-        
-        // If timer finished (was running and now at 0)
-        if (timer.remaining === 0 && timer.total > 0) {
-          setTimeout(() => {
-            setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
-            startAlarm(dishId);
-            const dish = dishes.find(d => d.id === dishId);
-            toast({
-              title: 'Dish Ready! 🔔',
-              description: `${dish?.name || 'Your dish'} finished while you were away!`,
-              variant: 'default'
-            });
-          }, 500);
-        }
-      });
-    }
+  const startAlarm = () => {
+    if (alarmIntervalId) return; // Already playing
     
-    // Mark that initial mount is complete
-    hasLoadedRef.current = true;
-  }, []); // Only run once on mount
+    // Play initial beep
+    playSingleBeep();
+    
+    // Continue playing beeps every 500ms
+    const intervalId = setInterval(() => {
+      playSingleBeep();
+    }, 500);
+    
+    setAlarmIntervalId(intervalId);
+  };
+
+  // Function to stop alarm
+  const stopAlarm = () => {
+    if (alarmIntervalId) {
+      clearInterval(alarmIntervalId);
+      setAlarmIntervalId(null);
+    }
+  };
 
   // Save user settings and timers to localStorage (dishes are in backend)
   useEffect(() => {
