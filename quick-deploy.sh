@@ -25,6 +25,8 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
+echo -e "${GREEN}✓ Docker is installed${NC}"
+
 # Check if Docker Compose is installed
 DOCKER_COMPOSE_CMD=""
 if command -v docker-compose &> /dev/null; then
