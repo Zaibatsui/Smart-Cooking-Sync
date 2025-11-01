@@ -48,8 +48,12 @@ BACKEND_URL=http://192.168.1.100:8002
 
 Once deployed, open your browser:
 
-- **App**: http://localhost:3001
-- **API**: http://localhost:8002/docs
+- **App**: http://YOUR_SERVER_IP:3001 (Replace with your server's IP)
+- **API**: http://YOUR_SERVER_IP:8002/docs
+
+**Example:** If your server IP is 192.168.1.100:
+- App: http://192.168.1.100:3001
+- API: http://192.168.1.100:8002/docs
 
 ## 📱 Start Cooking!
 
