@@ -303,6 +303,7 @@ const CookingSync = () => {
       setCookingStarted(false);
       setCompletedDishIds([]);
       setFinishedDishIds([]);
+      setShowAlarmModal(false);
       stopAlarm();
       toast({
         title: 'All Cleared',
