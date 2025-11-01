@@ -1157,27 +1157,23 @@ const CookingSync = () => {
                                 </Button>
                               </div>
                             ) : (
-                              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-4 text-xs sm:text-sm text-slate-600 dark:text-gray-400">
+                              <div className="flex flex-wrap gap-1 sm:gap-3 text-xs text-slate-600 dark:text-gray-400">
                                 {isDish && (
                                   <>
-                                    <span>
-                                      Temp: {cookingPlan.commonTemp}°C
-                                    </span>
+                                    <span>{cookingPlan.commonTemp}°C</span>
                                     <span className="hidden sm:inline">•</span>
-                                    <span>
-                                      Cook: {item.adjustedTime} min
-                                    </span>
+                                    <span>{item.adjustedTime}min</span>
                                     {!cookingStarted && item.startDelay > 0 && (
                                       <>
                                         <span className="hidden sm:inline">•</span>
-                                        <span>Starts after {item.startDelay} min</span>
+                                        <span className="text-xs">Start +{item.startDelay}min</span>
                                       </>
                                     )}
                                   </>
                                 )}
                                 {isInstruction && (
-                                  <span className="text-purple-600 dark:text-purple-400 font-medium">
-                                    Triggers after {item.startDelay} min from start
+                                  <span className="text-purple-600 dark:text-purple-400 font-medium text-xs">
+                                    After {item.startDelay}min
                                   </span>
                                 )}
                               </div>
