@@ -982,7 +982,11 @@ const CookingSync = () => {
                                 <Button
                                   onClick={() => startDishTimer(dish.id)}
                                   disabled={Object.keys(timers).length > 0 || finishedDishIds.length > 0}
-                                  className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className={`w-full h-12 text-base font-semibold ${
+                                    Object.keys(timers).length > 0 || finishedDishIds.length > 0
+                                      ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                                      : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
+                                  }`}
                                 >
                                   <Play className="w-5 h-5 mr-2" />
                                   Start Timer
