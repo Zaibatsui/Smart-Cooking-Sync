@@ -331,16 +331,26 @@ const CookingSync = () => {
     }
   };
 
-  const handleRemoveDish = (id) => {
-    setDishes(dishes.filter(d => d.id !== id));
-    const newTimers = { ...timers };
-    delete newTimers[id];
-    setTimers(newTimers);
-    
-    toast({
-      title: 'Dish Removed',
-      description: 'Dish has been removed from your plan'
-    });
+  const handleRemoveDish = async (id) => {
+    try {
+      await dishesAPI.delete(id);
+      setDishes(dishes.filter(d => d.id !== id));
+      const newTimers = { ...timers };
+      delete newTimers[id];
+      setTimers(newTimers);
+      
+      toast({
+        title: 'Dish Removed',
+        description: 'Dish has been removed from your plan'
+      });
+    } catch (error) {
+      console.error('Error removing dish:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to remove dish',
+        variant: 'destructive'
+      });
+    }
   };
 
   const startCooking = (dishId) => {
