@@ -39,6 +39,8 @@ const CookingSync = () => {
   // Cooking timers state
   const [timers, setTimers] = useState({});
   const [cookingStarted, setCookingStarted] = useState(false);
+  const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
+  const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
 
   // Load saved data from localStorage
   useEffect(() => {
