@@ -1069,7 +1069,7 @@ const CookingSync = () => {
                 </Card>
 
                 {/* Timeline */}
-                <div className="space-y-3 sm:space-y-4">
+                <div className="space-y-2 sm:space-y-4">
                   {cookingPlan.timeline.map((item, index) => {
                     const isInstruction = item.type === 'instruction';
                     const isDish = item.type === 'dish';
