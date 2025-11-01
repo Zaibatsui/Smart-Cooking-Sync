@@ -42,11 +42,15 @@ class Instruction(BaseModel):
 
 class DishCreate(BaseModel):
     name: str
-    temperature: float  # Temperature in Celsius (normalized)
-    unit: str  # Original unit (C or F)
+    cookingMethod: str = "Oven"  # Oven, Air Fryer, or Microwave
+    temperature: Optional[float] = None  # Temperature in Celsius (not needed for Microwave)
+    unit: str = "C"  # Original unit (C or F)
     cookingTime: int  # Cooking time in minutes
-    ovenType: str  # Fan, Electric, or Gas
+    ovenType: Optional[str] = None  # Fan, Electric, Gas (not needed for Microwave)
     instructions: List[Instruction] = []  # Optional cooking instructions
+    convertedFromOven: bool = False  # For Air Fryer: was it converted from oven settings
+    originalOvenTemp: Optional[float] = None  # Original oven temp if converted
+    originalOvenTime: Optional[int] = None  # Original oven time if converted
 
 
 class Dish(BaseModel):
@@ -54,11 +58,15 @@ class Dish(BaseModel):
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
-    temperature: float
-    unit: str
+    cookingMethod: str = "Oven"
+    temperature: Optional[float] = None
+    unit: str = "C"
     cookingTime: int
-    ovenType: str
+    ovenType: Optional[str] = None
     instructions: List[Instruction] = []
+    convertedFromOven: bool = False
+    originalOvenTemp: Optional[float] = None
+    originalOvenTime: Optional[int] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
