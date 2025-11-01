@@ -435,27 +435,7 @@ const CookingSync = () => {
     }
   };
 
-  // Start timer for next group of dishes that should start together
-  const startNextDishes = () => {
-    const nextDishes = getNextDishesToStart();
-    if (nextDishes.length === 0) return;
-    
-    // Start timers for all next dishes that should start together
-    const newTimers = { ...timers };
-    nextDishes.forEach(dish => {
-      newTimers[dish.id] = {
-        remaining: dish.adjustedTime * 60,
-        total: dish.adjustedTime * 60
-      };
-    });
-    setTimers(newTimers);
-    
-    const dishNames = nextDishes.map(d => d.name).join(', ');
-    toast({
-      title: 'Timer Started',
-      description: `Cooking: ${dishNames}`
-    });
-  };
+  // This function is no longer needed - timers auto-start after alarm
 
   // Handle edit button click
   const handleEditClick = (dish) => {
