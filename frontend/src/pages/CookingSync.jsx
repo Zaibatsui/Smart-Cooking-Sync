@@ -644,15 +644,40 @@ const CookingSync = () => {
         let hasChanges = false;
 
         Object.keys(updated).forEach(dishId => {
-          if (updated[dishId].isRunning && updated[dishId].remaining > 0) {
+          const timer = updated[dishId];
+          
+          if (timer.isCountdownToStart && timer.isRunning && timer.remaining > 0) {
+            // Countdown to when dish should start
             updated[dishId].remaining -= 1;
             hasChanges = true;
 
-            // Alert when done
+            // Alert when countdown reaches 0
+            if (updated[dishId].remaining === 0) {
+              const dish = cookingPlan?.timeline.find(d => d.id === dishId);
+              
+              // Play alarm sound if enabled
+              if (alarmEnabled) {
+                startAlarm(dishId);
+              }
+              
+              setNextDishAlarmActive(true);
+              
+              toast({
+                title: `Time to add ${dish?.name}! 🔔`,
+                description: 'Click "Start Cooking" when you put it in the oven',
+                variant: 'default'
+              });
+              
+              updated[dishId].isRunning = false;
+            }
+          } else if (!timer.isCountdownToStart && timer.isRunning && timer.remaining > 0) {
+            // Regular cooking timer (old system, keeping for compatibility)
+            updated[dishId].remaining -= 1;
+            hasChanges = true;
+
             if (updated[dishId].remaining === 0) {
               const dish = dishes.find(d => d.id === dishId);
               
-              // Play alarm sound if enabled
               if (alarmEnabled) {
                 startAlarm(dishId);
                 setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
@@ -673,7 +698,7 @@ const CookingSync = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [dishes, alarmEnabled]);
+  }, [dishes, cookingPlan, alarmEnabled]);
 
   // Master timer effect - force re-render every second for countdown display
   useEffect(() => {
