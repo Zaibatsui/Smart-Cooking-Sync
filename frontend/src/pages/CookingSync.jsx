@@ -324,39 +324,44 @@ const CookingSync = () => {
     if (!cookingPlan || cookingPlan.timeline.length === 0) return;
     
     setCookingStarted(true);
-    setCompletedDishIds([]);
     setFinishedDishIds([]);
     setShowAlarmModal(false);
-    setTimers({});
     stopAlarm();
     
-    // First dish(es) are now in oven
-    const firstDishes = getNextDishesToStart();
-    if (firstDishes.length > 0) {
-      // Mark first dishes as in oven
-      setCompletedDishIds(firstDishes.map(d => d.id));
+    // Find first dishes (those with earliest startDelay)
+    const allDishes = cookingPlan.timeline;
+    const earliestDelay = Math.min(...allDishes.map(d => d.startDelay));
+    const firstDishes = allDishes.filter(d => d.startDelay === earliestDelay);
+    const firstDishIds = firstDishes.map(d => d.id);
+    
+    // Mark first dishes as already in oven
+    setCompletedDishIds(firstDishIds);
+    
+    // Find NEXT dishes to add (those not in first batch)
+    const remainingDishes = allDishes.filter(d => !firstDishIds.includes(d.id));
+    if (remainingDishes.length > 0) {
+      const nextEarliestDelay = Math.min(...remainingDishes.map(d => d.startDelay));
+      const nextDishes = remainingDishes.filter(d => d.startDelay === nextEarliestDelay);
       
-      const dishNames = firstDishes.map(d => d.name).join(', ');
-      toast({
-        title: 'Cooking Started!',
-        description: `${dishNames} now in oven. Timer set for next dish.`
+      // Start countdown for next dishes
+      const newTimers = {};
+      nextDishes.forEach(dish => {
+        newTimers[dish.id] = {
+          remaining: dish.adjustedTime * 60,
+          total: dish.adjustedTime * 60
+        };
       });
-      
-      // Start timer for NEXT dish(es) if any
-      setTimeout(() => {
-        const nextDishes = getNextDishesToStart();
-        if (nextDishes.length > 0) {
-          const newTimers = {};
-          nextDishes.forEach(dish => {
-            newTimers[dish.id] = {
-              remaining: dish.adjustedTime * 60,
-              total: dish.adjustedTime * 60
-            };
-          });
-          setTimers(newTimers);
-        }
-      }, 100);
+      setTimers(newTimers);
+    } else {
+      // No more dishes - just these ones
+      setTimers({});
     }
+    
+    const dishNames = firstDishes.map(d => d.name).join(', ');
+    toast({
+      title: 'Cooking Started!',
+      description: `${dishNames} now in oven${remainingDishes.length > 0 ? '. Timer set for next dish.' : '!'}`
+    });
   };
 
   // Stop cooking plan
