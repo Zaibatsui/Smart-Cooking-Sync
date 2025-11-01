@@ -619,51 +619,62 @@ const CookingSync = () => {
     setEditTime('');
   };
 
-  // Timer countdown effect
+  // Timer countdown effect - handles all countdown timers
   useEffect(() => {
+    // Don't run if cooking hasn't started or timers are paused
+    if (!cookingStarted || timersPaused) return;
+    
     const interval = setInterval(() => {
       setTimers(prev => {
         const updated = { ...prev };
         let hasChanges = false;
+        let alarmTriggered = null;
 
         Object.keys(updated).forEach(dishId => {
           const timer = updated[dishId];
           
-          if (timer.isCountdownToNextDish && timer.isRunning && timer.remaining > 0) {
-            // Countdown on current dish until next dish should start
+          // Only countdown if timer is running
+          if (timer.isRunning && timer.remaining > 0) {
             updated[dishId].remaining -= 1;
             hasChanges = true;
 
-            // Alert when countdown reaches 0 - time to add next dish
+            // Check if this timer just hit 0
             if (updated[dishId].remaining === 0) {
-              // Find current dish and next dish
-              const currentDishIndex = cookingPlan?.timeline.findIndex(d => d.id === dishId);
-              const nextDish = cookingPlan?.timeline[currentDishIndex + 1];
-              
-              // Play alarm sound if enabled
-              if (alarmEnabled) {
-                startAlarm(dishId);
-              }
-              
-              setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
-              
-              toast({
-                title: `Time to add ${nextDish?.name}! 🔔`,
-                description: 'Stop the alarm, then click "Start Cooking" on the next dish',
-                variant: 'default'
-              });
-              
               updated[dishId].isRunning = false;
+              alarmTriggered = dishId;
             }
           }
         });
+
+        // If a timer hit 0, trigger alarm
+        if (alarmTriggered && !currentlyAlarmingDish) {
+          const dish = cookingPlan?.timeline.find(d => d.id === alarmTriggered);
+          
+          // Play alarm sound
+          if (alarmEnabled) {
+            startAlarm(alarmTriggered);
+          }
+          
+          // Set this as the currently alarming dish
+          setCurrentlyAlarmingDish(alarmTriggered);
+          setActiveAlarms(prev => ({ ...prev, [alarmTriggered]: true }));
+          
+          // Pause all timers
+          setTimersPaused(true);
+          
+          toast({
+            title: `Time to add ${dish?.name}! 🔔`,
+            description: 'Click "Stop Alarm" then start cooking',
+            variant: 'default'
+          });
+        }
 
         return hasChanges ? updated : prev;
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [dishes, cookingPlan, alarmEnabled]);
+  }, [cookingStarted, timersPaused, currentlyAlarmingDish, cookingPlan, alarmEnabled]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
