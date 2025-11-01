@@ -1154,8 +1154,8 @@ const CookingSync = () => {
 
                       {/* Alarm Modal Popup */}
                       {showAlarmModal && finishedDishIds.length > 0 && (
-                        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
-                          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 animate-pulse">
+                        <div className="fixed inset-0 bg-black/60 dark:bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-pulse border-4 border-red-500">
                             <div className="text-center mb-6">
                               {(() => {
                                 // Find next dishes to add (not yet in oven)
