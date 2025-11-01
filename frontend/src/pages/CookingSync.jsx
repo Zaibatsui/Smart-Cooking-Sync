@@ -1343,23 +1343,36 @@ const CookingSync = () => {
                                 </Button>
                               </div>
                             ) : (
-                              <div className="flex flex-wrap gap-1 sm:gap-3 text-xs text-slate-600 dark:text-gray-400">
-                                {isDish && (
-                                  <>
-                                    <span>{cookingPlan.commonTemp}°C</span>
-                                    <span className="hidden sm:inline">•</span>
-                                    <span>{item.adjustedTime}min</span>
-                                    {!cookingStarted && item.startDelay > 0 && (
-                                      <>
-                                        <span className="hidden sm:inline">•</span>
-                                        <span className="text-xs">Start +{item.startDelay}min</span>
-                                      </>
-                                    )}
-                                  </>
-                                )}
+                              <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-gray-400">
+                                {isDish && (() => {
+                                  const dish = dishes.find(d => d.id === item.id);
+                                  const method = dish?.cookingMethod || 'Oven';
+                                  
+                                  // Get appropriate temp
+                                  let temp = cookingPlan.commonTemp;
+                                  if (method === 'Oven' && cookingPlan.optimal_oven_temp) {
+                                    temp = cookingPlan.optimal_oven_temp;
+                                  } else if (method === 'Air Fryer' && cookingPlan.optimal_airfryer_temp) {
+                                    temp = cookingPlan.optimal_airfryer_temp;
+                                  }
+                                  
+                                  return (
+                                    <>
+                                      {method !== 'Microwave' && <span className="font-medium">{temp}°C</span>}
+                                      <span>•</span>
+                                      <span className="font-medium">{item.adjustedTime} min</span>
+                                      {!cookingStarted && item.startDelay > 0 && (
+                                        <>
+                                          <span>•</span>
+                                          <span className="text-slate-500">Starts +{item.startDelay}min</span>
+                                        </>
+                                      )}
+                                    </>
+                                  );
+                                })()}
                                 {isInstruction && (
-                                  <span className="text-purple-600 dark:text-purple-400 font-medium text-xs">
-                                    After {item.startDelay}min
+                                  <span className="text-purple-600 dark:text-purple-400 font-medium">
+                                    Triggers after {item.startDelay}min
                                   </span>
                                 )}
                               </div>
