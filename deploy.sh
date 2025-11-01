@@ -61,9 +61,9 @@ case $COMMAND in
         echo -e "${GREEN}✓ Services started!${NC}"
         echo ""
         echo "Access your app at:"
-        echo -e "${GREEN}  Frontend: http://localhost:3000${NC}"
-        echo -e "${GREEN}  Backend API: http://localhost:8001/api${NC}"
-        echo -e "${GREEN}  API Docs: http://localhost:8001/docs${NC}"
+        echo -e "${GREEN}  Frontend: http://localhost:3001${NC}"
+        echo -e "${GREEN}  Backend API: http://localhost:8002/api${NC}"
+        echo -e "${GREEN}  API Docs: http://localhost:8002/docs${NC}"
         echo ""
         echo "View logs with: docker compose logs -f"
         ;;
