@@ -555,7 +555,7 @@ const CookingSync = () => {
                 {/* Cooking Summary */}
                 <Card className="border-emerald-200 dark:border-gray-700 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-900">
                   <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
-                    <CardTitle className="dark:text-white text-lg sm:text-xl">Optimized Plan</CardTitle>
+                    <CardTitle className="dark:text-white text-lg sm:text-xl">Optimised Plan</CardTitle>
                     <CardDescription className="dark:text-gray-400 text-xs sm:text-sm">
                       All finish together • Temp rounded to 10°C
                     </CardDescription>
