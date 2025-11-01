@@ -44,6 +44,19 @@ export const dishesAPI = {
     }
   },
 
+  // Update dish cooking time
+  updateTime: async (dishId, cookingTime) => {
+    try {
+      const response = await api.patch(`/api/dishes/${dishId}`, null, {
+        params: { cookingTime }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating dish time:', error);
+      throw error;
+    }
+  },
+
   // Clear all dishes
   clearAll: async () => {
     try {
