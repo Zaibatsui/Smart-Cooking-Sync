@@ -589,9 +589,7 @@ const CookingSync = () => {
     if (!masterTimerStarted) return;
 
     const interval = setInterval(() => {
-      // Force component update by incrementing a counter or similar
-      // This ensures countdown displays update every second
-      setMasterStartTime(prev => prev); // Trigger re-render
+      setMasterTick(prev => prev + 1); // Increment counter to force re-render
     }, 1000);
 
     return () => clearInterval(interval);
