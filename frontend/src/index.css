@@ -82,21 +82,22 @@ code {
     }
 }
 
-/* Custom dark mode color overrides */
+/* Traditional dark mode with emerald green highlights */
 .dark .border-input,
 .dark input,
 .dark select,
 .dark textarea {
-    border-color: #475569;
+    border-color: #374151;
 }
 
 .dark .data-\[state\=active\]\:bg-background[data-state="active"],
 .dark [data-state="active"] {
-    background-color: #35916a;
+    background-color: #059669;
+    color: white;
 }
 
 .dark .bg-muted {
-    background-color: rgba(37, 49, 68, 1);
+    background-color: #1f2937;
 }
 
 @layer base {
