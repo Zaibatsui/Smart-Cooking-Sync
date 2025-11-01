@@ -183,9 +183,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Create Dish model and CRUD endpoints"
-    - "Create CookingPlan calculation endpoint"
-    - "Helper functions for temperature conversion"
+    - "Integrate backend API into CookingSync component"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
