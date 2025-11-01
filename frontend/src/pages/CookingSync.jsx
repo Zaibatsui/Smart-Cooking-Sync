@@ -319,7 +319,7 @@ const CookingSync = () => {
     }
   };
 
-  // Start the cooking plan - auto-starts first dish(es)
+  // Start the cooking plan - first dish(es) already in oven, start countdown for next
   const startCookingPlan = () => {
     if (!cookingPlan || cookingPlan.timeline.length === 0) return;
     
@@ -330,23 +330,32 @@ const CookingSync = () => {
     setTimers({});
     stopAlarm();
     
-    // Auto-start first dish(es)
+    // First dish(es) are now in oven
     const firstDishes = getNextDishesToStart();
     if (firstDishes.length > 0) {
-      const newTimers = {};
-      firstDishes.forEach(dish => {
-        newTimers[dish.id] = {
-          remaining: dish.adjustedTime * 60,
-          total: dish.adjustedTime * 60
-        };
-      });
-      setTimers(newTimers);
+      // Mark first dishes as in oven
+      setCompletedDishIds(firstDishes.map(d => d.id));
       
       const dishNames = firstDishes.map(d => d.name).join(', ');
       toast({
-        title: 'Cooking Plan Started!',
-        description: `Timer started for: ${dishNames}`
+        title: 'Cooking Started!',
+        description: `${dishNames} now in oven. Timer set for next dish.`
       });
+      
+      // Start timer for NEXT dish(es) if any
+      setTimeout(() => {
+        const nextDishes = getNextDishesToStart();
+        if (nextDishes.length > 0) {
+          const newTimers = {};
+          nextDishes.forEach(dish => {
+            newTimers[dish.id] = {
+              remaining: dish.adjustedTime * 60,
+              total: dish.adjustedTime * 60
+            };
+          });
+          setTimers(newTimers);
+        }
+      }, 100);
     }
   };
 
