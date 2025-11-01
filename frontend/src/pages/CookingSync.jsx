@@ -418,14 +418,24 @@ const CookingSync = () => {
     });
   };
 
-  const clearAll = () => {
-    setDishes([]);
-    setTimers({});
-    stopAllAlarms();
-    toast({
-      title: 'All Cleared',
-      description: 'All dishes and timers have been removed'
-    });
+  const clearAll = async () => {
+    try {
+      await dishesAPI.clearAll();
+      setDishes([]);
+      setTimers({});
+      stopAllAlarms();
+      toast({
+        title: 'All Cleared',
+        description: 'All dishes and timers have been removed'
+      });
+    } catch (error) {
+      console.error('Error clearing dishes:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to clear dishes',
+        variant: 'destructive'
+      });
+    }
   };
 
   // Timer countdown effect
