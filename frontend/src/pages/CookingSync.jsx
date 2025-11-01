@@ -960,28 +960,29 @@ const CookingSync = () => {
                                     </>
                                   );
                                 } else {
-                                  // Intermediate alarm - show NEXT dishes to add
+                                  // Intermediate alarm - show NEXT items (dishes or instructions)
                                   const nextEarliestDelay = Math.min(...notInOven.map(d => d.startDelay));
-                                  const nextDishes = notInOven.filter(d => d.startDelay === nextEarliestDelay);
+                                  const nextItems = notInOven.filter(d => d.startDelay === nextEarliestDelay);
+                                  const isInstruction = nextItems[0]?.type === 'instruction';
                                   
                                   return (
                                     <>
-                                      <div className="text-6xl mb-3">🔔</div>
+                                      <div className="text-6xl mb-3">{isInstruction ? '📋' : '🔔'}</div>
                                       <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">
                                         ALARM!
                                       </h2>
                                       <p className="text-lg font-semibold text-slate-800 dark:text-white mb-1">
-                                        Time to Add:
+                                        {isInstruction ? 'Time to:' : 'Time to Add:'}
                                       </p>
                                       <div className="space-y-1 mb-3">
-                                        {nextDishes.map(dish => (
-                                          <p key={dish.id} className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                                            {dish.name}
+                                        {nextItems.map(item => (
+                                          <p key={item.id} className={`text-2xl font-bold ${isInstruction ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                                            {item.name}
                                           </p>
                                         ))}
                                       </div>
                                       <p className="text-sm text-slate-600 dark:text-gray-400">
-                                        Add to oven with other dishes
+                                        {isInstruction ? 'Complete this instruction' : 'Add to oven with other dishes'}
                                       </p>
                                     </>
                                   );
