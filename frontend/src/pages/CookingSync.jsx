@@ -22,27 +22,28 @@ import {
 import { dishesAPI, cookingPlanAPI } from '../services/api';
 
 const CookingSync = () => {
-  // Load saved data synchronously during initialization
-  const loadSavedData = () => {
-    const saved = localStorage.getItem('cookingSyncData');
+  // Load saved user settings from localStorage (not dishes - those come from backend)
+  const loadSavedSettings = () => {
+    const saved = localStorage.getItem('cookingSyncSettings');
     if (saved) {
       try {
         return JSON.parse(saved);
       } catch (error) {
-        console.error('Error loading saved data:', error);
+        console.error('Error loading saved settings:', error);
         return null;
       }
     }
     return null;
   };
 
-  const savedData = loadSavedData();
+  const savedSettings = loadSavedSettings();
   
-  const [dishes, setDishes] = useState(savedData?.dishes || []);
-  const [userOvenType, setUserOvenType] = useState(savedData?.userOvenType || 'Fan');
+  const [dishes, setDishes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userOvenType, setUserOvenType] = useState(savedSettings?.userOvenType || 'Fan');
   const [showSettings, setShowSettings] = useState(false);
-  const [theme, setTheme] = useState(savedData?.theme || 'light');
-  const [alarmEnabled, setAlarmEnabled] = useState(savedData?.alarmEnabled !== undefined ? savedData.alarmEnabled : true);
+  const [theme, setTheme] = useState(savedSettings?.theme || 'light');
+  const [alarmEnabled, setAlarmEnabled] = useState(savedSettings?.alarmEnabled !== undefined ? savedSettings.alarmEnabled : true);
   const hasLoadedRef = useRef(false);
   
   // Form state
