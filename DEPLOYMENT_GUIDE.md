@@ -76,12 +76,15 @@ chmod +x deploy.sh
 # MongoDB password (CHANGE THIS!)
 MONGO_PASSWORD=your-secure-password-here
 
-# Backend URL (change if using reverse proxy)
-BACKEND_URL=http://your-server-ip:8002
+# Backend URL - REPLACE with your server's IP address
+BACKEND_URL=http://YOUR_SERVER_IP:8002
+# Example: BACKEND_URL=http://192.168.1.100:8002
 
 # Database name (can leave as is)
 DB_NAME=cooking_sync
 ```
+
+**IMPORTANT:** Replace `YOUR_SERVER_IP` with your actual server's IP address!
 
 ### Port Configuration
 
