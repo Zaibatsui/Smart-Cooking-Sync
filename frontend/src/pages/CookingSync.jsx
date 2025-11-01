@@ -41,57 +41,124 @@ const CookingSync = () => {
   const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
   const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
 
+  // Function to play single beep
+  const playSingleBeep = () => {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 880;
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.4);
+  };
+
+  // Function to start continuous alarm
+  const startAlarm = (dishId) => {
+    setAlarmIntervals(prev => {
+      if (prev[dishId]) return prev; // Already playing
+      
+      // Play initial beep
+      playSingleBeep();
+      
+      // Continue playing beeps every 500ms
+      const intervalId = setInterval(() => {
+        playSingleBeep();
+      }, 500);
+      
+      return { ...prev, [dishId]: intervalId };
+    });
+  };
+
+  // Function to stop alarm for specific dish
+  const stopAlarm = (dishId) => {
+    setAlarmIntervals(prev => {
+      if (prev[dishId]) {
+        clearInterval(prev[dishId]);
+        const newIntervals = { ...prev };
+        delete newIntervals[dishId];
+        return newIntervals;
+      }
+      return prev;
+    });
+    setActiveAlarms(prev => {
+      const newAlarms = { ...prev };
+      delete newAlarms[dishId];
+      return newAlarms;
+    });
+  };
+
+  // Function to stop all alarms
+  const stopAllAlarms = () => {
+    Object.keys(alarmIntervals).forEach(dishId => {
+      clearInterval(alarmIntervals[dishId]);
+    });
+    setAlarmIntervals({});
+    setActiveAlarms({});
+  };
+
   // Load saved data from localStorage including timers
   useEffect(() => {
     const saved = localStorage.getItem('cookingSyncData');
     if (saved) {
-      const data = JSON.parse(saved);
-      setDishes(data.dishes || []);
-      setUserOvenType(data.userOvenType || 'Fan');
-      setTheme(data.theme || 'light');
-      setAlarmEnabled(data.alarmEnabled !== undefined ? data.alarmEnabled : true);
-      
-      // Restore timers - recalculate remaining time based on elapsed time
-      if (data.timers) {
-        const now = Date.now();
-        const restoredTimers = {};
+      try {
+        const data = JSON.parse(saved);
+        setDishes(data.dishes || []);
+        setUserOvenType(data.userOvenType || 'Fan');
+        setTheme(data.theme || 'light');
+        setAlarmEnabled(data.alarmEnabled !== undefined ? data.alarmEnabled : true);
         
-        Object.keys(data.timers).forEach(dishId => {
-          const savedTimer = data.timers[dishId];
-          if (savedTimer.startTime && savedTimer.total) {
-            // Calculate elapsed time in seconds
-            const elapsedMs = now - savedTimer.startTime;
-            const elapsedSeconds = Math.floor(elapsedMs / 1000);
-            const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
-            
-            restoredTimers[dishId] = {
-              remaining,
-              total: savedTimer.total,
-              isRunning: savedTimer.isRunning && remaining > 0,
-              startTime: savedTimer.startTime
-            };
-            
-            // If timer finished while app was closed and alarm is enabled, trigger alarm
-            if (remaining === 0 && savedTimer.isRunning && data.alarmEnabled !== false) {
-              // Set alarm to start
-              setTimeout(() => {
-                setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
-                startAlarm(dishId);
-                const dish = (data.dishes || []).find(d => d.id === dishId);
-                toast({
-                  title: 'Dish Ready! 🔔',
-                  description: `${dish?.name || 'Your dish'} finished while you were away!`,
-                  variant: 'default'
-                });
-              }, 100);
+        // Restore timers - recalculate remaining time based on elapsed time
+        if (data.timers) {
+          const now = Date.now();
+          const restoredTimers = {};
+          
+          Object.keys(data.timers).forEach(dishId => {
+            const savedTimer = data.timers[dishId];
+            if (savedTimer.startTime && savedTimer.total) {
+              // Calculate elapsed time in seconds
+              const elapsedMs = now - savedTimer.startTime;
+              const elapsedSeconds = Math.floor(elapsedMs / 1000);
+              const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
+              
+              restoredTimers[dishId] = {
+                remaining,
+                total: savedTimer.total,
+                isRunning: savedTimer.isRunning && remaining > 0,
+                startTime: savedTimer.startTime
+              };
+              
+              // If timer finished while app was closed and alarm is enabled, trigger alarm
+              if (remaining === 0 && savedTimer.isRunning && data.alarmEnabled !== false) {
+                // Set alarm to start after component is fully mounted
+                setTimeout(() => {
+                  setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
+                  startAlarm(dishId);
+                  const dish = (data.dishes || []).find(d => d.id === dishId);
+                  toast({
+                    title: 'Dish Ready! 🔔',
+                    description: `${dish?.name || 'Your dish'} finished while you were away!`,
+                    variant: 'default'
+                  });
+                }, 100);
+              }
             }
-          }
-        });
-        
-        setTimers(restoredTimers);
+          });
+          
+          setTimers(restoredTimers);
+        }
+      } catch (error) {
+        console.error('Error loading saved data:', error);
       }
     }
-  }, []);
+  }, []); // Empty dependency array - only run once on mount
 
   // Save to localStorage including timers with timestamps
   useEffect(() => {
