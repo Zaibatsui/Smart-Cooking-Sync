@@ -26,13 +26,17 @@ if ! command -v docker &> /dev/null; then
 fi
 
 # Check if Docker Compose is installed
-if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+DOCKER_COMPOSE_CMD=""
+if command -v docker-compose &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker-compose"
+    echo -e "${GREEN}✓ Docker Compose is installed (docker-compose)${NC}"
+elif docker compose version &> /dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD="docker compose"
+    echo -e "${GREEN}✓ Docker Compose is installed (docker compose)${NC}"
+else
     echo -e "${RED}❌ Docker Compose is not installed. Please install Docker Compose first.${NC}"
     exit 1
 fi
-
-echo -e "${GREEN}✓ Docker is installed${NC}"
-echo -e "${GREEN}✓ Docker Compose is installed${NC}"
 echo ""
 
 # Check if .env file exists
