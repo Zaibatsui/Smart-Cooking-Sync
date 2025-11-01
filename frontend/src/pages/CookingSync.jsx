@@ -1414,11 +1414,23 @@ const CookingSync = () => {
                                   </p>
                                 </div>
                               ) : isInOven && isDish ? (
-                                // Dish is in oven, no timer (cooking until all done)
+                                // Dish is cooking in appliance, no timer (cooking until all done)
                                 <div className="text-center py-2 sm:py-3">
-                                  <Badge className="bg-orange-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
-                                    🔥 In Oven
-                                  </Badge>
+                                  {(() => {
+                                    const dish = dishes.find(d => d.id === item.id);
+                                    const method = dish?.cookingMethod || 'Oven';
+                                    const methodConfig = {
+                                      'Oven': { icon: '🔥', label: 'In Oven', color: 'bg-orange-500' },
+                                      'Air Fryer': { icon: '💨', label: 'In Air Fryer', color: 'bg-blue-500' },
+                                      'Microwave': { icon: '⚡', label: 'In Microwave', color: 'bg-yellow-500' }
+                                    };
+                                    const config = methodConfig[method];
+                                    return (
+                                      <Badge className={`${config.color} text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4`}>
+                                        {config.icon} {config.label}
+                                      </Badge>
+                                    );
+                                  })()}
                                   <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
                                     Finishes with all dishes
                                   </p>
