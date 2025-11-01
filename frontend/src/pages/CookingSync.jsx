@@ -276,20 +276,20 @@ const CookingSync = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-teal-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
+              <div className={`p-3 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
                 <Flame className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-800 dark:text-emerald-50">
+                <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
                   Smart Cooking Sync
                 </h1>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">
+                <p className="text-slate-600 dark:text-gray-400 text-sm">
                   Multi-dish timer & temperature optimizer
                 </p>
               </div>
@@ -298,7 +298,7 @@ const CookingSync = () => {
               variant="outline"
               size="icon"
               onClick={() => setShowSettings(!showSettings)}
-              className="rounded-full border-slate-300 dark:border-slate-600"
+              className="rounded-full border-slate-300 dark:border-gray-700"
             >
               <Settings className="w-5 h-5" />
             </Button>
@@ -306,7 +306,7 @@ const CookingSync = () => {
 
           {/* Settings Panel */}
           {showSettings && (
-            <Card className="mb-4 border-emerald-200 dark:border-slate-600 dark:bg-slate-800/50">
+            <Card className="mb-4 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
