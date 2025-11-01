@@ -1072,8 +1072,8 @@ const CookingSync = () => {
                               </div>
                             )}
 
-                            {/* Time Edit Mode */}
-                            {isEditing ? (
+                            {/* Time Edit Mode - only for dishes */}
+                            {isDish && isEditing ? (
                               <div className="flex items-center gap-2 bg-slate-50 dark:bg-gray-700 p-3 rounded-lg">
                                 <Label className="text-sm">Cooking time:</Label>
                                 <Input
@@ -1086,7 +1086,7 @@ const CookingSync = () => {
                                 <span className="text-sm">min</span>
                                 <Button
                                   size="sm"
-                                  onClick={() => handleEditSave(dish.id)}
+                                  onClick={() => handleEditSave(item.id)}
                                   className="bg-emerald-500 hover:bg-emerald-600"
                                 >
                                   <Check className="w-4 h-4" />
