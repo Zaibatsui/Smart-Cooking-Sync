@@ -301,7 +301,7 @@ const CookingSync = () => {
       setTimers({});
       setCookingStarted(false);
       setCompletedDishIds([]);
-      setActiveAlarmDishId(null);
+      setFinishedDishIds([]);
       stopAlarm();
       toast({
         title: 'All Cleared',
