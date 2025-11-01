@@ -119,7 +119,7 @@ echo -e "${YELLOW}   This may take 5-10 minutes on first run...${NC}"
 echo ""
 
 # Build and start containers
-docker-compose up -d --build
+$DOCKER_COMPOSE_CMD up -d --build
 
 if [ $? -eq 0 ]; then
     echo ""
@@ -133,7 +133,7 @@ if [ $? -eq 0 ]; then
     # Check container status
     echo ""
     echo -e "${BLUE}📊 Container Status:${NC}"
-    docker-compose ps
+    $DOCKER_COMPOSE_CMD ps
     
     echo ""
     echo -e "${GREEN}═══════════════════════════════════════${NC}"
@@ -146,10 +146,10 @@ if [ $? -eq 0 ]; then
     echo -e "   ${GREEN}API Docs:${NC}  http://localhost:8002/docs"
     echo ""
     echo -e "${BLUE}📚 Useful commands:${NC}"
-    echo -e "   View logs:       ${YELLOW}docker-compose logs -f${NC}"
-    echo -e "   Stop services:   ${YELLOW}docker-compose stop${NC}"
-    echo -e "   Restart:         ${YELLOW}docker-compose restart${NC}"
-    echo -e "   Remove all:      ${YELLOW}docker-compose down${NC}"
+    echo -e "   View logs:       ${YELLOW}$DOCKER_COMPOSE_CMD logs -f${NC}"
+    echo -e "   Stop services:   ${YELLOW}$DOCKER_COMPOSE_CMD stop${NC}"
+    echo -e "   Restart:         ${YELLOW}$DOCKER_COMPOSE_CMD restart${NC}"
+    echo -e "   Remove all:      ${YELLOW}$DOCKER_COMPOSE_CMD down${NC}"
     echo ""
     
     # Test frontend
@@ -174,6 +174,6 @@ if [ $? -eq 0 ]; then
 else
     echo ""
     echo -e "${RED}❌ Deployment failed!${NC}"
-    echo -e "${YELLOW}Check the logs with: docker-compose logs${NC}"
+    echo -e "${YELLOW}Check the logs with: $DOCKER_COMPOSE_CMD logs${NC}"
     exit 1
 fi
