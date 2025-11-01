@@ -179,7 +179,19 @@ frontend:
         comment: "Pending: Need to replace localStorage logic with API calls. Will use useEffect to load dishes from backend on mount, replace addDish with API call, replace removeDish with API call, replace clearAll with API call, and update cooking plan calculation to use backend endpoint."
       - working: "NA"
         agent: "main"
-        comment: "COMPLETED: Replaced localStorage with backend API integration. Changes: (1) Split localStorage into two stores: cookingSyncSettings for user prefs (theme, oven type, alarm settings) and cookingSyncTimers for timer state. (2) Added useEffect to fetch dishes from backend on mount using dishesAPI.getAll(). (3) Updated handleAddDish to use dishesAPI.create() with async/await and proper error handling. (4) Updated handleRemoveDish to use dishesAPI.delete(id) with async/await. (5) Updated clearAll to use dishesAPI.clearAll(). (6) Replaced useMemo cooking plan calculation with useEffect calling cookingPlanAPI.calculate(userOvenType), transforming backend response to match frontend format. (7) Added loading state for initial data fetch. (8) Fixed savedData reference error in alarm check useEffect. All existing features preserved: timers with persistence, alarms with continuous playback, PWA functionality, dark mode, mobile optimization."
+        comment: "COMPLETED: Replaced localStorage with backend API integration. Changes: (1) Split localStorage into two stores: cookingSyncSettings for user prefs (theme, oven type, alarm settings) and cookingSyncTimers for timer state. (2) Added useEffect to fetch dishes from backend on mount using dishesAPI.getAll(). (3) Updated handleAddDish to use dishesAPI.create() with async/await and proper error handling. (4) Updated handleRemoveDish to use dishesAPI.delete(id) with async/await. (5) Updated clearAll to use dishesAPI.clearAll(). (6) Replaced useMemo cooking plan calculation with useEffect calling cookingPlanAPI.calculate(userOvenType), transforming backend response to match frontend format. (7) Added loading state for initial data fetch. (8) Fixed savedData reference error in alarm check useEffect. All existing features preserved: timers with persistence, alarms with continuous playback, PWA functionality, dark mode, mobile optimization. App loads successfully, ready for comprehensive end-to-end testing."
+
+  - task: "End-to-end integration testing"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/CookingSync.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Ready for testing. Need to verify: (1) Dishes load from backend on page mount. (2) Adding dishes via form calls backend API and updates UI. (3) Cooking plan tab shows calculated plan from backend with optimal temp and adjusted times. (4) Timer functionality works with start/pause/resume/reset. (5) Removing individual dishes calls backend API. (6) Clear All button removes all dishes via backend API. (7) Data persists across page refreshes. (8) All existing features work: alarms, dark mode toggle, settings panel, PWA features, mobile responsiveness."
 
 metadata:
   created_by: "main_agent"
