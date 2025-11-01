@@ -177,21 +177,8 @@ const CookingSync = () => {
         setCalculatingPlan(true);
         const planData = await cookingPlanAPI.calculate(userOvenType);
         
-        // Transform backend response to match frontend format
-        const timeline = planData.adjusted_dishes.map(dish => {
-          const originalDish = dishes.find(d => d.id === dish.id);
-          return {
-            ...originalDish,
-            id: dish.id,
-            name: dish.name,
-            adjustedTime: dish.adjustedTime,
-            originalTime: dish.originalTime,
-            normalizedTemp: dish.originalTemp,
-            timeDifference: dish.adjustedTime - dish.originalTime,
-            startDelay: planData.total_time - dish.adjustedTime,
-            finishTime: planData.total_time
-          };
-        });
+        // Use the timeline from backend (includes dishes and instructions)
+        const timeline = planData.timeline || [];
 
         setCookingPlan({
           commonTemp: planData.optimal_temp,
