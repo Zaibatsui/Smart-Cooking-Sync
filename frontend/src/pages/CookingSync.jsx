@@ -214,6 +214,36 @@ const CookingSync = () => {
     calculatePlan();
   }, [dishes, userOvenType]);
 
+  // Add instruction to the form
+  const handleAddInstruction = () => {
+    if (!instructionInput.label || !instructionInput.afterMinutes) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in instruction label and time',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      instructions: [...prev.instructions, {
+        label: instructionInput.label,
+        afterMinutes: parseInt(instructionInput.afterMinutes)
+      }]
+    }));
+
+    setInstructionInput({ label: '', afterMinutes: '' });
+  };
+
+  // Remove instruction from form
+  const handleRemoveInstruction = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      instructions: prev.instructions.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleAddDish = async () => {
     if (!formData.name || !formData.temperature || !formData.cookingTime) {
       toast({
@@ -230,7 +260,8 @@ const CookingSync = () => {
         temperature: parseFloat(formData.temperature),
         unit: formData.unit,
         cookingTime: parseInt(formData.cookingTime),
-        ovenType: formData.ovenType
+        ovenType: formData.ovenType,
+        instructions: formData.instructions
       };
 
       const newDish = await dishesAPI.create(dishData);
@@ -241,8 +272,11 @@ const CookingSync = () => {
         temperature: '',
         unit: 'C',
         cookingTime: '',
-        ovenType: 'Fan'
+        ovenType: 'Fan',
+        instructions: []
       });
+      
+      setInstructionInput({ label: '', afterMinutes: '' });
       
       toast({
         title: 'Dish Added',
