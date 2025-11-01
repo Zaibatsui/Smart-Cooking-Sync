@@ -371,7 +371,7 @@ const CookingSync = () => {
     });
   };
 
-  // Stop alarm and add dishes to oven
+  // Stop alarm - user will manually add dishes and start next timer
   const stopAllAlarms = () => {
     // Stop the alarm sound
     stopAlarm();
@@ -390,12 +390,8 @@ const CookingSync = () => {
         description: 'All dishes finished cooking together!'
       });
     } else {
-      // Intermediate alarm - add next dishes to oven
-      const finishedDishNames = finishedDishIds
-        .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
-        .join(', ');
-      
-      // Mark finished dishes as in oven (remove their timers)
+      // Intermediate alarm - time to add next dishes
+      // Clear the timers that finished
       setTimers(prev => {
         const updated = { ...prev };
         finishedDishIds.forEach(id => {
@@ -404,32 +400,39 @@ const CookingSync = () => {
         return updated;
       });
       
-      // Track which dishes have been added to oven
-      setCompletedDishIds(prev => [...prev, ...finishedDishIds]);
-      
       // Clear finished dishes list
       setFinishedDishIds([]);
       
       toast({
-        title: 'Dishes Added',
-        description: `${finishedDishNames} now in oven with others`
+        title: 'Alarm Stopped',
+        description: 'Add dishes to oven, then click "Start Timer" to continue'
       });
-      
-      // Auto-start timer for next dish(es) if any
-      setTimeout(() => {
-        const nextDishes = getNextDishesToStart();
-        if (nextDishes.length > 0) {
-          const newTimers = {};
-          nextDishes.forEach(dish => {
-            newTimers[dish.id] = {
-              remaining: dish.adjustedTime * 60,
-              total: dish.adjustedTime * 60
-            };
-          });
-          setTimers(newTimers);
-        }
-      }, 100);
     }
+  };
+
+  // Start timer for next dish(es) after user has added them to oven
+  const startNextDishes = () => {
+    const nextDishes = getNextDishesToStart();
+    if (nextDishes.length === 0) return;
+    
+    // Mark these dishes as now in oven
+    setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id)]);
+    
+    // Start countdown timer for these dishes
+    const newTimers = {};
+    nextDishes.forEach(dish => {
+      newTimers[dish.id] = {
+        remaining: dish.adjustedTime * 60,
+        total: dish.adjustedTime * 60
+      };
+    });
+    setTimers(newTimers);
+    
+    const dishNames = nextDishes.map(d => d.name).join(', ');
+    toast({
+      title: 'Timer Started',
+      description: `${dishNames} now in oven. Timer started.`
+    });
   };
 
   // This function is no longer needed - timers auto-start after alarm
