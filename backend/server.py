@@ -51,6 +51,7 @@ class DishCreate(BaseModel):
     convertedFromOven: bool = False  # For Air Fryer: was it converted from oven settings
     originalOvenTemp: Optional[float] = None  # Original oven temp if converted
     originalOvenTime: Optional[int] = None  # Original oven time if converted
+    sourceOvenType: Optional[str] = None  # Source oven type when converting to Air Fryer (Fan, Electric, Gas)
 
 
 class Dish(BaseModel):
