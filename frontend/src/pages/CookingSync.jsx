@@ -682,18 +682,6 @@ const CookingSync = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Force re-render every second to update elapsed cooking times
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    if (startedDishes.length === 0) return;
-    
-    const interval = setInterval(() => {
-      setTick(prev => prev + 1);
-    }, 1000);
-    
-    return () => clearInterval(interval);
-  }, [startedDishes.length]);
-
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111827]' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
