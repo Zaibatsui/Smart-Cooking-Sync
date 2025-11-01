@@ -1149,7 +1149,7 @@ const CookingSync = () => {
                           
                           {hasAirFryer && (
                             <div className="flex-1 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
-                              <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mb-0.5">💨 Fryer</p>
+                              <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mb-0.5">💨 Air Fryer</p>
                               <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                                 {cookingPlan.optimal_airfryer_temp || cookingPlan.commonTemp}°
                               </p>
