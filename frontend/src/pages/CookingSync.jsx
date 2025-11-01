@@ -540,49 +540,50 @@ const CookingSync = () => {
           <TabsContent value="plan">
             {!cookingPlan ? (
               <Card className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
-                <CardContent className="pt-12 pb-12 text-center">
-                  <Clock className="w-16 h-16 mx-auto text-slate-300 dark:text-gray-600 mb-4" />
-                  <h3 className="text-xl font-semibold text-slate-700 dark:text-gray-300 mb-2">
+                <CardContent className="pt-8 pb-8 sm:pt-12 sm:pb-12 text-center px-3">
+                  <Clock className="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-slate-300 dark:text-gray-600 mb-3 sm:mb-4" />
+                  <h3 className="text-lg sm:text-xl font-semibold text-slate-700 dark:text-gray-300 mb-2">
                     No dishes added yet
                   </h3>
-                  <p className="text-slate-500 dark:text-gray-400">
+                  <p className="text-sm sm:text-base text-slate-500 dark:text-gray-400">
                     Add some dishes to generate your cooking plan
                   </p>
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {/* Cooking Summary */}
                 <Card className="border-emerald-200 dark:border-gray-700 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-900">
-                  <CardHeader>
-                    <CardTitle className="dark:text-white">Optimized Cooking Plan</CardTitle>
-                    <CardDescription className="dark:text-gray-400">
-                      All dishes will finish at the same time • Temperature rounded to nearest 10°C
+                  <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
+                    <CardTitle className="dark:text-white text-lg sm:text-xl">Optimized Plan</CardTitle>
+                    <CardDescription className="dark:text-gray-400 text-xs sm:text-sm">
+                      All finish together • Temp rounded to 10°C
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                        <p className="text-sm text-slate-600 dark:text-gray-400 mb-1">Your Oven</p>
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{userOvenType}</p>
+                  <CardContent className="px-3 sm:px-6">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                      <div className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                        <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-1">Oven</p>
+                        <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{userOvenType}</p>
                       </div>
-                      <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                        <p className="text-sm text-slate-600 dark:text-gray-400 mb-1">Common Temperature</p>
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                          {cookingPlan.commonTemp}°C / {convertToFahrenheit(cookingPlan.commonTemp)}°F
+                      <div className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                        <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-1">Temp</p>
+                        <p className="text-base sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                          {cookingPlan.commonTemp}°C
                         </p>
+                        <p className="text-xs text-slate-500 dark:text-gray-500">{convertToFahrenheit(cookingPlan.commonTemp)}°F</p>
                       </div>
-                      <div className="p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                        <p className="text-sm text-slate-600 dark:text-gray-400 mb-1">Total Time</p>
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime} min</p>
+                      <div className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                        <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-1">Time</p>
+                        <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime} min</p>
                       </div>
                     </div>
 
-                    <div className="mt-6 flex gap-3">
+                    <div className="mt-4 sm:mt-6">
                       <Button
                         onClick={resetAll}
                         variant="outline"
-                        className="border-emerald-300 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
+                        className="w-full h-11 sm:h-10 border-emerald-300 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
                       >
                         <RotateCcw className="w-4 h-4 mr-2" />
                         Reset All
@@ -592,47 +593,45 @@ const CookingSync = () => {
                 </Card>
 
                 {/* Timeline */}
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {cookingPlan.timeline.map((dish, index) => {
                     const timer = timers[dish.id];
                     const progress = timer ? ((timer.total - timer.remaining) / timer.total) * 100 : 0;
 
                     return (
                       <Card key={dish.id} className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
-                        <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <Badge variant="outline" className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700">
-                                  Step {index + 1}
-                                </Badge>
-                                <h3 className="text-xl font-semibold text-slate-800 dark:text-white">
-                                  {dish.name}
-                                </h3>
-                              </div>
-                              <div className="flex flex-wrap gap-4 text-sm text-slate-600 dark:text-gray-400">
-                                <span>
-                                  Original: {dish.temperature}°{dish.unit} ({convertToFahrenheit(dish.unit === 'C' ? dish.temperature : convertToCelsius(dish.temperature))}°F)
-                                </span>
-                                <span>•</span>
-                                <span>
-                                  Adjusted: {dish.adjustedTime} min
-                                  {dish.timeDifference !== 0 && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="ml-2 dark:bg-gray-700"
-                                    >
-                                      {dish.timeDifference > 0 ? '+' : ''}{dish.timeDifference} min
-                                    </Badge>
-                                  )}
-                                </span>
-                                {dish.startDelay > 0 && (
-                                  <>
-                                    <span>•</span>
-                                    <span>Start after {dish.startDelay} min</span>
-                                  </>
+                        <CardContent className="p-4 sm:p-6">
+                          <div className="mb-3 sm:mb-4">
+                            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                              <Badge variant="outline" className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700 text-xs sm:text-sm">
+                                Step {index + 1}
+                              </Badge>
+                              <h3 className="text-base sm:text-xl font-semibold text-slate-800 dark:text-white">
+                                {dish.name}
+                              </h3>
+                            </div>
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-4 text-xs sm:text-sm text-slate-600 dark:text-gray-400">
+                              <span>
+                                Original: {dish.temperature}°{dish.unit}
+                              </span>
+                              <span className="hidden sm:inline">•</span>
+                              <span>
+                                Adjusted: {dish.adjustedTime} min
+                                {dish.timeDifference !== 0 && (
+                                  <Badge
+                                    variant="secondary"
+                                    className="ml-2 dark:bg-gray-700 text-xs"
+                                  >
+                                    {dish.timeDifference > 0 ? '+' : ''}{dish.timeDifference} min
+                                  </Badge>
                                 )}
-                              </div>
+                              </span>
+                              {dish.startDelay > 0 && (
+                                <>
+                                  <span className="hidden sm:inline">•</span>
+                                  <span>Start after {dish.startDelay} min</span>
+                                </>
+                              )}
                             </div>
                           </div>
 
@@ -640,7 +639,7 @@ const CookingSync = () => {
                           {timer ? (
                             <div className="space-y-3">
                               <div className="flex items-center justify-between">
-                                <span className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+                                <span className="text-4xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
                                   {formatTime(timer.remaining)}
                                 </span>
                                 <div className="flex gap-2">
@@ -648,53 +647,51 @@ const CookingSync = () => {
                                     <Button
                                       size="sm"
                                       onClick={() => stopAlarm(dish.id)}
-                                      className="bg-red-500 hover:bg-red-600 text-white animate-pulse"
+                                      className="bg-red-500 hover:bg-red-600 text-white animate-pulse h-11 px-4 text-sm sm:text-base"
                                     >
                                       🔔 Stop Alarm
                                     </Button>
                                   ) : (
                                     <>
                                       <Button
-                                        size="sm"
+                                        size="icon"
                                         variant="outline"
                                         onClick={() => toggleTimer(dish.id)}
                                         disabled={timer.remaining === 0}
-                                        className="dark:border-gray-600 dark:hover:bg-gray-700"
+                                        className="dark:border-gray-600 dark:hover:bg-gray-700 h-11 w-11"
                                       >
                                         {timer.isRunning ? (
-                                          <Pause className="w-4 h-4" />
+                                          <Pause className="w-5 h-5" />
                                         ) : (
-                                          <Play className="w-4 h-4" />
+                                          <Play className="w-5 h-5" />
                                         )}
                                       </Button>
                                       <Button
-                                        size="sm"
+                                        size="icon"
                                         variant="outline"
                                         onClick={() => resetTimer(dish.id)}
-                                        className="dark:border-gray-600 dark:hover:bg-gray-700"
+                                        className="dark:border-gray-600 dark:hover:bg-gray-700 h-11 w-11"
                                       >
-                                        <RotateCcw className="w-4 h-4" />
+                                        <RotateCcw className="w-5 h-5" />
                                       </Button>
                                     </>
                                   )}
                                 </div>
                               </div>
-                              <Progress value={progress} className="h-2" />
+                              <Progress value={progress} className="h-2.5 sm:h-2" />
                               {timer.remaining === 0 && !activeAlarms[dish.id] && (
-                                <Badge className="bg-green-500 text-white">Done!</Badge>
+                                <Badge className="bg-green-500 text-white text-sm">Done!</Badge>
                               )}
                               {activeAlarms[dish.id] && (
-                                <Badge className="bg-red-500 text-white animate-pulse">🔔 ALARM RINGING!</Badge>
+                                <Badge className="bg-red-500 text-white animate-pulse text-sm">🔔 ALARM RINGING!</Badge>
                               )}
                             </div>
                           ) : (
                             <Button
                               onClick={() => startCooking(dish.id)}
-                              size="sm"
-                              variant="outline"
-                              className="border-emerald-300 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
+                              className="w-full h-11 sm:h-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base"
                             >
-                              <Play className="w-4 h-4 mr-2" />
+                              <Play className="w-5 h-5 mr-2" />
                               Start Timer
                             </Button>
                           )}
