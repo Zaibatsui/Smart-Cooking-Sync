@@ -235,7 +235,7 @@ async def clear_all_dishes():
 
 @api_router.post("/cooking-plan/calculate", response_model=CookingPlanResponse)
 async def calculate_cooking_plan(request: CookingPlanRequest):
-    """Calculate optimal cooking plan based on user's oven type"""
+    """Calculate optimal cooking plan based on user's oven type and multiple cooking methods"""
     
     # Fetch all dishes
     dishes = await db.dishes.find({}, {"_id": 0}).to_list(1000)
@@ -243,46 +243,89 @@ async def calculate_cooking_plan(request: CookingPlanRequest):
     if not dishes:
         raise HTTPException(status_code=400, detail="No dishes found")
     
-    # Normalize all temperatures to Fan equivalent
-    normalized_temps = []
-    for dish in dishes:
-        normalized_temp = normalize_to_fan(dish['temperature'], dish['ovenType'])
-        normalized_temps.append(normalized_temp)
+    # Separate dishes by cooking method
+    oven_dishes = [d for d in dishes if d.get('cookingMethod', 'Oven') == 'Oven']
+    airfryer_dishes = [d for d in dishes if d.get('cookingMethod') == 'Air Fryer']
+    microwave_dishes = [d for d in dishes if d.get('cookingMethod') == 'Microwave']
     
-    # Calculate optimal temperature (average of normalized temps)
-    avg_temp = sum(normalized_temps) / len(normalized_temps)
-    optimal_fan_temp = round_to_nearest_ten(avg_temp)
+    # Calculate optimal temperature for OVEN dishes
+    optimal_oven_temp = None
+    if oven_dishes:
+        normalized_temps = []
+        for dish in oven_dishes:
+            normalized_temp = normalize_to_fan(dish['temperature'], dish.get('ovenType', 'Fan'))
+            normalized_temps.append(normalized_temp)
+        
+        avg_temp = sum(normalized_temps) / len(normalized_temps)
+        optimal_fan_temp = round_to_nearest_ten(avg_temp)
+        
+        # Convert to user's oven type
+        user_oven_type = request.user_oven_type
+        if user_oven_type == "Fan":
+            optimal_oven_temp = optimal_fan_temp
+        elif user_oven_type in ["Electric", "Gas"]:
+            optimal_oven_temp = optimal_fan_temp + 20
+        else:
+            optimal_oven_temp = optimal_fan_temp
+        
+        optimal_oven_temp = round_to_nearest_ten(optimal_oven_temp)
     
-    # Convert optimal temp to user's oven type
-    user_oven_type = request.user_oven_type
-    if user_oven_type == "Fan":
-        optimal_temp = optimal_fan_temp
-    elif user_oven_type == "Electric":
-        optimal_temp = optimal_fan_temp + 20
-    elif user_oven_type == "Gas":
-        optimal_temp = optimal_fan_temp + 20
-    else:
-        optimal_temp = optimal_fan_temp
+    # Calculate optimal temperature for AIR FRYER dishes
+    optimal_airfryer_temp = None
+    if airfryer_dishes:
+        temps = [d['temperature'] for d in airfryer_dishes if d.get('temperature')]
+        if temps:
+            avg_airfryer_temp = sum(temps) / len(temps)
+            optimal_airfryer_temp = round_to_nearest_ten(avg_airfryer_temp)
     
-    optimal_temp = round_to_nearest_ten(optimal_temp)
+    # Use oven temp as the main optimal temp (for backwards compatibility)
+    optimal_temp = optimal_oven_temp or optimal_airfryer_temp or 180
     
     # Calculate adjusted times and order dishes
     adjusted_dishes = []
-    for idx, dish in enumerate(dishes):
+    
+    # Process oven dishes
+    for dish in oven_dishes:
         original_temp = dish['temperature']
         original_time = dish['cookingTime']
-        
-        # Adjust time based on temperature difference
-        adjusted_time = adjust_cooking_time(original_time, original_temp, optimal_temp)
+        adjusted_time = adjust_cooking_time(original_time, original_temp, optimal_oven_temp) if optimal_oven_temp else original_time
         
         adjusted_dishes.append({
             "id": dish['id'],
             "name": dish['name'],
             "originalTemp": original_temp,
-            "adjustedTemp": optimal_temp,
+            "adjustedTemp": optimal_oven_temp,
             "originalTime": original_time,
             "adjustedTime": adjusted_time,
-            "order": idx + 1
+            "order": len(adjusted_dishes) + 1
+        })
+    
+    # Process air fryer dishes
+    for dish in airfryer_dishes:
+        original_temp = dish.get('temperature', 180)
+        original_time = dish['cookingTime']
+        adjusted_time = adjust_cooking_time(original_time, original_temp, optimal_airfryer_temp) if optimal_airfryer_temp else original_time
+        
+        adjusted_dishes.append({
+            "id": dish['id'],
+            "name": dish['name'],
+            "originalTemp": original_temp,
+            "adjustedTemp": optimal_airfryer_temp,
+            "originalTime": original_time,
+            "adjustedTime": adjusted_time,
+            "order": len(adjusted_dishes) + 1
+        })
+    
+    # Process microwave dishes (no temp adjustment)
+    for dish in microwave_dishes:
+        adjusted_dishes.append({
+            "id": dish['id'],
+            "name": dish['name'],
+            "originalTemp": None,
+            "adjustedTemp": None,
+            "originalTime": dish['cookingTime'],
+            "adjustedTime": dish['cookingTime'],
+            "order": len(adjusted_dishes) + 1
         })
     
     # Sort by adjusted time (longest first)
