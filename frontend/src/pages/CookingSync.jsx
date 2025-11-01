@@ -348,7 +348,7 @@ const CookingSync = () => {
 
           {/* Add Dish Tab */}
           <TabsContent value="add">
-            <Card className="border-emerald-200 dark:border-slate-600 dark:bg-slate-800/50">
+            <Card className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
               <CardHeader>
                 <CardTitle>Add New Dish</CardTitle>
                 <CardDescription>
@@ -441,7 +441,7 @@ const CookingSync = () => {
 
             {/* Current Dishes List */}
             {dishes.length > 0 && (
-              <Card className="mt-6 border-emerald-200 dark:border-slate-600 dark:bg-slate-800/50">
+              <Card className="mt-6 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
                 <CardHeader>
                   <CardTitle>Your Dishes ({dishes.length})</CardTitle>
                 </CardHeader>
@@ -450,11 +450,11 @@ const CookingSync = () => {
                     {dishes.map(dish => (
                       <div
                         key={dish.id}
-                        className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600"
+                        className="flex items-center justify-between p-4 bg-slate-50 dark:bg-gray-700 rounded-lg border border-slate-200 dark:border-gray-600"
                       >
                         <div>
-                          <p className="font-semibold text-slate-800 dark:text-emerald-50">{dish.name}</p>
-                          <p className="text-sm text-slate-600 dark:text-slate-300">
+                          <p className="font-semibold text-slate-800 dark:text-white">{dish.name}</p>
+                          <p className="text-sm text-slate-600 dark:text-gray-400">
                             {dish.temperature}°{dish.unit} ({convertToFahrenheit(dish.unit === 'C' ? dish.temperature : convertToCelsius(dish.temperature))}°F) • {dish.cookingTime} min • {dish.ovenType}
                           </p>
                         </div>
