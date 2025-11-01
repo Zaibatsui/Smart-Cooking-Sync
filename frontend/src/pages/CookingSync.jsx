@@ -453,50 +453,36 @@ const CookingSync = () => {
     setStartedDishes([]);
     setNextDishAlarmActive(false);
     
-    // Get the first dish (sorted by startDelay, should be 0)
+    // Automatically start the first dish (no button needed)
     const firstDish = cookingPlan.timeline[0];
     
-    // If first dish starts immediately (delay = 0), need to prompt user
-    if (firstDish.startDelay === 0) {
-      // Start countdown to 0 immediately which will trigger alarm
-      setTimers({
-        [firstDish.id]: {
-          remaining: 0,
-          total: 0,
-          isRunning: false,
-          startTime: Date.now(),
-          isCountdownToStart: true
-        }
-      });
+    // Mark first dish as started immediately
+    setStartedDishes([{
+      id: firstDish.id,
+      startTime: Date.now(),
+      targetDuration: firstDish.adjustedTime * 60
+    }]);
+    
+    // If there's a second dish, start countdown to when it should be added
+    if (cookingPlan.timeline.length > 1) {
+      const secondDish = cookingPlan.timeline[1];
+      const timeUntilNextDish = (secondDish.startDelay - firstDish.startDelay) * 60; // in seconds
       
-      // Trigger alarm immediately for first dish
-      setTimeout(() => {
-        setNextDishAlarmActive(true);
-        if (alarmEnabled) {
-          startAlarm(firstDish.id);
-        }
-        toast({
-          title: `Time to cook ${firstDish.name}! 🔔`,
-          description: 'Click "Start Cooking" when you put it in the oven',
-          variant: 'default'
-        });
-      }, 100);
-    } else {
-      // Start countdown for first dish
       setTimers({
         [firstDish.id]: {
-          remaining: firstDish.startDelay * 60,
-          total: firstDish.startDelay * 60,
+          remaining: timeUntilNextDish,
+          total: timeUntilNextDish,
           isRunning: true,
           startTime: Date.now(),
-          isCountdownToStart: true
+          isCountdownToNextDish: true // This is countdown on current dish until next dish needs to start
         }
       });
     }
     
     toast({
-      title: 'Cooking Plan Started!',
-      description: 'Follow the timers to add each dish at the right time'
+      title: `${firstDish.name} Started!`,
+      description: `Cook at ${cookingPlan.commonTemp}°C for ${firstDish.adjustedTime} minutes`,
+      variant: 'default'
     });
   };
 
