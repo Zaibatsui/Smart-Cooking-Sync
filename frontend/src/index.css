@@ -82,6 +82,23 @@ code {
     }
 }
 
+/* Custom dark mode color overrides */
+.dark .border-input,
+.dark input,
+.dark select,
+.dark textarea {
+    border-color: #475569;
+}
+
+.dark .data-\[state\=active\]\:bg-background[data-state="active"],
+.dark [data-state="active"] {
+    background-color: #35916a;
+}
+
+.dark .bg-muted {
+    background-color: rgba(37, 49, 68, 1);
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;
