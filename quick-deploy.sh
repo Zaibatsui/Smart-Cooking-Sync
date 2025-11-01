@@ -67,11 +67,14 @@ DB_NAME=cooking_sync
 ENVEOF
         echo -e "${GREEN}✓ .env file created with defaults${NC}"
         echo ""
-        echo -e "${YELLOW}📝 CRITICAL: Edit .env file to set a secure MongoDB password!${NC}"
+        echo -e "${YELLOW}📝 CRITICAL: Edit .env file to set:${NC}"
+        echo -e "${YELLOW}   1. A secure MongoDB password${NC}"
+        echo -e "${YELLOW}   2. Your server's IP address in BACKEND_URL${NC}"
         echo -e "${YELLOW}   Run: nano .env${NC}"
         echo -e "${YELLOW}   Change MONGO_PASSWORD from 'changeme123' to something secure${NC}"
+        echo -e "${YELLOW}   Change BACKEND_URL from '192.168.1.56:8002' to YOUR_SERVER_IP:8002${NC}"
         echo ""
-        read -p "Press Enter after you've updated the .env file with your password..."
+        read -p "Press Enter after you've updated the .env file with your settings..."
     fi
 else
     echo -e "${GREEN}✓ .env file exists${NC}"
