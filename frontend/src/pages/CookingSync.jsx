@@ -966,8 +966,8 @@ const CookingSync = () => {
                                     ⏳ Timer running - alarm will sound when ready
                                   </p>
                                 </div>
-                              ) : isNextToStart && !activeAlarmDishId ? (
-                                // This dish should be started next
+                              ) : isNextToStart && !activeAlarmDishId && Object.keys(timers).length === 0 ? (
+                                // This dish should be started next - but only show after previous alarm stopped
                                 <Button
                                   onClick={startNextDish}
                                   className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base font-semibold"
