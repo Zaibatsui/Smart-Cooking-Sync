@@ -153,27 +153,33 @@ backend:
 frontend:
   - task: "Create API service layer"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/services/api.js"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: true
-    status_history:
-      - working: "NA"
-        agent: "main"
-        comment: "Created API service file with axios client configured to use REACT_APP_BACKEND_URL. Implemented dishesAPI object with methods: getAll(), create(), delete(dishId), clearAll(). Implemented cookingPlanAPI object with calculate(userOvenType) method. All methods include proper error handling and logging."
-
-  - task: "Integrate backend API into CookingSync component"
-    implemented: false
-    working: "NA"
-    file: "/app/frontend/src/pages/CookingSync.jsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
+        comment: "Created API service file with axios client configured to use REACT_APP_BACKEND_URL. Implemented dishesAPI object with methods: getAll(), create(), delete(dishId), clearAll(). Implemented cookingPlanAPI object with calculate(userOvenType) method. All methods include proper error handling and logging."
+      - working: true
+        agent: "main"
+        comment: "Verified API service is correctly importing axios and using environment variable for backend URL. All methods follow consistent error handling pattern."
+
+  - task: "Integrate backend API into CookingSync component"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CookingSync.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
         comment: "Pending: Need to replace localStorage logic with API calls. Will use useEffect to load dishes from backend on mount, replace addDish with API call, replace removeDish with API call, replace clearAll with API call, and update cooking plan calculation to use backend endpoint."
+      - working: "NA"
+        agent: "main"
+        comment: "COMPLETED: Replaced localStorage with backend API integration. Changes: (1) Split localStorage into two stores: cookingSyncSettings for user prefs (theme, oven type, alarm settings) and cookingSyncTimers for timer state. (2) Added useEffect to fetch dishes from backend on mount using dishesAPI.getAll(). (3) Updated handleAddDish to use dishesAPI.create() with async/await and proper error handling. (4) Updated handleRemoveDish to use dishesAPI.delete(id) with async/await. (5) Updated clearAll to use dishesAPI.clearAll(). (6) Replaced useMemo cooking plan calculation with useEffect calling cookingPlanAPI.calculate(userOvenType), transforming backend response to match frontend format. (7) Added loading state for initial data fetch. (8) Fixed savedData reference error in alarm check useEffect. All existing features preserved: timers with persistence, alarms with continuous playback, PWA functionality, dark mode, mobile optimization."
 
 metadata:
   created_by: "main_agent"
