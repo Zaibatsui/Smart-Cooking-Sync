@@ -101,3 +101,86 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Backend integration for Smart Cooking Sync - Replace localStorage with MongoDB backend API for dishes and cooking plans. Maintain all existing frontend features including timers, alarms, PWA functionality. App will be deployed in Docker container."
+
+backend:
+  - task: "Create Dish model and CRUD endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created Dish and DishCreate Pydantic models with fields: id (UUID), name, temperature (float, Celsius), unit (C/F), cookingTime (int, minutes), ovenType (Fan/Electric/Gas), created_at (datetime). Implemented POST /api/dishes (create), GET /api/dishes (list all), DELETE /api/dishes/{id} (delete single), DELETE /api/dishes (clear all). Using MongoDB with UUIDs instead of ObjectID for JSON serialization."
+
+  - task: "Create CookingPlan calculation endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented POST /api/cooking-plan/calculate endpoint. Takes user_oven_type as input. Fetches all dishes from MongoDB, normalizes temperatures to Fan baseline, calculates optimal temperature (rounded to nearest 10°C), adjusts cooking times proportionally, sorts dishes by adjusted time (longest first), and returns CookingPlanResponse with optimal_temp, adjusted_dishes array, and total_time."
+
+  - task: "Helper functions for temperature conversion"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented normalize_to_fan() to convert temperatures from Electric/Gas to Fan baseline (subtracts 20°C). Implemented adjust_cooking_time() for proportional time adjustment based on temperature differences. Implemented round_to_nearest_ten() for realistic oven temperature rounding."
+
+frontend:
+  - task: "Create API service layer"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/services/api.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created API service file with axios client configured to use REACT_APP_BACKEND_URL. Implemented dishesAPI object with methods: getAll(), create(), delete(dishId), clearAll(). Implemented cookingPlanAPI object with calculate(userOvenType) method. All methods include proper error handling and logging."
+
+  - task: "Integrate backend API into CookingSync component"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/CookingSync.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Pending: Need to replace localStorage logic with API calls. Will use useEffect to load dishes from backend on mount, replace addDish with API call, replace removeDish with API call, replace clearAll with API call, and update cooking plan calculation to use backend endpoint."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Create Dish model and CRUD endpoints"
+    - "Create CookingPlan calculation endpoint"
+    - "Helper functions for temperature conversion"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Backend models and endpoints implemented. Created Dish CRUD operations (create, get all, delete, clear all) and cooking plan calculation endpoint. All endpoints follow /api prefix convention for Docker/Kubernetes routing. Next step: integrate these APIs into frontend CookingSync component. Ready for backend testing to verify all endpoints work correctly with MongoDB."
