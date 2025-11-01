@@ -456,20 +456,26 @@ const CookingSync = () => {
     }
   };
 
-  // Start timer for next item(s) after user has added them
+  // Start timer for next item(s) after user has performed the action
   const startNextDishes = () => {
     const nextItems = getNextDishesToStart();
     if (nextItems.length === 0) return;
     
+    const hasInstructions = nextItems.some(item => item.type === 'instruction');
+    const hasDishes = nextItems.some(item => item.type === 'dish');
+    
     // Mark dishes (not instructions) as now in oven
+    // Instructions are marked as completed immediately
     const nextDishes = nextItems.filter(item => item.type === 'dish');
-    setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id)]);
+    const nextInstructions = nextItems.filter(item => item.type === 'instruction');
+    
+    setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id), ...nextInstructions.map(i => i.id)]);
     
     // Find what comes AFTER these items
     const allItems = cookingPlan.timeline;
     const currentDelay = nextItems[0].startDelay;
     const remainingItems = allItems.filter(item => 
-      item.startDelay > currentDelay && !completedDishIds.includes(item.id)
+      item.startDelay > currentDelay && !completedDishIds.includes(item.id) && !nextInstructions.some(ni => ni.id === item.id)
     );
     
     const newTimers = {};
@@ -487,21 +493,25 @@ const CookingSync = () => {
         };
       });
     } else {
-      // No more items - these are the last ones, use their cooking time
+      // No more items - these are the last ones
+      // For dishes, use their cooking time; for instructions at the end, use 0
       nextItems.forEach(item => {
-        newTimers[item.id] = {
-          remaining: item.adjustedTime * 60,
-          total: item.adjustedTime * 60
-        };
+        if (item.type === 'dish') {
+          newTimers[item.id] = {
+            remaining: item.adjustedTime * 60,
+            total: item.adjustedTime * 60
+          };
+        }
       });
     }
     
     setTimers(newTimers);
     
     const itemNames = nextItems.map(d => d.name).join(', ');
+    const actionType = hasInstructions ? 'completed' : 'now in oven';
     toast({
       title: 'Timer Started',
-      description: `${itemNames} ${nextItems[0].type === 'instruction' ? 'acknowledged' : 'now in oven'}. Timer started.`
+      description: `${itemNames} ${actionType}. Timer continues.`
     });
   };
 
