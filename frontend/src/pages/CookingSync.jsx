@@ -85,13 +85,16 @@ const CookingSync = () => {
     const avgTemp = Math.round(
       normalizedDishes.reduce((sum, d) => sum + d.normalizedTemp, 0) / normalizedDishes.length
     );
+    
+    // Round to nearest 10°C (ovens work in 10°C increments)
+    const commonTemp = roundToNearestTen(avgTemp);
 
     // Adjust cooking times based on temperature difference
     const adjustedDishes = normalizedDishes.map(dish => {
       const adjustedTime = adjustCookingTime(
         dish.cookingTime,
         dish.normalizedTemp,
-        avgTemp
+        commonTemp
       );
       return {
         ...dish,
@@ -112,7 +115,7 @@ const CookingSync = () => {
     }));
 
     return {
-      commonTemp: avgTemp,
+      commonTemp,
       timeline,
       totalTime: maxTime
     };
