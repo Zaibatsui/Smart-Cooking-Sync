@@ -55,33 +55,42 @@ const CookingSync = () => {
     ovenType: 'Fan'
   });
 
-  // Cooking timers state - restore from saved data with time recalculation
-  const [timers, setTimers] = useState(() => {
-    if (savedData?.timers) {
-      const now = Date.now();
-      const restoredTimers = {};
-      
-      Object.keys(savedData.timers).forEach(dishId => {
-        const savedTimer = savedData.timers[dishId];
-        if (savedTimer.startTime && savedTimer.total) {
-          // Calculate elapsed time in seconds
-          const elapsedMs = now - savedTimer.startTime;
-          const elapsedSeconds = Math.floor(elapsedMs / 1000);
-          const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
-          
-          restoredTimers[dishId] = {
-            remaining,
-            total: savedTimer.total,
-            isRunning: savedTimer.isRunning && remaining > 0,
-            startTime: savedTimer.startTime
-          };
-        }
-      });
-      
-      return restoredTimers;
+  // Cooking timers state - restore from localStorage with time recalculation
+  const loadSavedTimers = () => {
+    const saved = localStorage.getItem('cookingSyncTimers');
+    if (saved) {
+      try {
+        const savedTimers = JSON.parse(saved);
+        const now = Date.now();
+        const restoredTimers = {};
+        
+        Object.keys(savedTimers).forEach(dishId => {
+          const savedTimer = savedTimers[dishId];
+          if (savedTimer.startTime && savedTimer.total) {
+            // Calculate elapsed time in seconds
+            const elapsedMs = now - savedTimer.startTime;
+            const elapsedSeconds = Math.floor(elapsedMs / 1000);
+            const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
+            
+            restoredTimers[dishId] = {
+              remaining,
+              total: savedTimer.total,
+              isRunning: savedTimer.isRunning && remaining > 0,
+              startTime: savedTimer.startTime
+            };
+          }
+        });
+        
+        return restoredTimers;
+      } catch (error) {
+        console.error('Error loading saved timers:', error);
+        return {};
+      }
     }
     return {};
-  });
+  };
+
+  const [timers, setTimers] = useState(loadSavedTimers());
   
   const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
   const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
