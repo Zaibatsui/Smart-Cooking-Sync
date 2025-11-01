@@ -271,69 +271,22 @@ const CookingSync = () => {
     }
   };
 
-  const startCooking = (dishId) => {
-    const dish = cookingPlan.timeline.find(d => d.id === dishId);
-    if (!dish) return;
-
-    const now = Date.now();
-    setTimers(prev => ({
-      ...prev,
-      [dishId]: {
-        remaining: dish.adjustedTime * 60, // Convert to seconds
-        total: dish.adjustedTime * 60,
-        isRunning: true,
-        startTime: now // Store start timestamp
-      }
-    }));
-
-    toast({
-      title: 'Cooking Started',
-      description: `Timer started for ${dish.name}`
-    });
-  };
-
-  const toggleTimer = (dishId) => {
-    setTimers(prev => {
-      const timer = prev[dishId];
-      const now = Date.now();
-      
-      if (timer.isRunning) {
-        // Pausing - keep remaining time as is
-        return {
-          ...prev,
-          [dishId]: {
-            ...timer,
-            isRunning: false
-          }
-        };
-      } else {
-        // Resuming - set new start time based on remaining time
-        return {
-          ...prev,
-          [dishId]: {
-            ...timer,
-            isRunning: true,
-            startTime: now - ((timer.total - timer.remaining) * 1000)
-          }
-        };
-      }
-    });
-  };
-
-  const resetTimer = (dishId) => {
-    const newTimers = { ...timers };
-    delete newTimers[dishId];
-    setTimers(newTimers);
-    stopAlarm(dishId); // Stop alarm if it's ringing
-  };
-
-  const resetAll = () => {
-    setTimers({});
-    stopAllAlarms();
-    toast({
-      title: 'Timers Reset',
-      description: 'All timers have been reset'
-    });
+  // Get dishes that should start next (not completed, earliest startDelay)
+  const getNextDishesToStart = () => {
+    if (!cookingPlan) return [];
+    
+    // Find dishes that haven't completed yet and don't have active timers
+    const notCompleted = cookingPlan.timeline.filter(
+      d => !completedDishIds.includes(d.id) && !timers[d.id]
+    );
+    
+    if (notCompleted.length === 0) return [];
+    
+    // Find the earliest startDelay among not-completed dishes
+    const earliestDelay = Math.min(...notCompleted.map(d => d.startDelay));
+    
+    // Return all dishes with that delay (could be multiple if they start together)
+    return notCompleted.filter(d => d.startDelay === earliestDelay);
   };
 
   const clearAll = async () => {
