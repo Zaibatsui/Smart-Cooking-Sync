@@ -179,6 +179,8 @@ For easier management, use the included deployment script:
 ./deploy.sh clean
 ```
 
+**Note:** The script automatically detects whether to use `docker-compose` or `docker compose` based on your installation.
+
 ---
 
 ## 📖 Usage Guide
