@@ -147,69 +147,36 @@ const CookingSync = () => {
     setActiveAlarms({});
   };
 
-  // Load saved data from localStorage including timers
-  // Use useLayoutEffect to ensure this runs BEFORE any useEffect (including saves)
-  useLayoutEffect(() => {
-    const saved = localStorage.getItem('cookingSyncData');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        setDishes(data.dishes || []);
-        setUserOvenType(data.userOvenType || 'Fan');
-        setTheme(data.theme || 'light');
-        setAlarmEnabled(data.alarmEnabled !== undefined ? data.alarmEnabled : true);
+  // Check for finished timers on mount and trigger alarms
+  useEffect(() => {
+    if (savedData?.timers && alarmEnabled) {
+      Object.keys(timers).forEach(dishId => {
+        const timer = timers[dishId];
+        const savedTimer = savedData.timers[dishId];
         
-        // Restore timers - recalculate remaining time based on elapsed time
-        if (data.timers) {
-          const now = Date.now();
-          const restoredTimers = {};
-          
-          Object.keys(data.timers).forEach(dishId => {
-            const savedTimer = data.timers[dishId];
-            if (savedTimer.startTime && savedTimer.total) {
-              // Calculate elapsed time in seconds
-              const elapsedMs = now - savedTimer.startTime;
-              const elapsedSeconds = Math.floor(elapsedMs / 1000);
-              const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
-              
-              restoredTimers[dishId] = {
-                remaining,
-                total: savedTimer.total,
-                isRunning: savedTimer.isRunning && remaining > 0,
-                startTime: savedTimer.startTime
-              };
-              
-              // If timer finished while app was closed and alarm is enabled, trigger alarm
-              if (remaining === 0 && savedTimer.isRunning && data.alarmEnabled !== false) {
-                // Set alarm to start after component is fully mounted
-                setTimeout(() => {
-                  setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
-                  startAlarm(dishId);
-                  const dish = (data.dishes || []).find(d => d.id === dishId);
-                  toast({
-                    title: 'Dish Ready! 🔔',
-                    description: `${dish?.name || 'Your dish'} finished while you were away!`,
-                    variant: 'default'
-                  });
-                }, 100);
-              }
-            }
-          });
-          
-          setTimers(restoredTimers);
+        // If timer finished while app was closed
+        if (timer.remaining === 0 && savedTimer?.isRunning) {
+          setTimeout(() => {
+            setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
+            startAlarm(dishId);
+            const dish = dishes.find(d => d.id === dishId);
+            toast({
+              title: 'Dish Ready! 🔔',
+              description: `${dish?.name || 'Your dish'} finished while you were away!`,
+              variant: 'default'
+            });
+          }, 500);
         }
-      } catch (error) {
-        console.error('Error loading saved data:', error);
-      }
+      });
     }
     
-    // Mark that we've completed initial load
+    // Mark that initial mount is complete
     hasLoadedRef.current = true;
-  }, []); // Empty dependency array - only run once on mount
+  }, []); // Only run once on mount
 
   // Save to localStorage including timers with timestamps
   useEffect(() => {
-    // Only save after initial load is complete
+    // Only save after initial mount is complete
     if (!hasLoadedRef.current) {
       return;
     }
