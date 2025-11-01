@@ -740,9 +740,69 @@ const CookingSync = () => {
                     </div>
                   </div>
 
+                  <Separator className="my-4" />
+
+                  {/* Instructions Section */}
+                  <div className="space-y-3">
+                    <Label className="text-sm font-semibold">Cooking Instructions (Optional)</Label>
+                    
+                    {/* Show added instructions */}
+                    {formData.instructions.length > 0 && (
+                      <div className="space-y-2">
+                        {formData.instructions.map((instruction, index) => (
+                          <div key={index} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-gray-700 rounded border border-slate-200 dark:border-gray-600">
+                            <span className="flex-1 text-sm">
+                              <strong>After {instruction.afterMinutes} min:</strong> {instruction.label}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRemoveInstruction(index)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add instruction input */}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="col-span-2">
+                        <Input
+                          placeholder="e.g., Turn over, Add sauce"
+                          value={instructionInput.label}
+                          onChange={(e) => setInstructionInput(prev => ({ ...prev, label: e.target.value }))}
+                          className="h-10"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="number"
+                          placeholder="After (min)"
+                          value={instructionInput.afterMinutes}
+                          onChange={(e) => setInstructionInput(prev => ({ ...prev, afterMinutes: e.target.value }))}
+                          className="h-10"
+                          inputMode="numeric"
+                        />
+                      </div>
+                    </div>
+                    
+                    <Button
+                      type="button"
+                      onClick={handleAddInstruction}
+                      variant="outline"
+                      className="w-full h-10"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Instruction
+                    </Button>
+                  </div>
+
                   <Button
                     onClick={handleAddDish}
-                    className="w-full h-12 sm:h-11 text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 mt-2"
+                    className="w-full h-12 sm:h-11 text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 mt-4"
                   >
                     <Plus className="w-5 h-5 mr-2" />
                     Add Dish
