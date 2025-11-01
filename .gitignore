@@ -77,15 +77,24 @@ agenthub/agents/youtube/db
 .cache/
 
 # Mobile development
-android-sdk/ -e 
-# Environment files
+android-sdk/ # Environment files
 *.env
 *.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env
+
+# MongoDB data
+mongodb_data/
+
+# Docker volumes
+volumes/
+
+# Test and automation outputs
+test_result.md
+backend_test.py
+automation_output/
+.emergent/
