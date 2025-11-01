@@ -57,8 +57,8 @@ const CookingSync = () => {
 
   // Simplified timer state - no localStorage persistence for active timers
   const [timers, setTimers] = useState({}); // { [dishId]: { remaining: seconds, total: seconds } }
-  const [activeAlarmDishId, setActiveAlarmDishId] = useState(null); // Which dish's alarm is ringing
-  const [alarmIntervalId, setAlarmIntervalId] = useState(null); // Store alarm interval ID
+  const [finishedDishIds, setFinishedDishIds] = useState([]); // Dishes with timer = 0, alarm needs to be stopped
+  const [alarmIntervalRef, setAlarmIntervalRef] = useState(null); // Store alarm interval ID
   const [cookingStarted, setCookingStarted] = useState(false); // Has cooking plan been started
   const [completedDishIds, setCompletedDishIds] = useState([]); // IDs of dishes that completed their cooking
   const [editingDish, setEditingDish] = useState(null); // Dish being edited
