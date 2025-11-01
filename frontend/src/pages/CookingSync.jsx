@@ -350,6 +350,7 @@ const CookingSync = () => {
               // Play alarm sound if enabled
               if (alarmEnabled) {
                 startAlarm(dishId);
+                setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
               }
               
               toast({
