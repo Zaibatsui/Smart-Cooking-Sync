@@ -100,6 +100,19 @@ code {
     background-color: #1f2937;
 }
 
+/* Lighter placeholder text */
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+    opacity: 0.6;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #6b7280;
+    opacity: 0.5;
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;
