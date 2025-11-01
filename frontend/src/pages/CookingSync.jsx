@@ -1226,6 +1226,24 @@ const CookingSync = () => {
                                 <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1`}>
                                   {isInstruction ? '📋' : `Step ${item.order}`}
                                 </Badge>
+                                
+                                {/* Cooking Method Badge */}
+                                {isDish && (() => {
+                                  const dish = dishes.find(d => d.id === item.id);
+                                  const method = dish?.cookingMethod || 'Oven';
+                                  const methodConfig = {
+                                    'Oven': { icon: '🔥', label: 'Oven', color: 'bg-orange-500' },
+                                    'Air Fryer': { icon: '💨', label: 'Air Fryer', color: 'bg-blue-500' },
+                                    'Microwave': { icon: '⚡', label: 'Microwave', color: 'bg-yellow-500' }
+                                  };
+                                  const config = methodConfig[method];
+                                  return (
+                                    <Badge className={`${config.color} text-white text-xs px-1.5 py-0.5`}>
+                                      {config.icon}
+                                    </Badge>
+                                  );
+                                })()}
+                                
                                 <h3 className="text-sm sm:text-xl font-semibold text-slate-800 dark:text-white">
                                   {item.name}
                                 </h3>
@@ -1235,8 +1253,8 @@ const CookingSync = () => {
                                   </Badge>
                                 )}
                                 {isInOven && isDish && (
-                                  <Badge className="bg-orange-500 text-white text-xs px-1.5 py-0.5">
-                                    🔥
+                                  <Badge className="bg-green-500 text-white text-xs px-1.5 py-0.5">
+                                    ✓
                                   </Badge>
                                 )}
                               </div>
