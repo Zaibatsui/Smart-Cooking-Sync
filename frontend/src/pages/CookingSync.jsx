@@ -426,6 +426,8 @@ const CookingSync = () => {
       await dishesAPI.clearAll();
       setDishes([]);
       setTimers({});
+      setMasterTimerStarted(false);
+      setMasterStartTime(null);
       stopAllAlarms();
       toast({
         title: 'All Cleared',
@@ -439,6 +441,107 @@ const CookingSync = () => {
         variant: 'destructive'
       });
     }
+  };
+
+  // Start master timer - all dishes cook in sequence
+  const startMasterTimer = () => {
+    setMasterTimerStarted(true);
+    setMasterStartTime(Date.now());
+    
+    toast({
+      title: 'Cooking Started!',
+      description: `Timer started. Add dishes as they're ready.`
+    });
+  };
+
+  // Stop master timer
+  const stopMasterTimer = () => {
+    setMasterTimerStarted(false);
+    setMasterStartTime(null);
+    setTimers({});
+    stopAllAlarms();
+    
+    toast({
+      title: 'Cooking Stopped',
+      description: 'Master timer has been stopped'
+    });
+  };
+
+  // Calculate time until this dish should start (in seconds)
+  const getTimeUntilStart = (dish) => {
+    if (!cookingPlan || !masterTimerStarted) return null;
+    
+    const elapsedMinutes = Math.floor((Date.now() - masterStartTime) / 60000);
+    const timeUntilStart = dish.startDelay - elapsedMinutes;
+    
+    return Math.max(0, timeUntilStart * 60); // Convert to seconds
+  };
+
+  // Get elapsed cooking time for a dish (in seconds)
+  const getElapsedTime = (dish) => {
+    if (!masterTimerStarted || !masterStartTime) return 0;
+    
+    const elapsedMinutes = Math.floor((Date.now() - masterStartTime) / 60000);
+    const cookingMinutes = elapsedMinutes - dish.startDelay;
+    
+    return Math.max(0, cookingMinutes * 60); // Convert to seconds
+  };
+
+  // Check if dish should be cooking now
+  const isDishCooking = (dish) => {
+    if (!masterTimerStarted) return false;
+    
+    const elapsedMinutes = Math.floor((Date.now() - masterStartTime) / 60000);
+    return elapsedMinutes >= dish.startDelay;
+  };
+
+  // Handle edit button click
+  const handleEditClick = (dish) => {
+    setEditingDish(dish.id);
+    setEditTime(dish.adjustedTime.toString());
+  };
+
+  // Handle edit save
+  const handleEditSave = async (dishId) => {
+    const newTime = parseInt(editTime);
+    
+    if (isNaN(newTime) || newTime < 1) {
+      toast({
+        title: 'Invalid Time',
+        description: 'Please enter a valid cooking time (minimum 1 minute)',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      await dishesAPI.updateTime(dishId, newTime);
+      
+      // Refetch dishes to update the cooking plan
+      const fetchedDishes = await dishesAPI.getAll();
+      setDishes(fetchedDishes);
+      
+      setEditingDish(null);
+      setEditTime('');
+      
+      toast({
+        title: 'Time Updated',
+        description: 'Cooking time has been updated'
+      });
+    } catch (error) {
+      console.error('Error updating dish time:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update cooking time',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  // Handle edit cancel
+  const handleEditCancel = () => {
+    setEditingDish(null);
+    setEditTime('');
   };
 
   // Timer countdown effect
