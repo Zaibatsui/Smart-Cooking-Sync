@@ -92,7 +92,7 @@ code {
 
 .dark .data-\[state\=active\]\:bg-background[data-state="active"],
 .dark [data-state="active"] {
-    background-color: #059669 !important;
+    background-color: #111827 !important;
     color: white !important;
 }
 
