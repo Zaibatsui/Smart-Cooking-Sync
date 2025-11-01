@@ -159,16 +159,15 @@ const CookingSync = () => {
         console.error('Error loading saved data:', error);
       }
     }
+    
+    // Mark that we've completed initial load
+    hasLoadedRef.current = true;
   }, []); // Empty dependency array - only run once on mount
 
   // Save to localStorage including timers with timestamps
   useEffect(() => {
-    // Don't save on initial mount (wait for data to load)
-    const isInitialMount = dishes.length === 0 && Object.keys(timers).length === 0;
-    const hasExistingData = localStorage.getItem('cookingSyncData');
-    
-    if (isInitialMount && hasExistingData) {
-      // Skip saving during initial mount if we have existing data
+    // Only save after initial load is complete
+    if (!hasLoadedRef.current) {
       return;
     }
     
