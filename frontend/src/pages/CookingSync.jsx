@@ -632,48 +632,30 @@ const CookingSync = () => {
         Object.keys(updated).forEach(dishId => {
           const timer = updated[dishId];
           
-          if (timer.isCountdownToStart && timer.isRunning && timer.remaining > 0) {
-            // Countdown to when dish should start
+          if (timer.isCountdownToNextDish && timer.isRunning && timer.remaining > 0) {
+            // Countdown on current dish until next dish should start
             updated[dishId].remaining -= 1;
             hasChanges = true;
 
-            // Alert when countdown reaches 0
+            // Alert when countdown reaches 0 - time to add next dish
             if (updated[dishId].remaining === 0) {
-              const dish = cookingPlan?.timeline.find(d => d.id === dishId);
+              // Find current dish and next dish
+              const currentDishIndex = cookingPlan?.timeline.findIndex(d => d.id === dishId);
+              const nextDish = cookingPlan?.timeline[currentDishIndex + 1];
               
               // Play alarm sound if enabled
               if (alarmEnabled) {
                 startAlarm(dishId);
               }
               
-              setNextDishAlarmActive(true);
+              setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
               
               toast({
-                title: `Time to add ${dish?.name}! 🔔`,
-                description: 'Click "Start Cooking" when you put it in the oven',
+                title: `Time to add ${nextDish?.name}! 🔔`,
+                description: 'Stop the alarm, then click "Start Cooking" on the next dish',
                 variant: 'default'
               });
               
-              updated[dishId].isRunning = false;
-            }
-          } else if (!timer.isCountdownToStart && timer.isRunning && timer.remaining > 0) {
-            // Regular cooking timer (old system, keeping for compatibility)
-            updated[dishId].remaining -= 1;
-            hasChanges = true;
-
-            if (updated[dishId].remaining === 0) {
-              const dish = dishes.find(d => d.id === dishId);
-              
-              if (alarmEnabled) {
-                startAlarm(dishId);
-                setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
-              }
-              
-              toast({
-                title: 'Dish Ready! 🔔',
-                description: `${dish?.name || 'Your dish'} is done cooking!`,
-                variant: 'default'
-              });
               updated[dishId].isRunning = false;
             }
           }
