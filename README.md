@@ -89,7 +89,7 @@ Optimised for cooking with your phone or tablet:
 - **Uvicorn** - ASGI server
 
 ### Database
-- **MongoDB 7.0** - NoSQL database for dishes and cooking plans
+- **MongoDB 4.4** - NoSQL database for dishes and cooking plans (compatible with CPUs without AVX support)
 
 ### DevOps
 - **Docker** - Containerisation
