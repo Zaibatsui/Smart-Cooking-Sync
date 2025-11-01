@@ -343,7 +343,7 @@ const CookingSync = () => {
           {showSettings && (
             <Card className="mb-4 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
               <CardContent className="pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <Label>Your Oven Type</Label>
                     <Select value={userOvenType} onValueChange={setUserOvenType}>
@@ -366,6 +366,18 @@ const CookingSync = () => {
                       <SelectContent>
                         <SelectItem value="light">Light</SelectItem>
                         <SelectItem value="dark">Dark</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Timer Alarm</Label>
+                    <Select value={alarmEnabled ? 'on' : 'off'} onValueChange={(value) => setAlarmEnabled(value === 'on')}>
+                      <SelectTrigger className="mt-1.5">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="on">Enabled</SelectItem>
+                        <SelectItem value="off">Disabled</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
