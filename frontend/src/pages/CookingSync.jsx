@@ -824,44 +824,89 @@ const CookingSync = () => {
                       </label>
                       
                       {formData.convertFromOven && (
-                        <div className="mt-3 grid grid-cols-2 gap-3">
+                        <div className="mt-3 space-y-3">
+                          {/* Source Oven Type Selector */}
                           <div>
-                            <Label className="text-xs">Oven Temp (°C)</Label>
-                            <Input
-                              type="number"
-                              placeholder="200"
-                              value={formData.ovenTemp}
-                              onChange={(e) => {
-                                const ovenTemp = e.target.value;
-                                setFormData({ ...formData, ovenTemp });
-                                if (ovenTemp && formData.ovenTime) {
-                                  const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(parseFloat(ovenTemp), parseInt(formData.ovenTime));
-                                  setFormData(prev => ({ ...prev, ovenTemp, temperature: airFryerTemp.toString(), cookingTime: airFryerTime.toString() }));
+                            <Label className="text-xs">Source Oven Type</Label>
+                            <Select
+                              value={formData.sourceOvenType}
+                              onValueChange={(value) => {
+                                setFormData({ ...formData, sourceOvenType: value });
+                                // Recalculate if both temp and time are present
+                                if (formData.ovenTemp && formData.ovenTime) {
+                                  const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(
+                                    parseFloat(formData.ovenTemp),
+                                    parseInt(formData.ovenTime),
+                                    value
+                                  );
+                                  setFormData(prev => ({ 
+                                    ...prev, 
+                                    sourceOvenType: value,
+                                    temperature: airFryerTemp.toString(), 
+                                    cookingTime: airFryerTime.toString() 
+                                  }));
                                 }
                               }}
-                              className="mt-1 h-9 text-sm"
-                            />
+                            >
+                              <SelectTrigger className="mt-1 h-9">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {ovenTypes.map(type => (
+                                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
-                          <div>
-                            <Label className="text-xs">Oven Time (min)</Label>
-                            <Input
-                              type="number"
-                              placeholder="30"
-                              value={formData.ovenTime}
-                              onChange={(e) => {
-                                const ovenTime = e.target.value;
-                                setFormData({ ...formData, ovenTime });
-                                if (formData.ovenTemp && ovenTime) {
-                                  const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(parseFloat(formData.ovenTemp), parseInt(ovenTime));
-                                  setFormData(prev => ({ ...prev, ovenTime, temperature: airFryerTemp.toString(), cookingTime: airFryerTime.toString() }));
-                                }
-                              }}
-                              className="mt-1 h-9 text-sm"
-                            />
+
+                          {/* Oven Temp and Time Inputs */}
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <Label className="text-xs">Oven Temp (°C)</Label>
+                              <Input
+                                type="number"
+                                placeholder="200"
+                                value={formData.ovenTemp}
+                                onChange={(e) => {
+                                  const ovenTemp = e.target.value;
+                                  setFormData({ ...formData, ovenTemp });
+                                  if (ovenTemp && formData.ovenTime) {
+                                    const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(
+                                      parseFloat(ovenTemp), 
+                                      parseInt(formData.ovenTime),
+                                      formData.sourceOvenType
+                                    );
+                                    setFormData(prev => ({ ...prev, ovenTemp, temperature: airFryerTemp.toString(), cookingTime: airFryerTime.toString() }));
+                                  }
+                                }}
+                                className="mt-1 h-9 text-sm"
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs">Oven Time (min)</Label>
+                              <Input
+                                type="number"
+                                placeholder="30"
+                                value={formData.ovenTime}
+                                onChange={(e) => {
+                                  const ovenTime = e.target.value;
+                                  setFormData({ ...formData, ovenTime });
+                                  if (formData.ovenTemp && ovenTime) {
+                                    const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(
+                                      parseFloat(formData.ovenTemp), 
+                                      parseInt(ovenTime),
+                                      formData.sourceOvenType
+                                    );
+                                    setFormData(prev => ({ ...prev, ovenTime, temperature: airFryerTemp.toString(), cookingTime: airFryerTime.toString() }));
+                                  }
+                                }}
+                                className="mt-1 h-9 text-sm"
+                              />
+                            </div>
                           </div>
                           {formData.ovenTemp && formData.ovenTime && (
-                            <div className="col-span-2 text-xs text-purple-600 dark:text-purple-400 font-medium mt-1">
-                              → Air Fryer: {convertOvenToAirFryer(parseFloat(formData.ovenTemp), parseInt(formData.ovenTime)).airFryerTemp}°C, {convertOvenToAirFryer(parseFloat(formData.ovenTemp), parseInt(formData.ovenTime)).airFryerTime} min
+                            <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">
+                              → Air Fryer: {convertOvenToAirFryer(parseFloat(formData.ovenTemp), parseInt(formData.ovenTime), formData.sourceOvenType).airFryerTemp}°C, {convertOvenToAirFryer(parseFloat(formData.ovenTemp), parseInt(formData.ovenTime), formData.sourceOvenType).airFryerTime} min
                             </div>
                           )}
                         </div>
