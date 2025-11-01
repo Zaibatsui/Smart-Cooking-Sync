@@ -1101,18 +1101,27 @@ const CookingSync = () => {
                               </div>
                             ) : (
                               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-4 text-xs sm:text-sm text-slate-600 dark:text-gray-400">
-                                <span>
-                                  Temp: {cookingPlan.commonTemp}°C
-                                </span>
-                                <span className="hidden sm:inline">•</span>
-                                <span>
-                                  Cook: {dish.adjustedTime} min
-                                </span>
-                                {!cookingStarted && dish.startDelay > 0 && (
+                                {isDish && (
                                   <>
+                                    <span>
+                                      Temp: {cookingPlan.commonTemp}°C
+                                    </span>
                                     <span className="hidden sm:inline">•</span>
-                                    <span>Starts after {dish.startDelay} min</span>
+                                    <span>
+                                      Cook: {item.adjustedTime} min
+                                    </span>
+                                    {!cookingStarted && item.startDelay > 0 && (
+                                      <>
+                                        <span className="hidden sm:inline">•</span>
+                                        <span>Starts after {item.startDelay} min</span>
+                                      </>
+                                    )}
                                   </>
+                                )}
+                                {isInstruction && (
+                                  <span className="text-purple-600 dark:text-purple-400 font-medium">
+                                    Triggers after {item.startDelay} min from start
+                                  </span>
                                 )}
                               </div>
                             )}
