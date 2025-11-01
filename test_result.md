@@ -201,7 +201,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Integrate backend API into CookingSync component"
+    - "End-to-end integration testing"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
