@@ -109,6 +109,26 @@ Optimised for cooking with your phone or tablet:
 
 ### Installation
 
+**Option 1: Quick Deploy (Recommended)**
+
+```bash
+# Clone the repository
+git clone https://github.com/Zaibatsui/smart-cooking-sync.git
+cd smart-cooking-sync
+
+# Run the quick deployment script
+./quick-deploy.sh
+```
+
+The script will:
+- Check Docker installation
+- Create `.env` file if needed
+- Verify port availability
+- Build and start all containers
+- Test the deployment
+
+**Option 2: Manual Deploy**
+
 1. **Clone the repository**
 ```bash
 git clone https://github.com/Zaibatsui/smart-cooking-sync.git
