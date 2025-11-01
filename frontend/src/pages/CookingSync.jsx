@@ -52,8 +52,11 @@ const CookingSync = () => {
     temperature: '',
     unit: 'C',
     cookingTime: '',
-    ovenType: 'Fan'
+    ovenType: 'Fan',
+    instructions: []
   });
+  
+  const [instructionInput, setInstructionInput] = useState({ label: '', afterMinutes: '' });
 
   // Simplified timer state - no localStorage persistence for active timers
   const [timers, setTimers] = useState({}); // { [dishId]: { remaining: seconds, total: seconds } }
