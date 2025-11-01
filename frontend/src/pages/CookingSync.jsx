@@ -951,20 +951,7 @@ const CookingSync = () => {
                           {/* Timer Display */}
                           {cookingStarted && (
                             <div className="space-y-3">
-                              {isFinished ? (
-                                // Alarm is ringing - show stop alarm button (can be on multiple dishes)
-                                <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-4">
-                                  <p className="text-red-700 dark:text-red-300 font-bold text-center mb-3 text-lg">
-                                    🔔 ALARM RINGING!
-                                  </p>
-                                  <Button
-                                    onClick={stopAllAlarms}
-                                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold h-12"
-                                  >
-                                    Stop Alarm
-                                  </Button>
-                                </div>
-                              ) : timer ? (
+                              {timer ? (
                                 // Timer counting down
                                 <div className="space-y-2">
                                   <div className="flex items-center justify-between">
@@ -983,15 +970,6 @@ const CookingSync = () => {
                                     ⏳ Timer running - alarm will sound when ready
                                   </p>
                                 </div>
-                              ) : isNextToStart && finishedDishIds.length === 0 && Object.keys(timers).length === 0 ? (
-                                // This dish should be started next - but only show after previous alarm stopped
-                                <Button
-                                  onClick={startNextDish}
-                                  className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base font-semibold"
-                                >
-                                  <Play className="w-5 h-5 mr-2" />
-                                  {nextDishes.length > 1 ? `Start ${nextDishes.length} Dishes` : 'Start Timer'}
-                                </Button>
                               ) : isCompleted ? (
                                 // Dish completed
                                 <div className="text-center py-3">
@@ -1000,10 +978,15 @@ const CookingSync = () => {
                                   </Badge>
                                 </div>
                               ) : (
-                                // Waiting
-                                <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
-                                  ⏸️ Waiting...
-                                </div>
+                                // Show Start Timer button
+                                <Button
+                                  onClick={() => startDishTimer(dish.id)}
+                                  disabled={Object.keys(timers).length > 0 || finishedDishIds.length > 0}
+                                  className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  <Play className="w-5 h-5 mr-2" />
+                                  Start Timer
+                                </Button>
                               )}
 
                               {/* Show success message if all dishes completed */}
