@@ -1223,14 +1223,18 @@ const CookingSync = () => {
                                     ✓ Completed
                                   </Badge>
                                 </div>
-                              ) : isDish && isNextToStart && !finishedDishIds.length ? (
-                                // Show Start Timer button for next dish(es) after alarm stopped
+                              ) : isNextToStart && !finishedDishIds.length ? (
+                                // Show Start Timer button for next item(s) (dish or instruction) after alarm stopped
                                 <Button
                                   onClick={startNextDishes}
-                                  className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
+                                  className={`w-full h-12 text-base font-semibold ${
+                                    isInstruction 
+                                      ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
+                                      : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
+                                  }`}
                                 >
                                   <Play className="w-5 h-5 mr-2" />
-                                  {isMultipleStart ? `Start ${nextDishes.length} Timers` : 'Start Timer'}
+                                  {isInstruction ? 'Continue' : (isMultipleStart ? `Start ${nextDishes.length} Timers` : 'Start Timer')}
                                 </Button>
                               ) : (
                                 // Waiting for alarm or previous action
