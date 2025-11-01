@@ -1131,22 +1131,22 @@ const CookingSync = () => {
 
                             {/* Time Edit Mode - only for dishes */}
                             {isDish && isEditing ? (
-                              <div className="flex items-center gap-2 bg-slate-50 dark:bg-gray-700 p-3 rounded-lg">
-                                <Label className="text-sm">Cooking time:</Label>
+                              <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-50 dark:bg-gray-700 p-2 sm:p-3 rounded-lg">
+                                <Label className="text-xs sm:text-sm">Time:</Label>
                                 <Input
                                   type="number"
                                   min="1"
                                   value={editTime}
                                   onChange={(e) => setEditTime(e.target.value)}
-                                  className="w-20 dark:bg-gray-600"
+                                  className="w-16 sm:w-20 dark:bg-gray-600 h-8 text-sm"
                                 />
-                                <span className="text-sm">min</span>
+                                <span className="text-xs sm:text-sm">min</span>
                                 <Button
                                   size="sm"
                                   onClick={() => handleEditSave(item.id)}
-                                  className="bg-emerald-500 hover:bg-emerald-600"
+                                  className="bg-emerald-500 hover:bg-emerald-600 h-7 w-7 p-0"
                                 >
-                                  <Check className="w-4 h-4" />
+                                  <Check className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </Button>
                                 <Button
                                   size="sm"
