@@ -1122,9 +1122,9 @@ const CookingSync = () => {
 
                             {/* Multi-dish indicator */}
                             {isMultipleStart && isNextToStart && (
-                              <div className="mb-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded p-2">
+                              <div className="mb-1.5 sm:mb-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-300 dark:border-blue-700 rounded p-1.5 sm:p-2">
                                 <p className="text-blue-700 dark:text-blue-300 text-xs font-medium">
-                                  ⚡ Start {nextDishes.length} dishes together!
+                                  ⚡ Start {nextDishes.length} together
                                 </p>
                               </div>
                             )}
