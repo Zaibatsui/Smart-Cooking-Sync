@@ -231,6 +231,7 @@ const CookingSync = () => {
     const newTimers = { ...timers };
     delete newTimers[dishId];
     setTimers(newTimers);
+    stopAlarm(dishId); // Stop alarm if it's ringing
   };
 
   const resetAll = () => {
