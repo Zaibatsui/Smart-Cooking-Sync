@@ -141,9 +141,13 @@ cd smart-cooking-sync
 cp .env.example .env
 ```
 
-3. **Edit the environment file and set a secure MongoDB password**
+3. **Edit the environment file and set your server's IP address**
 ```bash
 nano .env
+
+# IMPORTANT: Change BACKEND_URL to use YOUR server's IP address
+# Example: If your server IP is 192.168.1.100, change to:
+# BACKEND_URL=http://192.168.1.100:8002
 ```
 
 4. **Build and start all services**
