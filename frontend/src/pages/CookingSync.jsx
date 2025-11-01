@@ -41,7 +41,7 @@ const CookingSync = () => {
   const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
   const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
 
-  // Load saved data from localStorage
+  // Load saved data from localStorage including timers
   useEffect(() => {
     const saved = localStorage.getItem('cookingSyncData');
     if (saved) {
@@ -50,18 +50,69 @@ const CookingSync = () => {
       setUserOvenType(data.userOvenType || 'Fan');
       setTheme(data.theme || 'light');
       setAlarmEnabled(data.alarmEnabled !== undefined ? data.alarmEnabled : true);
+      
+      // Restore timers - recalculate remaining time based on elapsed time
+      if (data.timers) {
+        const now = Date.now();
+        const restoredTimers = {};
+        
+        Object.keys(data.timers).forEach(dishId => {
+          const savedTimer = data.timers[dishId];
+          if (savedTimer.startTime && savedTimer.total) {
+            // Calculate elapsed time in seconds
+            const elapsedMs = now - savedTimer.startTime;
+            const elapsedSeconds = Math.floor(elapsedMs / 1000);
+            const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
+            
+            restoredTimers[dishId] = {
+              remaining,
+              total: savedTimer.total,
+              isRunning: savedTimer.isRunning && remaining > 0,
+              startTime: savedTimer.startTime
+            };
+            
+            // If timer finished while app was closed and alarm is enabled, trigger alarm
+            if (remaining === 0 && savedTimer.isRunning && data.alarmEnabled !== false) {
+              // Set alarm to start
+              setTimeout(() => {
+                setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
+                startAlarm(dishId);
+                const dish = (data.dishes || []).find(d => d.id === dishId);
+                toast({
+                  title: 'Dish Ready! 🔔',
+                  description: `${dish?.name || 'Your dish'} finished while you were away!`,
+                  variant: 'default'
+                });
+              }, 100);
+            }
+          }
+        });
+        
+        setTimers(restoredTimers);
+      }
     }
   }, []);
 
-  // Save to localStorage
+  // Save to localStorage including timers with timestamps
   useEffect(() => {
-    localStorage.setItem('cookingSyncData', JSON.stringify({
+    const dataToSave = {
       dishes,
       userOvenType,
       theme,
-      alarmEnabled
-    }));
-  }, [dishes, userOvenType, theme, alarmEnabled]);
+      alarmEnabled,
+      timers: {}
+    };
+    
+    // Save timer state with timestamps for persistence
+    Object.keys(timers).forEach(dishId => {
+      dataToSave.timers[dishId] = {
+        ...timers[dishId],
+        startTime: timers[dishId].startTime || Date.now()
+      };
+    });
+    
+    localStorage.setItem('cookingSyncData', JSON.stringify(dataToSave));
+  }, [dishes, userOvenType, theme, alarmEnabled, timers]);
 
   // Apply theme
   useEffect(() => {
