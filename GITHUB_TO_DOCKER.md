@@ -91,23 +91,25 @@ docker-compose ps
 ### 6. Test the Application
 
 ```bash
-# Frontend health check
-curl http://localhost:3001/health
+# Frontend health check (replace YOUR_SERVER_IP with your server's IP)
+curl http://YOUR_SERVER_IP:3001/health
 
-# Backend health check
-curl http://localhost:8002/api/
+# Backend health check (replace YOUR_SERVER_IP with your server's IP)
+curl http://YOUR_SERVER_IP:8002/api/
 
 # API documentation (open in browser)
-# http://localhost:8002/docs
+# http://YOUR_SERVER_IP:8002/docs
 ```
 
 ### 7. Access the Application
 
 Open your browser and navigate to:
-- **Application**: http://localhost:3001
-- **API Docs**: http://localhost:8002/docs
+- **Application**: http://YOUR_SERVER_IP:3001 (Replace YOUR_SERVER_IP with your server's IP)
+- **API Docs**: http://YOUR_SERVER_IP:8002/docs
 
-If deploying on a server, replace `localhost` with your server's IP address.
+**Example:** If your server IP is 192.168.1.100:
+- Application: http://192.168.1.100:3001
+- API: http://192.168.1.100:8002/docs
 
 ## 🔧 Common Commands
 
