@@ -162,6 +162,15 @@ const CookingSync = () => {
 
   // Save to localStorage including timers with timestamps
   useEffect(() => {
+    // Don't save on initial mount (wait for data to load)
+    const isInitialMount = dishes.length === 0 && Object.keys(timers).length === 0;
+    const hasExistingData = localStorage.getItem('cookingSyncData');
+    
+    if (isInitialMount && hasExistingData) {
+      // Skip saving during initial mount if we have existing data
+      return;
+    }
+    
     const dataToSave = {
       dishes,
       userOvenType,
