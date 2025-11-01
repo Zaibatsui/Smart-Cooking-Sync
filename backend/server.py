@@ -36,12 +36,17 @@ class StatusCheck(BaseModel):
 
 
 # Cooking Sync Models
+class Instruction(BaseModel):
+    label: str
+    afterMinutes: int  # Minutes after dish starts cooking
+
 class DishCreate(BaseModel):
     name: str
     temperature: float  # Temperature in Celsius (normalized)
     unit: str  # Original unit (C or F)
     cookingTime: int  # Cooking time in minutes
     ovenType: str  # Fan, Electric, or Gas
+    instructions: List[Instruction] = []  # Optional cooking instructions
 
 
 class Dish(BaseModel):
@@ -53,6 +58,7 @@ class Dish(BaseModel):
     unit: str
     cookingTime: int
     ovenType: str
+    instructions: List[Instruction] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
