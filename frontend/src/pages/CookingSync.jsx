@@ -365,7 +365,7 @@ const CookingSync = () => {
     });
   };
 
-  // Stop all alarms - marks all finished dishes as completed
+  // Stop all alarms - marks finished dishes as started (now in oven)
   const stopAllAlarms = () => {
     // Stop the alarm sound
     stopAlarm();
@@ -373,7 +373,16 @@ const CookingSync = () => {
     // Hide alarm modal
     setShowAlarmModal(false);
     
-    // Mark all finished dishes as completed
+    // Mark finished dishes as "started cooking" (remove their timers, they continue cooking)
+    setTimers(prev => {
+      const updated = { ...prev };
+      finishedDishIds.forEach(id => {
+        delete updated[id];
+      });
+      return updated;
+    });
+    
+    // Track which dishes have been added to oven
     setCompletedDishIds(prev => [...prev, ...finishedDishIds]);
     
     // Clear finished dishes list
@@ -383,29 +392,34 @@ const CookingSync = () => {
       .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
       .join(', ');
     
+    // Check if there are more dishes to start
+    const nextDishes = getNextDishesToStart();
+    
     toast({
       title: 'Alarm Stopped',
-      description: `${finishedDishNames} complete!`
+      description: `Add ${finishedDishNames} to oven! ${nextDishes.length > 0 ? 'Start next dish when ready.' : ''}`
     });
   };
 
-  // Start timer for specific dish
-  const startDishTimer = (dishId) => {
-    const dish = cookingPlan?.timeline.find(d => d.id === dishId);
-    if (!dish) return;
+  // Start timer for next group of dishes that should start together
+  const startNextDishes = () => {
+    const nextDishes = getNextDishesToStart();
+    if (nextDishes.length === 0) return;
     
-    // Start timer for this dish
-    setTimers(prev => ({
-      ...prev,
-      [dishId]: {
+    // Start timers for all next dishes that should start together
+    const newTimers = { ...timers };
+    nextDishes.forEach(dish => {
+      newTimers[dish.id] = {
         remaining: dish.adjustedTime * 60,
         total: dish.adjustedTime * 60
-      }
-    }));
+      };
+    });
+    setTimers(newTimers);
     
+    const dishNames = nextDishes.map(d => d.name).join(', ');
     toast({
       title: 'Timer Started',
-      description: `Cooking: ${dish.name}`
+      description: `Cooking: ${dishNames}`
     });
   };
 
