@@ -354,68 +354,6 @@ const CookingSync = () => {
     });
   };
 
-  // Function to play single beep
-  const playSingleBeep = () => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = 880;
-    oscillator.type = 'square';
-    
-    gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.4);
-  };
-
-  // Function to start continuous alarm
-  const startAlarm = (dishId) => {
-    if (alarmIntervals[dishId]) return; // Already playing
-    
-    setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
-    
-    // Play initial beep
-    playSingleBeep();
-    
-    // Continue playing beeps every 500ms
-    const intervalId = setInterval(() => {
-      playSingleBeep();
-    }, 500);
-    
-    setAlarmIntervals(prev => ({ ...prev, [dishId]: intervalId }));
-  };
-
-  // Function to stop alarm for specific dish
-  const stopAlarm = (dishId) => {
-    if (alarmIntervals[dishId]) {
-      clearInterval(alarmIntervals[dishId]);
-      setAlarmIntervals(prev => {
-        const newIntervals = { ...prev };
-        delete newIntervals[dishId];
-        return newIntervals;
-      });
-    }
-    setActiveAlarms(prev => {
-      const newAlarms = { ...prev };
-      delete newAlarms[dishId];
-      return newAlarms;
-    });
-  };
-
-  // Function to stop all alarms
-  const stopAllAlarms = () => {
-    Object.keys(alarmIntervals).forEach(dishId => {
-      clearInterval(alarmIntervals[dishId]);
-    });
-    setAlarmIntervals({});
-    setActiveAlarms({});
-  };
-
   // Timer countdown effect
   useEffect(() => {
     const interval = setInterval(() => {
