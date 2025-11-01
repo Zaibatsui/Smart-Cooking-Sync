@@ -1024,13 +1024,17 @@ const CookingSync = () => {
                 {/* Timeline */}
                 <div className="space-y-3 sm:space-y-4">
                   {cookingPlan.timeline.map((dish, index) => {
-                    const timeUntilStart = getTimeUntilStart(dish);
-                    const elapsedTime = getElapsedTime(dish);
-                    const isCooking = isDishCooking(dish);
+                    const timer = timers[dish.id];
+                    const isCooking = isDishCooking(dish.id);
+                    const elapsedTime = getDishElapsedTime(dish.id);
                     const isEditing = editingDish === dish.id;
+                    const nextDish = getNextDish();
+                    const isNextToStart = nextDish?.id === dish.id;
+                    const hasAlarm = isNextToStart && nextDishAlarmActive;
+                    const startedDish = startedDishes.find(d => d.id === dish.id);
 
                     return (
-                      <Card key={dish.id} className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
+                      <Card key={dish.id} className={`border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden ${hasAlarm ? 'ring-4 ring-red-500 animate-pulse' : ''}`}>
                         <CardContent className="p-4 sm:p-6">
                           <div className="mb-3 sm:mb-4">
                             <div className="flex items-center justify-between mb-2">
@@ -1041,10 +1045,15 @@ const CookingSync = () => {
                                 <h3 className="text-base sm:text-xl font-semibold text-slate-800 dark:text-white">
                                   {dish.name}
                                 </h3>
+                                {isCooking && (
+                                  <Badge className="bg-orange-500 text-white text-xs">
+                                    🔥 Cooking
+                                  </Badge>
+                                )}
                               </div>
                               
                               {/* Edit Time Button */}
-                              {!isEditing && (
+                              {!isEditing && !masterTimerStarted && (
                                 <Button
                                   size="sm"
                                   variant="ghost"
@@ -1086,21 +1095,13 @@ const CookingSync = () => {
                             ) : (
                               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-4 text-xs sm:text-sm text-slate-600 dark:text-gray-400">
                                 <span>
-                                  Original: {dish.temperature}°{dish.unit}
+                                  Temp: {cookingPlan.commonTemp}°C
                                 </span>
                                 <span className="hidden sm:inline">•</span>
                                 <span>
-                                  Cook time: {dish.adjustedTime} min
-                                  {dish.timeDifference !== 0 && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="ml-2 dark:bg-gray-700 text-xs"
-                                    >
-                                      {dish.timeDifference > 0 ? '+' : ''}{dish.timeDifference} min
-                                    </Badge>
-                                  )}
+                                  Target time: {dish.adjustedTime} min
                                 </span>
-                                {dish.startDelay > 0 && !masterTimerStarted && (
+                                {!masterTimerStarted && dish.startDelay > 0 && (
                                   <>
                                     <span className="hidden sm:inline">•</span>
                                     <span>Start after {dish.startDelay} min</span>
@@ -1113,62 +1114,88 @@ const CookingSync = () => {
                           {/* Timer Display */}
                           {masterTimerStarted && (
                             <div className="space-y-3">
-                              {!isCooking && timeUntilStart > 0 ? (
-                                // Countdown to start
-                                <div className="space-y-2">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600 dark:text-gray-400">
-                                      Starts in:
-                                    </span>
-                                    <span className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
-                                      {formatTime(timeUntilStart)}
-                                    </span>
-                                  </div>
-                                  <Progress 
-                                    value={100 - (timeUntilStart / (dish.startDelay * 60)) * 100} 
-                                    className="h-2.5 sm:h-2"
-                                  />
-                                  <p className="text-xs text-slate-500 dark:text-gray-500">
-                                    ⏳ Waiting to start cooking...
-                                  </p>
-                                </div>
-                              ) : isCooking ? (
-                                // Currently cooking - show elapsed time
+                              {isCooking ? (
+                                // Dish is cooking - show elapsed time
                                 <div className="space-y-2">
                                   <div className="flex items-center justify-between">
                                     <span className="text-sm text-slate-600 dark:text-gray-400">
                                       Cooking:
                                     </span>
-                                    <span className="text-3xl sm:text-4xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                                    <span className="text-3xl sm:text-4xl font-bold text-orange-600 dark:text-orange-400 tabular-nums">
                                       {formatTime(elapsedTime)}
                                     </span>
                                   </div>
                                   <Progress 
-                                    value={(elapsedTime / (dish.adjustedTime * 60)) * 100} 
+                                    value={Math.min(100, (elapsedTime / (dish.adjustedTime * 60)) * 100)} 
                                     className="h-2.5 sm:h-2"
                                   />
                                   <div className="flex items-center justify-between text-xs">
                                     <span className="text-slate-500 dark:text-gray-500">
-                                      🔥 Currently cooking
+                                      🔥 In oven
                                     </span>
                                     <span className="text-slate-600 dark:text-gray-400 font-medium">
-                                      Target: {dish.adjustedTime} min
+                                      Target: {dish.adjustedTime} min ({formatTime(dish.adjustedTime * 60)})
                                     </span>
                                   </div>
                                   {elapsedTime >= dish.adjustedTime * 60 && (
-                                    <Badge className="bg-green-500 text-white text-sm w-full justify-center">
-                                      ✓ Done! Remove from oven
+                                    <Badge className="bg-green-500 text-white text-sm w-full justify-center py-2">
+                                      ✓ Target time reached! Check if done
                                     </Badge>
                                   )}
                                 </div>
-                              ) : null}
+                              ) : isNextToStart && timer ? (
+                                // This is the next dish - show countdown or alarm
+                                <div className="space-y-3">
+                                  {timer.remaining > 0 ? (
+                                    // Counting down
+                                    <>
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-sm text-slate-600 dark:text-gray-400">
+                                          Starts in:
+                                        </span>
+                                        <span className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
+                                          {formatTime(timer.remaining)}
+                                        </span>
+                                      </div>
+                                      <Progress 
+                                        value={100 - (timer.remaining / timer.total) * 100} 
+                                        className="h-2.5 sm:h-2"
+                                      />
+                                      <p className="text-xs text-slate-500 dark:text-gray-500 text-center">
+                                        ⏳ Get ready to add {dish.name} to the oven
+                                      </p>
+                                    </>
+                                  ) : (
+                                    // Alarm is ringing - need to start cooking
+                                    <>
+                                      <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-4 space-y-3">
+                                        <p className="text-red-700 dark:text-red-300 font-bold text-center text-lg">
+                                          🔔 TIME TO ADD {dish.name.toUpperCase()}!
+                                        </p>
+                                        <Button
+                                          onClick={() => startDishCooking(dish.id)}
+                                          className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base font-semibold"
+                                        >
+                                          <Play className="w-5 h-5 mr-2" />
+                                          Start Cooking (Stop Alarm)
+                                        </Button>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              ) : (
+                                // Not started yet, not next to start
+                                <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
+                                  ⏸️ Waiting for previous dishes...
+                                </div>
+                              )}
                             </div>
                           )}
 
                           {/* Not Started Yet Message */}
                           {!masterTimerStarted && (
                             <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
-                              Click "Start Cooking Plan" to begin
+                              Click "Start Cooking Plan" above to begin
                             </div>
                           )}
                         </CardContent>
