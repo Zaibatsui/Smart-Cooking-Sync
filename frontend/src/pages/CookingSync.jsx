@@ -280,11 +280,11 @@ const CookingSync = () => {
 
   // Function to play alarm sound
   const playAlarmSound = () => {
-    // Create an oscillator for a pleasant beep sound
+    // Create an oscillator for a loud, attention-grabbing beep sound
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     
-    // Play 3 beeps
-    for (let i = 0; i < 3; i++) {
+    // Play 8 loud beeps
+    for (let i = 0; i < 8; i++) {
       setTimeout(() => {
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
@@ -292,15 +292,16 @@ const CookingSync = () => {
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         
-        oscillator.frequency.value = 800; // Hz
-        oscillator.type = 'sine';
+        oscillator.frequency.value = 880; // Hz (higher pitch, more attention-grabbing)
+        oscillator.type = 'square'; // Square wave for a more alert-like sound
         
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        // Louder volume - 0.8 is quite loud but not distorted
+        gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
         
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
-      }, i * 400); // 400ms between beeps
+        oscillator.stop(audioContext.currentTime + 0.4);
+      }, i * 500); // 500ms between beeps for 8 beeps
     }
   };
 
