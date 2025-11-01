@@ -830,12 +830,14 @@ const CookingSync = () => {
                 <div className="space-y-3 sm:space-y-4">
                   {cookingPlan.timeline.map((dish, index) => {
                     const timer = timers[dish.id];
-                    const isStarted = startedDishIds.includes(dish.id);
+                    const isCompleted = completedDishIds.includes(dish.id);
                     const isEditing = editingDish === dish.id;
-                    const hasAlarm = currentlyAlarmingDish === dish.id;
-                    const nextDishes = getGroupedNextDishes();
+                    const hasAlarm = activeAlarmDishId === dish.id;
+                    const nextDishes = getNextDishesToStart();
                     const isNextToStart = nextDishes.some(d => d.id === dish.id);
                     const isMultipleStart = nextDishes.length > 1 && isNextToStart;
+                    const isLastDish = index === cookingPlan.timeline.length - 1;
+                    const allDishesCompleted = completedDishIds.length === cookingPlan.timeline.length;
 
                     return (
                       <Card key={dish.id} className={`border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden ${hasAlarm ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart ? 'ring-2 ring-blue-500' : ''}`}>
