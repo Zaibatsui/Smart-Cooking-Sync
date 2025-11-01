@@ -156,10 +156,10 @@ docker-compose up -d --build
 docker-compose ps
 
 # Frontend health
-curl http://localhost:3000/health
+curl http://localhost:3001/health
 
 # Backend health
-curl http://localhost:8001/api/
+curl http://localhost:8002/api/
 ```
 
 ### Resource Usage
