@@ -109,11 +109,11 @@ server {
     server_name cooking.yourdomain.com;
     
     location / {
-        proxy_pass http://localhost:3000;
+        proxy_pass http://localhost:3001;
     }
     
     location /api/ {
-        proxy_pass http://localhost:8001;
+        proxy_pass http://localhost:8002;
     }
 }
 ```
