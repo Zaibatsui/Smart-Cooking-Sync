@@ -95,6 +95,28 @@ const CookingSync = () => {
   const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
   const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
 
+  // Load dishes from backend on mount
+  useEffect(() => {
+    const fetchDishes = async () => {
+      try {
+        setLoading(true);
+        const fetchedDishes = await dishesAPI.getAll();
+        setDishes(fetchedDishes);
+      } catch (error) {
+        console.error('Error fetching dishes:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load dishes from server',
+          variant: 'destructive'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDishes();
+  }, []);
+
   // Function to play single beep
   const playSingleBeep = () => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
