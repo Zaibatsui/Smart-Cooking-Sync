@@ -156,9 +156,13 @@ docker-compose up -d --build
 ```
 
 5. **Access the application**
-- Frontend: http://localhost:3001
-- Backend API: http://localhost:8002/api
-- API Documentation: http://localhost:8002/docs
+- Frontend: http://YOUR_SERVER_IP:3001 (Replace YOUR_SERVER_IP with your server's IP address)
+- Backend API: http://YOUR_SERVER_IP:8002/api
+- API Documentation: http://YOUR_SERVER_IP:8002/docs
+
+**Example:** If your server IP is 192.168.1.100:
+- Frontend: http://192.168.1.100:3001
+- Backend: http://192.168.1.100:8002/api
 
 ### Using the Deploy Script
 
