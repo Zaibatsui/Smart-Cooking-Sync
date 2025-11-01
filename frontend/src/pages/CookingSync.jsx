@@ -1186,22 +1186,41 @@ const CookingSync = () => {
                                   
                                   return (
                                     <>
-                                      <div className="text-6xl mb-3">{isInstruction ? '📋' : '🔔'}</div>
-                                      <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">
+                                      <div className="text-7xl mb-4">{isInstruction ? '📋' : '🔔'}</div>
+                                      <h2 className="text-3xl font-bold text-red-600 dark:text-red-400 mb-3">
                                         ALARM!
                                       </h2>
-                                      <p className="text-lg font-semibold text-slate-800 dark:text-white mb-1">
+                                      <p className="text-xl font-semibold text-slate-800 dark:text-white mb-3">
                                         {isInstruction ? 'Time to:' : 'Time to Add:'}
                                       </p>
-                                      <div className="space-y-1 mb-3">
-                                        {nextItems.map(item => (
-                                          <p key={item.id} className={`text-2xl font-bold ${isInstruction ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                                            {item.name}
-                                          </p>
-                                        ))}
+                                      <div className="space-y-2 mb-4">
+                                        {nextItems.map(item => {
+                                          // Get cooking method for dishes
+                                          const dish = item.type === 'dish' ? dishes.find(d => d.id === item.id) : null;
+                                          const method = dish?.cookingMethod || 'Oven';
+                                          const methodConfig = {
+                                            'Oven': { icon: '🔥', label: 'Oven', color: 'text-orange-600 dark:text-orange-400' },
+                                            'Air Fryer': { icon: '💨', label: 'Air Fryer', color: 'text-blue-600 dark:text-blue-400' },
+                                            'Microwave': { icon: '⚡', label: 'Microwave', color: 'text-yellow-600 dark:text-yellow-400' }
+                                          };
+                                          const config = methodConfig[method];
+                                          
+                                          return (
+                                            <div key={item.id} className="bg-slate-50 dark:bg-gray-700 rounded-lg p-3">
+                                              <p className={`text-2xl font-bold ${isInstruction ? 'text-purple-600 dark:text-purple-400' : config.color}`}>
+                                                {!isInstruction && `${config.icon} `}{item.name}
+                                              </p>
+                                              {!isInstruction && (
+                                                <p className="text-sm text-slate-600 dark:text-gray-400 mt-1">
+                                                  → {config.label}
+                                                </p>
+                                              )}
+                                            </div>
+                                          );
+                                        })}
                                       </div>
                                       <p className="text-sm text-slate-600 dark:text-gray-400">
-                                        {isInstruction ? 'Complete this instruction' : 'Add to oven with other dishes'}
+                                        {isInstruction ? 'Complete this instruction then continue' : `Add to ${nextItems[0].type === 'dish' ? dishes.find(d => d.id === nextItems[0].id)?.cookingMethod || 'oven' : 'appliance'} with other dishes`}
                                       </p>
                                     </>
                                   );
