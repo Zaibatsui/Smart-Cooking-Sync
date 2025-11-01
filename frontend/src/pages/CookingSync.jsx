@@ -337,7 +337,7 @@ const CookingSync = () => {
                   Smart Cooking Sync
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">
-                  Multi-dish timer & optimizer
+                  Multi-dish timer & optimiser
                 </p>
               </div>
             </div>
