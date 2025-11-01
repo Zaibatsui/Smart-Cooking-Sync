@@ -236,10 +236,73 @@ const CookingSync = () => {
   const resetAll = () => {
     setTimers({});
     setCookingStarted(false);
+    stopAllAlarms();
     toast({
       title: 'Reset Complete',
       description: 'All timers have been reset'
     });
+  };
+
+  // Function to play single beep
+  const playSingleBeep = () => {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 880;
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.4);
+  };
+
+  // Function to start continuous alarm
+  const startAlarm = (dishId) => {
+    if (alarmIntervals[dishId]) return; // Already playing
+    
+    setActiveAlarms(prev => ({ ...prev, [dishId]: true }));
+    
+    // Play initial beep
+    playSingleBeep();
+    
+    // Continue playing beeps every 500ms
+    const intervalId = setInterval(() => {
+      playSingleBeep();
+    }, 500);
+    
+    setAlarmIntervals(prev => ({ ...prev, [dishId]: intervalId }));
+  };
+
+  // Function to stop alarm for specific dish
+  const stopAlarm = (dishId) => {
+    if (alarmIntervals[dishId]) {
+      clearInterval(alarmIntervals[dishId]);
+      setAlarmIntervals(prev => {
+        const newIntervals = { ...prev };
+        delete newIntervals[dishId];
+        return newIntervals;
+      });
+    }
+    setActiveAlarms(prev => {
+      const newAlarms = { ...prev };
+      delete newAlarms[dishId];
+      return newAlarms;
+    });
+  };
+
+  // Function to stop all alarms
+  const stopAllAlarms = () => {
+    Object.keys(alarmIntervals).forEach(dishId => {
+      clearInterval(alarmIntervals[dishId]);
+    });
+    setAlarmIntervals({});
+    setActiveAlarms({});
   };
 
   // Timer countdown effect
@@ -260,7 +323,7 @@ const CookingSync = () => {
               
               // Play alarm sound if enabled
               if (alarmEnabled) {
-                playAlarmSound();
+                startAlarm(dishId);
               }
               
               toast({
@@ -279,33 +342,6 @@ const CookingSync = () => {
 
     return () => clearInterval(interval);
   }, [dishes, alarmEnabled]);
-
-  // Function to play alarm sound
-  const playAlarmSound = () => {
-    // Create an oscillator for a loud, attention-grabbing beep sound
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Play 8 loud beeps
-    for (let i = 0; i < 8; i++) {
-      setTimeout(() => {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = 880; // Hz (higher pitch, more attention-grabbing)
-        oscillator.type = 'square'; // Square wave for a more alert-like sound
-        
-        // Louder volume - 0.8 is quite loud but not distorted
-        gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.4);
-      }, i * 500); // 500ms between beeps for 8 beeps
-    }
-  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
