@@ -1013,34 +1013,37 @@ const CookingSync = () => {
 
                 {/* Timeline */}
                 <div className="space-y-3 sm:space-y-4">
-                  {cookingPlan.timeline.map((dish, index) => {
-                    const timer = timers[dish.id];
-                    const isInOven = completedDishIds.includes(dish.id);
-                    const isEditing = editingDish === dish.id;
-                    const isFinished = finishedDishIds.includes(dish.id);
+                  {cookingPlan.timeline.map((item, index) => {
+                    const isInstruction = item.type === 'instruction';
+                    const isDish = item.type === 'dish';
+                    
+                    const timer = timers[item.id];
+                    const isInOven = completedDishIds.includes(item.id);
+                    const isEditing = editingDish === item.id;
+                    const isFinished = finishedDishIds.includes(item.id);
                     const nextDishes = getNextDishesToStart();
-                    const isNextToStart = nextDishes.some(d => d.id === dish.id);
+                    const isNextToStart = nextDishes.some(d => d.id === item.id);
                     const isMultipleStart = nextDishes.length > 1;
-                    const allDishesInOven = completedDishIds.length === cookingPlan.timeline.length;
+                    const allDishesInOven = completedDishIds.length === cookingPlan.timeline.filter(t => t.type === 'dish').length;
 
                     return (
-                      <Card key={dish.id} className={`border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart && isNextToStart ? 'ring-2 ring-blue-500' : ''}`}>
+                      <Card key={item.id} className={`${isInstruction ? 'border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/10' : 'border-emerald-200 dark:border-gray-700'} dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart && isNextToStart ? 'ring-2 ring-blue-500' : ''}`}>
                         <CardContent className="p-4 sm:p-6">
                           <div className="mb-3 sm:mb-4">
                             <div className="flex items-center justify-between mb-2">
                               <div className="flex items-center gap-2 sm:gap-3">
-                                <Badge variant="outline" className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700 text-xs sm:text-sm">
-                                  Step {index + 1}
+                                <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs sm:text-sm`}>
+                                  {isInstruction ? '📋 Instruction' : `Step ${item.order}`}
                                 </Badge>
                                 <h3 className="text-base sm:text-xl font-semibold text-slate-800 dark:text-white">
-                                  {dish.name}
+                                  {item.name}
                                 </h3>
                                 {timer && (
                                   <Badge className="bg-blue-500 text-white text-xs">
                                     ⏳ Countdown
                                   </Badge>
                                 )}
-                                {isInOven && (
+                                {isInOven && isDish && (
                                   <Badge className="bg-orange-500 text-white text-xs">
                                     🔥 In Oven
                                   </Badge>
