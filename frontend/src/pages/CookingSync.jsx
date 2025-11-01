@@ -1243,8 +1243,8 @@ const CookingSync = () => {
 
                           {/* Not Started Yet Message */}
                           {!cookingStarted && (
-                            <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
-                              Click "Start Cooking Plan" above to begin
+                            <div className="text-center py-2 sm:py-3 text-slate-500 dark:text-gray-500 text-xs sm:text-sm">
+                              Start cooking plan to begin
                             </div>
                           )}
                         </CardContent>
