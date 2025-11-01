@@ -98,3 +98,7 @@ test_result.md
 backend_test.py
 automation_output/
 .emergent/
+-e 
+# Environment files
+*.env
+*.env.*
