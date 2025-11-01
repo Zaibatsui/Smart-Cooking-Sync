@@ -851,9 +851,14 @@ const CookingSync = () => {
                                 <h3 className="text-base sm:text-xl font-semibold text-slate-800 dark:text-white">
                                   {dish.name}
                                 </h3>
-                                {isStarted && (
+                                {timer && (
                                   <Badge className="bg-orange-500 text-white text-xs">
                                     🔥 Cooking
+                                  </Badge>
+                                )}
+                                {isCompleted && (
+                                  <Badge className="bg-green-500 text-white text-xs">
+                                    ✓ Done
                                   </Badge>
                                 )}
                               </div>
