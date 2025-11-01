@@ -354,29 +354,51 @@ const CookingSync = () => {
     setTimers({});
     stopAlarm();
     
-    // Find first dishes (those with earliest startDelay)
-    const allDishes = cookingPlan.timeline;
-    const earliestDelay = Math.min(...allDishes.map(d => d.startDelay));
-    const firstDishes = allDishes.filter(d => d.startDelay === earliestDelay);
+    // Find first items (those with earliest startDelay)
+    const allItems = cookingPlan.timeline;
+    const earliestDelay = Math.min(...allItems.map(d => d.startDelay));
+    const firstItems = allItems.filter(d => d.startDelay === earliestDelay);
     
-    // Mark first dishes as in oven
+    // Mark first items as in oven (only dishes, not instructions)
+    const firstDishes = firstItems.filter(d => d.type === 'dish');
     setCompletedDishIds(firstDishes.map(d => d.id));
     
-    // Start timer - counting down to when NEXT dish should be added
-    // First dishes are cooking during this countdown
-    const newTimers = {};
-    firstDishes.forEach(dish => {
-      newTimers[dish.id] = {
-        remaining: dish.adjustedTime * 60,
-        total: dish.adjustedTime * 60
-      };
-    });
-    setTimers(newTimers);
+    // Find NEXT item in timeline after first items
+    const remainingItems = allItems.filter(item => !firstItems.some(f => f.id === item.id));
     
-    const dishNames = firstDishes.map(d => d.name).join(', ');
+    if (remainingItems.length > 0) {
+      // Find next earliest item
+      const nextEarliestDelay = Math.min(...remainingItems.map(d => d.startDelay));
+      const nextItems = remainingItems.filter(d => d.startDelay === nextEarliestDelay);
+      
+      // Calculate time until next items (nextDelay - currentDelay)
+      const timeUntilNext = nextEarliestDelay - earliestDelay;
+      
+      // Start timer for first items - counting down to NEXT items
+      const newTimers = {};
+      firstItems.forEach(item => {
+        newTimers[item.id] = {
+          remaining: timeUntilNext * 60,
+          total: timeUntilNext * 60
+        };
+      });
+      setTimers(newTimers);
+    } else {
+      // No more items - just these ones, use their cooking time
+      const newTimers = {};
+      firstItems.forEach(item => {
+        newTimers[item.id] = {
+          remaining: item.adjustedTime * 60,
+          total: item.adjustedTime * 60
+        };
+      });
+      setTimers(newTimers);
+    }
+    
+    const itemNames = firstItems.map(d => d.name).join(', ');
     toast({
       title: 'Cooking Started!',
-      description: `${dishNames} now in oven. Timer started.`
+      description: `${itemNames} now in oven. Timer started.`
     });
   };
 
