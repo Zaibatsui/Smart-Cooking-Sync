@@ -399,53 +399,54 @@ const CookingSync = () => {
           )}
         </div>
 
-        <Tabs defaultValue="add" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="add">Add Dishes</TabsTrigger>
-            <TabsTrigger value="plan">Cooking Plan</TabsTrigger>
+        <Tabs defaultValue="add" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 h-11 sm:h-10">
+            <TabsTrigger value="add" className="text-sm sm:text-base">Add Dishes</TabsTrigger>
+            <TabsTrigger value="plan" className="text-sm sm:text-base">Cooking Plan</TabsTrigger>
           </TabsList>
 
           {/* Add Dish Tab */}
           <TabsContent value="add">
             <Card className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
-              <CardHeader>
-                <CardTitle>Add New Dish</CardTitle>
-                <CardDescription>
-                  Enter the cooking details from your package instructions
+              <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
+                <CardTitle className="text-lg sm:text-xl">Add New Dish</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
+                  Enter cooking details from package
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 sm:px-6">
                 <div className="grid gap-4">
                   <div>
-                    <Label htmlFor="name">Dish Name</Label>
+                    <Label htmlFor="name" className="text-sm">Dish Name</Label>
                     <Input
                       id="name"
                       placeholder="e.g., Roast Potatoes"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="mt-1.5"
+                      className="mt-1.5 h-11 text-base"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor="temperature">Temperature</Label>
+                      <Label htmlFor="temperature" className="text-sm">Temperature</Label>
                       <Input
                         id="temperature"
                         type="number"
                         placeholder="200"
                         value={formData.temperature}
                         onChange={(e) => setFormData({ ...formData, temperature: e.target.value })}
-                        className="mt-1.5"
+                        className="mt-1.5 h-11 text-base"
+                        inputMode="numeric"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="unit">Unit</Label>
+                      <Label htmlFor="unit" className="text-sm">Unit</Label>
                       <Select
                         value={formData.unit}
                         onValueChange={(value) => setFormData({ ...formData, unit: value })}
                       >
-                        <SelectTrigger className="mt-1.5">
+                        <SelectTrigger className="mt-1.5 h-11">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -457,25 +458,26 @@ const CookingSync = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label htmlFor="time">Cooking Time (minutes)</Label>
+                      <Label htmlFor="time" className="text-sm">Time (min)</Label>
                       <Input
                         id="time"
                         type="number"
                         placeholder="35"
                         value={formData.cookingTime}
                         onChange={(e) => setFormData({ ...formData, cookingTime: e.target.value })}
-                        className="mt-1.5"
+                        className="mt-1.5 h-11 text-base"
+                        inputMode="numeric"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="ovenType">Package Oven Type</Label>
+                      <Label htmlFor="ovenType" className="text-sm">Oven Type</Label>
                       <Select
                         value={formData.ovenType}
                         onValueChange={(value) => setFormData({ ...formData, ovenType: value })}
                       >
-                        <SelectTrigger className="mt-1.5">
+                        <SelectTrigger className="mt-1.5 h-11">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -489,9 +491,9 @@ const CookingSync = () => {
 
                   <Button
                     onClick={handleAddDish}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-all duration-300"
+                    className="w-full h-12 sm:h-11 text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 mt-2"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-5 h-5 mr-2" />
                     Add Dish
                   </Button>
                 </div>
@@ -500,30 +502,31 @@ const CookingSync = () => {
 
             {/* Current Dishes List */}
             {dishes.length > 0 && (
-              <Card className="mt-6 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
-                <CardHeader>
-                  <CardTitle>Your Dishes ({dishes.length})</CardTitle>
+              <Card className="mt-4 sm:mt-6 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
+                <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
+                  <CardTitle className="text-lg sm:text-xl">Your Dishes ({dishes.length})</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-3 sm:px-6">
                   <div className="space-y-3">
                     {dishes.map(dish => (
                       <div
                         key={dish.id}
-                        className="flex items-center justify-between p-4 bg-slate-50 dark:bg-gray-700 rounded-lg border border-slate-200 dark:border-gray-600"
+                        className="flex items-center justify-between p-3 sm:p-4 bg-slate-50 dark:bg-gray-700 rounded-lg border border-slate-200 dark:border-gray-600"
                       >
-                        <div>
-                          <p className="font-semibold text-slate-800 dark:text-white">{dish.name}</p>
-                          <p className="text-sm text-slate-600 dark:text-gray-400">
-                            {dish.temperature}°{dish.unit} ({convertToFahrenheit(dish.unit === 'C' ? dish.temperature : convertToCelsius(dish.temperature))}°F) • {dish.cookingTime} min • {dish.ovenType}
+                        <div className="flex-1 min-w-0 pr-2">
+                          <p className="font-semibold text-sm sm:text-base text-slate-800 dark:text-white truncate">{dish.name}</p>
+                          <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mt-0.5">
+                            {dish.temperature}°{dish.unit} ({convertToFahrenheit(dish.unit === 'C' ? dish.temperature : convertToCelsius(dish.temperature))}°F) • {dish.cookingTime} min
                           </p>
+                          <p className="text-xs text-slate-500 dark:text-gray-500">{dish.ovenType}</p>
                         </div>
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => handleRemoveDish(dish.id)}
-                          className="hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                          className="hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors flex-shrink-0 h-10 w-10"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
                       </div>
                     ))}
