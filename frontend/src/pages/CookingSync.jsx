@@ -610,7 +610,18 @@ const CookingSync = () => {
             {dishes.length > 0 && (
               <Card className="mt-4 sm:mt-6 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
                 <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
-                  <CardTitle className="text-lg sm:text-xl">Your Dishes ({dishes.length})</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg sm:text-xl">Your Dishes ({dishes.length})</CardTitle>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearAll}
+                      className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Clear All
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="px-3 sm:px-6">
                   <div className="space-y-3">
