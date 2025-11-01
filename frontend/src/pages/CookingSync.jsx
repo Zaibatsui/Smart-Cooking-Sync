@@ -1050,12 +1050,12 @@ const CookingSync = () => {
                                 )}
                               </div>
                               
-                              {/* Edit Time Button */}
-                              {!isEditing && !cookingStarted && (
+                              {/* Edit Time Button - only for dishes */}
+                              {isDish && !isEditing && (
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  onClick={() => handleEditClick(dish)}
+                                  onClick={() => handleEditClick(item)}
                                   className="dark:hover:bg-gray-700"
                                 >
                                   <Edit2 className="w-4 h-4" />
