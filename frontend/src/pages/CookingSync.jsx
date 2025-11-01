@@ -312,41 +312,44 @@ const CookingSync = () => {
     }
   };
 
-  // Start the cooking plan
+  // Start the cooking plan - starts first dish(es) automatically
   const startCookingPlan = () => {
     if (!cookingPlan || cookingPlan.timeline.length === 0) return;
     
     setCookingStarted(true);
-    setTimersPaused(false);
-    setStartedDishIds([]);
+    setCompletedDishIds([]);
+    setActiveAlarmDishId(null);
+    setTimers({});
     
-    // Initialize timers for all dishes based on their startDelay
-    const initialTimers = {};
-    cookingPlan.timeline.forEach(dish => {
-      initialTimers[dish.id] = {
-        remaining: dish.startDelay * 60, // Convert minutes to seconds
-        total: dish.startDelay * 60,
-        isRunning: true,
-        targetCookTime: dish.adjustedTime * 60 // Store target cooking duration
-      };
-    });
+    // Find first dishes to start (those with earliest startDelay)
+    const firstDishes = getNextDishesToStart();
     
-    setTimers(initialTimers);
-    
-    toast({
-      title: 'Cooking Plan Started!',
-      description: 'Timers are running. Add dishes when alarms ring.'
-    });
+    if (firstDishes.length > 0) {
+      // Start timers for first dish(es)
+      const newTimers = {};
+      firstDishes.forEach(dish => {
+        newTimers[dish.id] = {
+          remaining: dish.adjustedTime * 60, // Convert minutes to seconds
+          total: dish.adjustedTime * 60
+        };
+      });
+      setTimers(newTimers);
+      
+      const dishNames = firstDishes.map(d => d.name).join(', ');
+      toast({
+        title: 'Cooking Plan Started!',
+        description: `Timer started for: ${dishNames}`
+      });
+    }
   };
 
   // Stop cooking plan
   const stopCookingPlan = () => {
     setCookingStarted(false);
-    setTimersPaused(false);
-    setCurrentlyAlarmingDish(null);
-    setStartedDishIds([]);
+    setCompletedDishIds([]);
+    setActiveAlarmDishId(null);
     setTimers({});
-    stopAllAlarms();
+    stopAlarm();
     
     toast({
       title: 'Cooking Stopped',
@@ -354,85 +357,51 @@ const CookingSync = () => {
     });
   };
 
-  // Stop the alarm for a specific dish and pause all timers
+  // Stop the alarm for a specific dish
   const stopDishAlarm = (dishId) => {
     // Stop the alarm sound
-    stopAlarm(dishId);
+    stopAlarm();
     
     // Clear the alarming dish
-    setCurrentlyAlarmingDish(null);
+    setActiveAlarmDishId(null);
     
-    // Pause all timers
-    setTimersPaused(true);
-    
-    // Clear alarm from activeAlarms
-    setActiveAlarms(prev => {
+    // Remove timer for this dish and mark as completed
+    setTimers(prev => {
       const updated = { ...prev };
       delete updated[dishId];
       return updated;
     });
     
+    setCompletedDishIds(prev => [...prev, dishId]);
+    
+    const dish = cookingPlan?.timeline.find(d => d.id === dishId);
     toast({
       title: 'Alarm Stopped',
-      description: 'Timers paused. Start cooking when ready.'
+      description: `${dish?.name} complete! ${getNextDishesToStart().length > 0 ? 'Start next dish when ready.' : ''}`
     });
   };
 
-  // Start cooking specific dishes (one or more with same startDelay)
-  const startCookingDishes = (dishIds) => {
-    if (!Array.isArray(dishIds)) dishIds = [dishIds];
+  // Start timer for next dish(es)
+  const startNextDish = () => {
+    const nextDishes = getNextDishesToStart();
     
-    // Mark these dishes as started
-    setStartedDishIds(prev => [...prev, ...dishIds]);
+    if (nextDishes.length === 0) return;
     
-    // Unpause all timers
-    setTimersPaused(false);
-    
-    // Remove timers for these dishes (they're now cooking, we track elapsed time differently)
-    setTimers(prev => {
-      const updated = { ...prev };
-      dishIds.forEach(id => delete updated[id]);
-      return updated;
+    // Start timers for next dish(es)
+    const newTimers = { ...timers };
+    nextDishes.forEach(dish => {
+      newTimers[dish.id] = {
+        remaining: dish.adjustedTime * 60,
+        total: dish.adjustedTime * 60
+      };
     });
+    setTimers(newTimers);
     
-    const dishNames = dishIds.map(id => 
-      cookingPlan?.timeline.find(d => d.id === id)?.name
-    ).join(', ');
-    
+    const dishNames = nextDishes.map(d => d.name).join(', ');
     toast({
-      title: 'Cooking Started',
-      description: `${dishNames} - Timers resumed`
+      title: 'Timer Started',
+      description: `Cooking: ${dishNames}`
     });
-  };
-
-  // Get dishes that should start at the same time (same startDelay)
-  const getGroupedNextDishes = () => {
-    if (!cookingPlan) return [];
-    
-    // Find dishes not yet started
-    const notStarted = cookingPlan.timeline.filter(d => !startedDishIds.includes(d.id));
-    if (notStarted.length === 0) return [];
-    
-    // Find the earliest startDelay among not-started dishes
-    const earliestDelay = Math.min(...notStarted.map(d => d.startDelay));
-    
-    // Return all dishes with that delay (could be multiple if they start together)
-    return notStarted.filter(d => d.startDelay === earliestDelay);
-  };
-
-  // Get elapsed cooking time for a started dish
-  const getDishElapsedTime = (dishId) => {
-    // Find when this dish was started
-    const dishIndex = startedDishIds.indexOf(dishId);
-    if (dishIndex === -1) return 0;
-    
-    // Calculate based on how many dishes were started before and their timing
-    // This is simplified - in reality you'd track actual start times
-    const dish = cookingPlan?.timeline.find(d => d.id === dishId);
-    if (!dish) return 0;
-    
-    // For now, return 0 - we'll improve this
-    return 0;
   };
 
   // Handle edit button click
