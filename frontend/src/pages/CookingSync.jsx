@@ -428,7 +428,8 @@ const CookingSync = () => {
       setDishes([]);
       setTimers({});
       setMasterTimerStarted(false);
-      setMasterStartTime(null);
+      setStartedDishes([]);
+      setNextDishAlarmActive(false);
       stopAllAlarms();
       toast({
         title: 'All Cleared',
@@ -444,56 +445,146 @@ const CookingSync = () => {
     }
   };
 
-  // Start master timer - all dishes cook in sequence
+  // Start master timer - begins the cooking sequence
   const startMasterTimer = () => {
+    if (!cookingPlan || cookingPlan.timeline.length === 0) return;
+    
     setMasterTimerStarted(true);
-    setMasterStartTime(Date.now());
+    setStartedDishes([]);
+    setNextDishAlarmActive(false);
+    
+    // Get the first dish (sorted by startDelay, should be 0)
+    const firstDish = cookingPlan.timeline[0];
+    
+    // If first dish starts immediately (delay = 0), need to prompt user
+    if (firstDish.startDelay === 0) {
+      // Start countdown to 0 immediately which will trigger alarm
+      setTimers({
+        [firstDish.id]: {
+          remaining: 0,
+          total: 0,
+          isRunning: false,
+          startTime: Date.now(),
+          isCountdownToStart: true
+        }
+      });
+      
+      // Trigger alarm immediately for first dish
+      setTimeout(() => {
+        setNextDishAlarmActive(true);
+        if (alarmEnabled) {
+          startAlarm(firstDish.id);
+        }
+        toast({
+          title: `Time to cook ${firstDish.name}! 🔔`,
+          description: 'Click "Start Cooking" when you put it in the oven',
+          variant: 'default'
+        });
+      }, 100);
+    } else {
+      // Start countdown for first dish
+      setTimers({
+        [firstDish.id]: {
+          remaining: firstDish.startDelay * 60,
+          total: firstDish.startDelay * 60,
+          isRunning: true,
+          startTime: Date.now(),
+          isCountdownToStart: true
+        }
+      });
+    }
     
     toast({
-      title: 'Cooking Started!',
-      description: `Timer started. Add dishes as they're ready.`
+      title: 'Cooking Plan Started!',
+      description: 'Follow the timers to add each dish at the right time'
     });
   };
 
   // Stop master timer
   const stopMasterTimer = () => {
     setMasterTimerStarted(false);
-    setMasterStartTime(null);
+    setStartedDishes([]);
     setTimers({});
+    setNextDishAlarmActive(false);
     stopAllAlarms();
     
     toast({
       title: 'Cooking Stopped',
-      description: 'Master timer has been stopped'
+      description: 'All timers have been stopped'
     });
   };
 
-  // Calculate time until this dish should start (in seconds)
-  const getTimeUntilStart = (dish) => {
-    if (!cookingPlan || !masterTimerStarted) return null;
+  // Start cooking a specific dish (acknowledge alarm and start elapsed timer)
+  const startDishCooking = (dishId) => {
+    if (!cookingPlan) return;
     
-    const elapsedMinutes = Math.floor((Date.now() - masterStartTime) / 60000);
-    const timeUntilStart = dish.startDelay - elapsedMinutes;
+    const dish = cookingPlan.timeline.find(d => d.id === dishId);
+    if (!dish) return;
     
-    return Math.max(0, timeUntilStart * 60); // Convert to seconds
+    // Stop alarm for this dish
+    stopAlarm(dishId);
+    setNextDishAlarmActive(false);
+    
+    // Mark this dish as started
+    setStartedDishes(prev => [...prev, {
+      id: dishId,
+      startTime: Date.now(),
+      targetDuration: dish.adjustedTime * 60 // in seconds
+    }]);
+    
+    // Remove countdown timer for this dish
+    setTimers(prev => {
+      const updated = { ...prev };
+      delete updated[dishId];
+      return updated;
+    });
+    
+    // Find next dish in sequence
+    const currentIndex = cookingPlan.timeline.findIndex(d => d.id === dishId);
+    const nextDish = cookingPlan.timeline[currentIndex + 1];
+    
+    if (nextDish) {
+      // Calculate time until next dish (difference in startDelay)
+      const timeUntilNext = (nextDish.startDelay - dish.startDelay) * 60; // in seconds
+      
+      // Start countdown for next dish
+      setTimers({
+        [nextDish.id]: {
+          remaining: timeUntilNext,
+          total: timeUntilNext,
+          isRunning: true,
+          startTime: Date.now(),
+          isCountdownToStart: true
+        }
+      });
+    }
+    
+    toast({
+      title: `${dish.name} Cooking Started`,
+      description: `Cook for ${dish.adjustedTime} minutes at ${cookingPlan.commonTemp}°C`
+    });
   };
 
-  // Get elapsed cooking time for a dish (in seconds)
-  const getElapsedTime = (dish) => {
-    if (!masterTimerStarted || !masterStartTime) return 0;
+  // Get elapsed cooking time for a started dish (in seconds)
+  const getDishElapsedTime = (dishId) => {
+    const startedDish = startedDishes.find(d => d.id === dishId);
+    if (!startedDish) return 0;
     
-    const elapsedMinutes = Math.floor((Date.now() - masterStartTime) / 60000);
-    const cookingMinutes = elapsedMinutes - dish.startDelay;
-    
-    return Math.max(0, cookingMinutes * 60); // Convert to seconds
+    const elapsed = Math.floor((Date.now() - startedDish.startTime) / 1000);
+    return elapsed;
   };
 
-  // Check if dish should be cooking now
-  const isDishCooking = (dish) => {
-    if (!masterTimerStarted) return false;
+  // Check if dish is currently cooking
+  const isDishCooking = (dishId) => {
+    return startedDishes.some(d => d.id === dishId);
+  };
+
+  // Get the dish that should start next
+  const getNextDish = () => {
+    if (!cookingPlan) return null;
     
-    const elapsedMinutes = Math.floor((Date.now() - masterStartTime) / 60000);
-    return elapsedMinutes >= dish.startDelay;
+    const startedIds = startedDishes.map(d => d.id);
+    return cookingPlan.timeline.find(d => !startedIds.includes(d.id));
   };
 
   // Handle edit button click
