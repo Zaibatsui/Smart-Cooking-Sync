@@ -68,6 +68,7 @@ class Dish(BaseModel):
     convertedFromOven: bool = False
     originalOvenTemp: Optional[float] = None
     originalOvenTime: Optional[int] = None
+    sourceOvenType: Optional[str] = None  # Source oven type when converting to Air Fryer (Fan, Electric, Gas)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
