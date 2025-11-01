@@ -854,64 +854,71 @@ const CookingSync = () => {
                         <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
                           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 animate-pulse">
                             <div className="text-center mb-6">
-                              {completedDishIds.length + finishedDishIds.length === cookingPlan?.timeline.length ? (
-                                // All dishes done - final alarm
-                                <>
-                                  <div className="text-6xl mb-3">🎉</div>
-                                  <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
-                                    ALL DISHES READY!
-                                  </h2>
-                                  <p className="text-lg font-semibold text-slate-800 dark:text-white mb-3">
-                                    Everything finished together!
-                                  </p>
-                                  <div className="space-y-1">
-                                    {finishedDishIds.map(dishId => {
-                                      const dish = cookingPlan?.timeline.find(d => d.id === dishId);
-                                      return (
-                                        <p key={dishId} className="text-emerald-600 dark:text-emerald-400 font-medium">
-                                          ✓ {dish?.name}
-                                        </p>
-                                      );
-                                    })}
-                                  </div>
-                                </>
-                              ) : (
-                                // Intermediate alarm - add dishes to oven
-                                <>
-                                  <div className="text-6xl mb-3">🔔</div>
-                                  <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">
-                                    ALARM!
-                                  </h2>
-                                  <p className="text-lg font-semibold text-slate-800 dark:text-white mb-1">
-                                    Time to Add:
-                                  </p>
-                                  <div className="space-y-1 mb-3">
-                                    {finishedDishIds.map(dishId => {
-                                      const dish = cookingPlan?.timeline.find(d => d.id === dishId);
-                                      return (
-                                        <p key={dishId} className="text-emerald-600 dark:text-emerald-400 font-medium">
-                                          ✓ {dish?.name}
-                                        </p>
-                                      );
-                                    })}
-                                  </div>
-                                  <p className="text-sm text-slate-600 dark:text-gray-400">
-                                    Add to oven with other dishes
-                                  </p>
-                                </>
-                              )}
+                              {(() => {
+                                // Find next dishes to add (not yet in oven)
+                                const allDishes = cookingPlan?.timeline || [];
+                                const notInOven = allDishes.filter(d => !completedDishIds.includes(d.id) && !finishedDishIds.includes(d.id));
+                                
+                                if (notInOven.length === 0) {
+                                  // All dishes in oven or done - final alarm
+                                  return (
+                                    <>
+                                      <div className="text-6xl mb-3">🎉</div>
+                                      <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
+                                        MEAL READY!
+                                      </h2>
+                                      <p className="text-lg font-semibold text-slate-800 dark:text-white mb-3">
+                                        All dishes finished together!
+                                      </p>
+                                      <p className="text-emerald-600 dark:text-emerald-400 font-medium">
+                                        Enjoy your meal! 🍽️
+                                      </p>
+                                    </>
+                                  );
+                                } else {
+                                  // Intermediate alarm - show NEXT dishes to add
+                                  const nextEarliestDelay = Math.min(...notInOven.map(d => d.startDelay));
+                                  const nextDishes = notInOven.filter(d => d.startDelay === nextEarliestDelay);
+                                  
+                                  return (
+                                    <>
+                                      <div className="text-6xl mb-3">🔔</div>
+                                      <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">
+                                        ALARM!
+                                      </h2>
+                                      <p className="text-lg font-semibold text-slate-800 dark:text-white mb-1">
+                                        Time to Add:
+                                      </p>
+                                      <div className="space-y-1 mb-3">
+                                        {nextDishes.map(dish => (
+                                          <p key={dish.id} className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                                            {dish.name}
+                                          </p>
+                                        ))}
+                                      </div>
+                                      <p className="text-sm text-slate-600 dark:text-gray-400">
+                                        Add to oven with other dishes
+                                      </p>
+                                    </>
+                                  );
+                                }
+                              })()}
                             </div>
                             <Button
                               onClick={stopAllAlarms}
                               className={`w-full h-14 text-white text-lg font-bold ${
-                                completedDishIds.length + finishedDishIds.length === cookingPlan?.timeline.length
-                                  ? 'bg-green-600 hover:bg-green-700'
-                                  : 'bg-red-600 hover:bg-red-700'
+                                (() => {
+                                  const allDishes = cookingPlan?.timeline || [];
+                                  const notInOven = allDishes.filter(d => !completedDishIds.includes(d.id) && !finishedDishIds.includes(d.id));
+                                  return notInOven.length === 0 ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700';
+                                })()
                               }`}
                             >
-                              {completedDishIds.length + finishedDishIds.length === cookingPlan?.timeline.length
-                                ? 'Enjoy Your Meal! 🎉'
-                                : 'Stop Alarm & Add to Oven'}
+                              {(() => {
+                                const allDishes = cookingPlan?.timeline || [];
+                                const notInOven = allDishes.filter(d => !completedDishIds.includes(d.id) && !finishedDishIds.includes(d.id));
+                                return notInOven.length === 0 ? 'Enjoy Your Meal! 🎉' : 'Stop Alarm';
+                              })()}
                             </Button>
                           </div>
                         </div>
