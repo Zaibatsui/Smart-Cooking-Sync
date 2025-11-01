@@ -1028,11 +1028,11 @@ const CookingSync = () => {
                           {cookingStarted && (
                             <div className="space-y-3">
                               {timer ? (
-                                // Timer counting down - time until this dish should be added to oven
+                                // Timer counting down - dish is cooking, timer shows when to add next
                                 <div className="space-y-2">
                                   <div className="flex items-center justify-between">
                                     <span className="text-sm text-slate-600 dark:text-gray-400">
-                                      Add to oven in:
+                                      {isInOven ? 'Add next dish in:' : 'Time remaining:'}
                                     </span>
                                     <span className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
                                       {formatTime(timer.remaining)}
@@ -1043,11 +1043,11 @@ const CookingSync = () => {
                                     className="h-2.5 sm:h-2"
                                   />
                                   <p className="text-xs text-slate-500 dark:text-gray-500 text-center">
-                                    ⏳ Alarm will sound when ready to add
+                                    {isInOven ? '⏳ Alarm will sound when ready to add next dish' : '⏳ Timer running'}
                                   </p>
                                 </div>
                               ) : isInOven ? (
-                                // Dish is in oven cooking
+                                // Dish is in oven, no timer (cooking until all done)
                                 <div className="text-center py-3">
                                   <Badge className="bg-orange-500 text-white text-base py-2 px-4">
                                     🔥 Cooking in Oven
@@ -1056,10 +1056,19 @@ const CookingSync = () => {
                                     Will finish with all other dishes
                                   </p>
                                 </div>
+                              ) : isNextToStart && !finishedDishIds.length ? (
+                                // Show Start Timer button for next dish(es) after alarm stopped
+                                <Button
+                                  onClick={startNextDishes}
+                                  className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
+                                >
+                                  <Play className="w-5 h-5 mr-2" />
+                                  {isMultipleStart ? `Start ${nextDishes.length} Timers` : 'Start Timer'}
+                                </Button>
                               ) : (
-                                // Waiting for previous dishes to be added
+                                // Waiting for alarm or previous action
                                 <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
-                                  ⏸️ Waiting for alarm...
+                                  ⏸️ Waiting...
                                 </div>
                               )}
                             </div>
