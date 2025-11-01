@@ -125,6 +125,22 @@ textarea::placeholder {
     opacity: 0.5;
 }
 
+/* Allow text selection for inputs */
+input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* PWA specific: Remove tap highlight on iOS */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* PWA specific: Disable zoom on double-tap */
+button, a {
+    touch-action: manipulation;
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;
