@@ -128,7 +128,7 @@ const CookingSync = () => {
     }
   };
 
-  // Save user settings and timers to localStorage (dishes are in backend)
+  // Save user settings to localStorage (dishes are in backend, timers not persisted)
   useEffect(() => {
     if (!hasLoadedRef.current) {
       hasLoadedRef.current = true;
@@ -142,10 +142,7 @@ const CookingSync = () => {
       alarmEnabled
     };
     localStorage.setItem('cookingSyncSettings', JSON.stringify(settingsToSave));
-    
-    // Save timers separately
-    localStorage.setItem('cookingSyncTimers', JSON.stringify(timers));
-  }, [userOvenType, theme, alarmEnabled, timers]);
+  }, [userOvenType, theme, alarmEnabled]);
 
   // Apply theme
   useEffect(() => {
