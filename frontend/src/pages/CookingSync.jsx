@@ -924,11 +924,12 @@ const CookingSync = () => {
                           </SelectTrigger>
                           <SelectContent>
                             {ovenTypes.map(type => (
-                            <SelectItem key={type} value={type}>{type}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                              <SelectItem key={type} value={type}>{type}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
 
                   <Separator className="my-4" />
