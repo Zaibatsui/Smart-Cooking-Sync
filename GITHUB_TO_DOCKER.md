@@ -37,8 +37,9 @@ nano .env
 # IMPORTANT: Set a strong password for MongoDB
 MONGO_PASSWORD=your-secure-password-here
 
-# Backend URL (use your server's IP or domain)
-BACKEND_URL=http://your-server-ip:8002
+# Backend URL - REPLACE with your server's IP address
+BACKEND_URL=http://YOUR_SERVER_IP:8002
+# Example: BACKEND_URL=http://192.168.1.100:8002
 
 # Database name (can leave as default)
 DB_NAME=cooking_sync
