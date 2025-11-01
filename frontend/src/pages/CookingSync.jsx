@@ -577,12 +577,22 @@ const CookingSync = () => {
     return startedDishes.some(d => d.id === dishId);
   };
 
-  // Get the dish that should start next
-  const getNextDish = () => {
+  // Get the dish that should start next (has "Start Cooking" button)
+  const getNextDishToStart = () => {
     if (!cookingPlan) return null;
     
     const startedIds = startedDishes.map(d => d.id);
     return cookingPlan.timeline.find(d => !startedIds.includes(d.id));
+  };
+
+  // Get the dish that has alarm ringing (finished countdown)
+  const getDishWithAlarm = () => {
+    if (!cookingPlan) return null;
+    
+    const alarmDishId = Object.keys(activeAlarms).find(id => activeAlarms[id]);
+    if (!alarmDishId) return null;
+    
+    return cookingPlan.timeline.find(d => d.id === alarmDishId);
   };
 
   // Handle edit button click
