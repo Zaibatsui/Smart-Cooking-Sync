@@ -26,6 +26,7 @@ const CookingSync = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState('light');
   const [alarmEnabled, setAlarmEnabled] = useState(true);
+  const hasLoadedRef = useRef(false);
   
   // Form state
   const [formData, setFormData] = useState({
