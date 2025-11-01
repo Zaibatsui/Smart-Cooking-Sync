@@ -21,11 +21,27 @@ import {
 } from '../mock';
 
 const CookingSync = () => {
-  const [dishes, setDishes] = useState([]);
-  const [userOvenType, setUserOvenType] = useState('Fan');
+  // Load saved data synchronously during initialization
+  const loadSavedData = () => {
+    const saved = localStorage.getItem('cookingSyncData');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (error) {
+        console.error('Error loading saved data:', error);
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const savedData = loadSavedData();
+  
+  const [dishes, setDishes] = useState(savedData?.dishes || []);
+  const [userOvenType, setUserOvenType] = useState(savedData?.userOvenType || 'Fan');
   const [showSettings, setShowSettings] = useState(false);
-  const [theme, setTheme] = useState('light');
-  const [alarmEnabled, setAlarmEnabled] = useState(true);
+  const [theme, setTheme] = useState(savedData?.theme || 'light');
+  const [alarmEnabled, setAlarmEnabled] = useState(savedData?.alarmEnabled !== undefined ? savedData.alarmEnabled : true);
   const hasLoadedRef = useRef(false);
   
   // Form state
