@@ -1081,40 +1081,38 @@ const CookingSync = () => {
                       const methodCount = [hasOven, hasAirFryer, hasMicrowave].filter(Boolean).length;
                       
                       return (
-                        <div className="space-y-2 sm:space-y-3">
-                          {/* Temperature Cards - Show separate for each cooking method */}
-                          <div className={`grid gap-2 sm:gap-4 ${methodCount === 1 ? 'grid-cols-3' : methodCount === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-                            {hasOven && (
-                              <div className="p-2 sm:p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg shadow-sm">
-                                <p className="text-xs text-orange-700 dark:text-orange-400 mb-0.5 sm:mb-1 font-medium">🔥 Oven</p>
-                                <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">{userOvenType}</p>
-                                <p className="text-sm sm:text-xl font-bold text-orange-600 dark:text-orange-400">
-                                  {cookingPlan.optimal_oven_temp || cookingPlan.commonTemp}°C
-                                </p>
-                              </div>
-                            )}
-                            
-                            {hasAirFryer && (
-                              <div className="p-2 sm:p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg shadow-sm">
-                                <p className="text-xs text-blue-700 dark:text-blue-400 mb-0.5 sm:mb-1 font-medium">💨 Air Fryer</p>
-                                <p className="text-sm sm:text-xl font-bold text-blue-600 dark:text-blue-400">
-                                  {cookingPlan.optimal_airfryer_temp || cookingPlan.commonTemp}°C
-                                </p>
-                              </div>
-                            )}
-                            
-                            {hasMicrowave && (
-                              <div className="p-2 sm:p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg shadow-sm">
-                                <p className="text-xs text-yellow-700 dark:text-yellow-400 mb-0.5 sm:mb-1 font-medium">⚡ Microwave</p>
-                                <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">Time only</p>
-                              </div>
-                            )}
-                            
-                            {/* Total Time - Always shown */}
-                            <div className={`p-2 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg shadow-sm ${methodCount === 3 ? 'col-span-3' : ''}`}>
-                              <p className="text-xs text-emerald-700 dark:text-emerald-400 mb-0.5 sm:mb-1 font-medium">Total Time</p>
-                              <p className="text-sm sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime}m</p>
+                        <div className="flex gap-2 overflow-x-auto">
+                          {/* Compact temperature cards - all on one line */}
+                          {hasOven && (
+                            <div className="flex-shrink-0 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg min-w-[90px]">
+                              <p className="text-xs text-orange-700 dark:text-orange-400 font-medium mb-0.5">🔥 Oven</p>
+                              <p className="text-xs text-slate-600 dark:text-gray-400">{userOvenType}</p>
+                              <p className="text-lg font-bold text-orange-600 dark:text-orange-400">
+                                {cookingPlan.optimal_oven_temp || cookingPlan.commonTemp}°
+                              </p>
                             </div>
+                          )}
+                          
+                          {hasAirFryer && (
+                            <div className="flex-shrink-0 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg min-w-[90px]">
+                              <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mb-0.5">💨 Fryer</p>
+                              <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                {cookingPlan.optimal_airfryer_temp || cookingPlan.commonTemp}°
+                              </p>
+                            </div>
+                          )}
+                          
+                          {hasMicrowave && (
+                            <div className="flex-shrink-0 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg min-w-[90px]">
+                              <p className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">⚡ Wave</p>
+                              <p className="text-xs text-slate-600 dark:text-gray-400">Time only</p>
+                            </div>
+                          )}
+                          
+                          {/* Total Time */}
+                          <div className="flex-shrink-0 p-2 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg min-w-[90px]">
+                            <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-0.5">Total</p>
+                            <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime}m</p>
                           </div>
                         </div>
                       );
