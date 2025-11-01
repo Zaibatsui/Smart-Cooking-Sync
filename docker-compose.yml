@@ -44,7 +44,7 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
       args:
-        - REACT_APP_BACKEND_URL=${BACKEND_URL:-http://localhost:8002}
+        - REACT_APP_BACKEND_URL=${BACKEND_URL}
     container_name: cooking-sync-frontend
     restart: unless-stopped
     ports:
