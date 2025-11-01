@@ -474,8 +474,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact & Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/smart-cooking-sync/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/smart-cooking-sync/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Zaibatsui/smart-cooking-sync/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Zaibatsui/smart-cooking-sync/discussions)
 
 ---
 
