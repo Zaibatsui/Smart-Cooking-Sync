@@ -16,7 +16,8 @@ import {
   convertToFahrenheit, 
   convertToCelsius,
   normalizeToFan,
-  adjustCookingTime 
+  adjustCookingTime,
+  roundToNearestTen 
 } from '../mock';
 
 const CookingSync = () => {
