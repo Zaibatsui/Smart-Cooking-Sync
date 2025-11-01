@@ -295,10 +295,9 @@ const CookingSync = () => {
       setDishes([]);
       setTimers({});
       setCookingStarted(false);
-      setTimersPaused(false);
-      setCurrentlyAlarmingDish(null);
-      setStartedDishIds([]);
-      stopAllAlarms();
+      setCompletedDishIds([]);
+      setActiveAlarmDishId(null);
+      stopAlarm();
       toast({
         title: 'All Cleared',
         description: 'All dishes and timers have been removed'
