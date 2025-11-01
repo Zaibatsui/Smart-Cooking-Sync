@@ -291,13 +291,15 @@ const CookingSync = () => {
       if (isAirFryer && formData.convertFromOven && formData.ovenTemp && formData.ovenTime) {
         const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(
           parseFloat(formData.ovenTemp),
-          parseInt(formData.ovenTime)
+          parseInt(formData.ovenTime),
+          formData.sourceOvenType
         );
         dishData.temperature = airFryerTemp;
         dishData.cookingTime = airFryerTime;
         dishData.convertedFromOven = true;
         dishData.originalOvenTemp = parseFloat(formData.ovenTemp);
         dishData.originalOvenTime = parseInt(formData.ovenTime);
+        dishData.sourceOvenType = formData.sourceOvenType;
       }
 
       const newDish = await dishesAPI.create(dishData);
