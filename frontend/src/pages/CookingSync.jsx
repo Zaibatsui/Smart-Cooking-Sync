@@ -243,35 +243,70 @@ const CookingSync = () => {
   };
 
   const handleAddDish = async () => {
-    if (!formData.name || !formData.temperature || !formData.cookingTime) {
+    // Validate based on cooking method
+    const isMicrowave = formData.cookingMethod === 'Microwave';
+    const isAirFryer = formData.cookingMethod === 'Air Fryer';
+    
+    if (!formData.name || !formData.cookingTime) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all fields',
+        description: 'Please fill in dish name and cooking time',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
+    if (!isMicrowave && !formData.temperature) {
+      toast({
+        title: 'Missing Temperature',
+        description: 'Please enter cooking temperature',
         variant: 'destructive'
       });
       return;
     }
 
     try {
-      const dishData = {
+      let dishData = {
         name: formData.name,
-        temperature: parseFloat(formData.temperature),
-        unit: formData.unit,
+        cookingMethod: formData.cookingMethod,
         cookingTime: parseInt(formData.cookingTime),
-        ovenType: formData.ovenType,
         instructions: formData.instructions
       };
+      
+      // Add temperature and oven type only if not microwave
+      if (!isMicrowave) {
+        dishData.temperature = parseFloat(formData.temperature);
+        dishData.unit = formData.unit;
+        dishData.ovenType = formData.ovenType;
+      }
+      
+      // If Air Fryer with conversion enabled
+      if (isAirFryer && formData.convertFromOven && formData.ovenTemp && formData.ovenTime) {
+        const { airFryerTemp, airFryerTime } = convertOvenToAirFryer(
+          parseFloat(formData.ovenTemp),
+          parseInt(formData.ovenTime)
+        );
+        dishData.temperature = airFryerTemp;
+        dishData.cookingTime = airFryerTime;
+        dishData.convertedFromOven = true;
+        dishData.originalOvenTemp = parseFloat(formData.ovenTemp);
+        dishData.originalOvenTime = parseInt(formData.ovenTime);
+      }
 
       const newDish = await dishesAPI.create(dishData);
       setDishes([...dishes, newDish]);
       
       setFormData({
         name: '',
+        cookingMethod: 'Oven',
         temperature: '',
         unit: 'C',
         cookingTime: '',
         ovenType: 'Fan',
-        instructions: []
+        instructions: [],
+        convertFromOven: false,
+        ovenTemp: '',
+        ovenTime: ''
       });
       
       setInstructionInput({ label: '', afterMinutes: '' });
