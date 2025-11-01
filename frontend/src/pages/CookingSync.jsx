@@ -48,6 +48,7 @@ const CookingSync = () => {
       setDishes(data.dishes || []);
       setUserOvenType(data.userOvenType || 'Fan');
       setTheme(data.theme || 'light');
+      setAlarmEnabled(data.alarmEnabled !== undefined ? data.alarmEnabled : true);
     }
   }, []);
 
@@ -56,9 +57,10 @@ const CookingSync = () => {
     localStorage.setItem('cookingSyncData', JSON.stringify({
       dishes,
       userOvenType,
-      theme
+      theme,
+      alarmEnabled
     }));
-  }, [dishes, userOvenType, theme]);
+  }, [dishes, userOvenType, theme, alarmEnabled]);
 
   // Apply theme
   useEffect(() => {
