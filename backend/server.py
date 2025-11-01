@@ -75,10 +75,20 @@ class AdjustedDish(BaseModel):
     adjustedTime: int
     order: int
 
+class TimelineItem(BaseModel):
+    id: str
+    type: str  # "dish" or "instruction"
+    name: str
+    parentDishId: Optional[str] = None  # For instructions, reference to parent dish
+    adjustedTime: int  # Time when this should trigger
+    startDelay: int  # When to start countdown (for dishes) or when to trigger (for instructions)
+    originalTime: Optional[int] = None
+    order: int
 
 class CookingPlanResponse(BaseModel):
     optimal_temp: float
     adjusted_dishes: List[AdjustedDish]
+    timeline: List[TimelineItem]  # Expanded timeline with dishes and instructions
     total_time: int
 
 class StatusCheckCreate(BaseModel):
