@@ -49,11 +49,15 @@ const CookingSync = () => {
   // Form state
   const [formData, setFormData] = useState({
     name: '',
+    cookingMethod: 'Oven',
     temperature: '',
     unit: 'C',
     cookingTime: '',
     ovenType: 'Fan',
-    instructions: []
+    instructions: [],
+    convertFromOven: false,
+    ovenTemp: '',
+    ovenTime: ''
   });
   
   const [instructionInput, setInstructionInput] = useState({ label: '', afterMinutes: '' });
