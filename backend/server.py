@@ -393,6 +393,8 @@ async def calculate_cooking_plan(request: CookingPlanRequest):
     
     return {
         "optimal_temp": optimal_temp,
+        "optimal_oven_temp": optimal_oven_temp,
+        "optimal_airfryer_temp": optimal_airfryer_temp,
         "adjusted_dishes": adjusted_dishes,
         "timeline": timeline,
         "total_time": total_time
