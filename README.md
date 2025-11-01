@@ -111,7 +111,7 @@ Optimised for cooking with your phone or tablet:
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/smart-cooking-sync.git
+git clone https://github.com/Zaibatsui/smart-cooking-sync.git
 cd smart-cooking-sync
 ```
 
