@@ -1131,11 +1131,11 @@ const CookingSync = () => {
                           {cookingStarted && (
                             <div className="space-y-3">
                               {timer ? (
-                                // Timer counting down - dish is cooking, timer shows when to add next
+                                // Timer counting down
                                 <div className="space-y-2">
                                   <div className="flex items-center justify-between">
                                     <span className="text-sm text-slate-600 dark:text-gray-400">
-                                      {isInOven ? 'Add next dish in:' : 'Time remaining:'}
+                                      {isInstruction ? 'Time to action:' : (isInOven ? 'Add next in:' : 'Time remaining:')}
                                     </span>
                                     <span className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
                                       {formatTime(timer.remaining)}
@@ -1146,10 +1146,10 @@ const CookingSync = () => {
                                     className="h-2.5 sm:h-2"
                                   />
                                   <p className="text-xs text-slate-500 dark:text-gray-500 text-center">
-                                    {isInOven ? '⏳ Alarm will sound when ready to add next dish' : '⏳ Timer running'}
+                                    {isInstruction ? '⏳ Alarm will sound for instruction' : (isInOven ? '⏳ Alarm will sound when ready to add next' : '⏳ Timer running')}
                                   </p>
                                 </div>
-                              ) : isInOven ? (
+                              ) : isInOven && isDish ? (
                                 // Dish is in oven, no timer (cooking until all done)
                                 <div className="text-center py-3">
                                   <Badge className="bg-orange-500 text-white text-base py-2 px-4">
@@ -1159,7 +1159,14 @@ const CookingSync = () => {
                                     Will finish with all other dishes
                                   </p>
                                 </div>
-                              ) : isNextToStart && !finishedDishIds.length ? (
+                              ) : isInstruction && isInOven ? (
+                                // Instruction completed
+                                <div className="text-center py-3">
+                                  <Badge className="bg-purple-500 text-white text-base py-2 px-4">
+                                    ✓ Completed
+                                  </Badge>
+                                </div>
+                              ) : isDish && isNextToStart && !finishedDishIds.length ? (
                                 // Show Start Timer button for next dish(es) after alarm stopped
                                 <Button
                                   onClick={startNextDishes}
