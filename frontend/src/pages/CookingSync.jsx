@@ -19,6 +19,7 @@ import {
   adjustCookingTime,
   roundToNearestTen 
 } from '../mock';
+import { dishesAPI, cookingPlanAPI } from '../services/api';
 
 const CookingSync = () => {
   // Load saved data synchronously during initialization
