@@ -1,0 +1,24 @@
+{
+  "short_name": "Cooking Sync",
+  "name": "Smart Cooking Sync - Multi-Dish Timer",
+  "description": "Optimize cooking times for multiple dishes in one oven",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#059669",
+  "background_color": "#ffffff",
+  "orientation": "portrait"
+}
