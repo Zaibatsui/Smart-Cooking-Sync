@@ -48,8 +48,24 @@ if [ ! -f .env ]; then
         echo ""
         read -p "Press Enter after you've updated the .env file with your password..."
     else
-        echo -e "${RED}❌ .env.example not found. Cannot create .env file.${NC}"
-        exit 1
+        echo -e "${RED}❌ .env.example not found. Creating .env manually...${NC}"
+        cat > .env << 'ENVEOF'
+# MongoDB Configuration
+MONGO_PASSWORD=changeme123
+
+# Backend URL (used by frontend)
+BACKEND_URL=http://localhost:8002
+
+# Database Name
+DB_NAME=cooking_sync
+ENVEOF
+        echo -e "${GREEN}✓ .env file created with defaults${NC}"
+        echo ""
+        echo -e "${YELLOW}📝 CRITICAL: Edit .env file to set a secure MongoDB password!${NC}"
+        echo -e "${YELLOW}   Run: nano .env${NC}"
+        echo -e "${YELLOW}   Change MONGO_PASSWORD from 'changeme123' to something secure${NC}"
+        echo ""
+        read -p "Press Enter after you've updated the .env file with your password..."
     fi
 else
     echo -e "${GREEN}✓ .env file exists${NC}"
