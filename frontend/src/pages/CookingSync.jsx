@@ -368,8 +368,18 @@ const CookingSync = () => {
     setTimers({});
     stopAllAlarms();
     toast({
-      title: 'Reset Complete',
+      title: 'Timers Reset',
       description: 'All timers have been reset'
+    });
+  };
+
+  const clearAll = () => {
+    setDishes([]);
+    setTimers({});
+    stopAllAlarms();
+    toast({
+      title: 'All Cleared',
+      description: 'All dishes and timers have been removed'
     });
   };
 
