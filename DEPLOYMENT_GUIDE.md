@@ -258,4 +258,4 @@ docker compose exec -T mongodb mongorestore --archive < backup.archive
 
 Your Smart Cooking Sync app is now running in Docker on Proxmox!
 
-Access it at: **http://your-server-ip:3000**
+Access it at: **http://your-server-ip:3001**
