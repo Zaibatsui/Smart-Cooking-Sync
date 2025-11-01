@@ -696,14 +696,22 @@ const CookingSync = () => {
                       </div>
                     </div>
 
-                    <div className="mt-4 sm:mt-6">
+                    <div className="mt-4 sm:mt-6 flex gap-3">
                       <Button
                         onClick={resetAll}
                         variant="outline"
-                        className="w-full h-11 sm:h-10 border-emerald-300 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
+                        className="flex-1 border-emerald-300 dark:border-gray-600 hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors"
                       >
                         <RotateCcw className="w-4 h-4 mr-2" />
-                        Reset All
+                        Reset Timers
+                      </Button>
+                      <Button
+                        onClick={clearAll}
+                        variant="outline"
+                        className="flex-1 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Clear All
                       </Button>
                     </div>
                   </CardContent>
