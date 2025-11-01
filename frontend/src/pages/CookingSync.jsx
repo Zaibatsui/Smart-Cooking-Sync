@@ -938,14 +938,14 @@ const CookingSync = () => {
                           {/* Timer Display */}
                           {cookingStarted && (
                             <div className="space-y-3">
-                              {hasAlarm ? (
-                                // Alarm is ringing - show stop alarm button
+                              {isFinished ? (
+                                // Alarm is ringing - show stop alarm button (can be on multiple dishes)
                                 <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg p-4">
                                   <p className="text-red-700 dark:text-red-300 font-bold text-center mb-3 text-lg">
                                     🔔 ALARM RINGING!
                                   </p>
                                   <Button
-                                    onClick={() => stopDishAlarm(dish.id)}
+                                    onClick={stopAllAlarms}
                                     className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold h-12"
                                   >
                                     Stop Alarm
@@ -970,7 +970,7 @@ const CookingSync = () => {
                                     ⏳ Timer running - alarm will sound when ready
                                   </p>
                                 </div>
-                              ) : isNextToStart && !activeAlarmDishId && Object.keys(timers).length === 0 ? (
+                              ) : isNextToStart && finishedDishIds.length === 0 && Object.keys(timers).length === 0 ? (
                                 // This dish should be started next - but only show after previous alarm stopped
                                 <Button
                                   onClick={startNextDish}
