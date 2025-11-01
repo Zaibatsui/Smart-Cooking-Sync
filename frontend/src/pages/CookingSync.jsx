@@ -905,19 +905,25 @@ const CookingSync = () => {
                         onChange={(e) => setFormData({ ...formData, cookingTime: e.target.value })}
                         className="mt-1.5 h-11 text-base"
                         inputMode="numeric"
+                        disabled={formData.cookingMethod === 'Air Fryer' && formData.convertFromOven}
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="ovenType" className="text-sm">Oven Type</Label>
-                      <Select
-                        value={formData.ovenType}
-                        onValueChange={(value) => setFormData({ ...formData, ovenType: value })}
-                      >
-                        <SelectTrigger className="mt-1.5 h-11">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ovenTypes.map(type => (
+                    
+                    {/* Oven Type - Hidden for Microwave */}
+                    {formData.cookingMethod !== 'Microwave' && (
+                      <div>
+                        <Label htmlFor="ovenType" className="text-sm">
+                          {formData.cookingMethod === 'Air Fryer' ? 'Air Fryer Type' : 'Oven Type'}
+                        </Label>
+                        <Select
+                          value={formData.ovenType}
+                          onValueChange={(value) => setFormData({ ...formData, ovenType: value })}
+                        >
+                          <SelectTrigger className="mt-1.5 h-11">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ovenTypes.map(type => (
                             <SelectItem key={type} value={type}>{type}</SelectItem>
                           ))}
                         </SelectContent>
