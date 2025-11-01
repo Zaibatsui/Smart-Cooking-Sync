@@ -836,7 +836,7 @@ const CookingSync = () => {
                     const timer = timers[dish.id];
                     const isCompleted = completedDishIds.includes(dish.id);
                     const isEditing = editingDish === dish.id;
-                    const hasAlarm = activeAlarmDishId === dish.id;
+                    const isFinished = finishedDishIds.includes(dish.id);
                     const nextDishes = getNextDishesToStart();
                     const isNextToStart = nextDishes.some(d => d.id === dish.id);
                     const isMultipleStart = nextDishes.length > 1 && isNextToStart;
@@ -844,7 +844,7 @@ const CookingSync = () => {
                     const allDishesCompleted = completedDishIds.length === cookingPlan.timeline.length;
 
                     return (
-                      <Card key={dish.id} className={`border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden ${hasAlarm ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart ? 'ring-2 ring-blue-500' : ''}`}>
+                      <Card key={dish.id} className={`border-emerald-200 dark:border-gray-700 dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart ? 'ring-2 ring-blue-500' : ''}`}>
                         <CardContent className="p-4 sm:p-6">
                           <div className="mb-3 sm:mb-4">
                             <div className="flex items-center justify-between mb-2">
