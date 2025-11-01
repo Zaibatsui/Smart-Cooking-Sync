@@ -894,7 +894,7 @@ const CookingSync = () => {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className={`grid gap-3 ${formData.cookingMethod === 'Oven' ? 'grid-cols-2' : 'grid-cols-1'}`}>
                     <div>
                       <Label htmlFor="time" className="text-sm">Time (min)</Label>
                       <Input
