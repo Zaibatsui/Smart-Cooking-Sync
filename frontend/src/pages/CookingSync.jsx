@@ -287,7 +287,7 @@ const CookingSync = () => {
     calculatePlan();
   }, [dishes, userOvenType]);
 
-  const handleAddDish = () => {
+  const handleAddDish = async () => {
     if (!formData.name || !formData.temperature || !formData.cookingTime) {
       toast({
         title: 'Missing Information',
@@ -297,28 +297,38 @@ const CookingSync = () => {
       return;
     }
 
-    const newDish = {
-      id: Date.now().toString(),
-      name: formData.name,
-      temperature: parseFloat(formData.temperature),
-      unit: formData.unit,
-      cookingTime: parseInt(formData.cookingTime),
-      ovenType: formData.ovenType
-    };
+    try {
+      const dishData = {
+        name: formData.name,
+        temperature: parseFloat(formData.temperature),
+        unit: formData.unit,
+        cookingTime: parseInt(formData.cookingTime),
+        ovenType: formData.ovenType
+      };
 
-    setDishes([...dishes, newDish]);
-    setFormData({
-      name: '',
-      temperature: '',
-      unit: 'C',
-      cookingTime: '',
-      ovenType: 'Fan'
-    });
-    
-    toast({
-      title: 'Dish Added',
-      description: `${newDish.name} has been added to your cooking plan`
-    });
+      const newDish = await dishesAPI.create(dishData);
+      setDishes([...dishes, newDish]);
+      
+      setFormData({
+        name: '',
+        temperature: '',
+        unit: 'C',
+        cookingTime: '',
+        ovenType: 'Fan'
+      });
+      
+      toast({
+        title: 'Dish Added',
+        description: `${newDish.name} has been added to your cooking plan`
+      });
+    } catch (error) {
+      console.error('Error adding dish:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add dish',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleRemoveDish = (id) => {
