@@ -979,11 +979,11 @@ const CookingSync = () => {
                           {cookingStarted && (
                             <div className="space-y-3">
                               {timer ? (
-                                // Timer counting down
+                                // Timer counting down - time until this dish should be added to oven
                                 <div className="space-y-2">
                                   <div className="flex items-center justify-between">
                                     <span className="text-sm text-slate-600 dark:text-gray-400">
-                                      Time remaining:
+                                      Add to oven in:
                                     </span>
                                     <span className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
                                       {formatTime(timer.remaining)}
@@ -994,41 +994,32 @@ const CookingSync = () => {
                                     className="h-2.5 sm:h-2"
                                   />
                                   <p className="text-xs text-slate-500 dark:text-gray-500 text-center">
-                                    ⏳ Timer running - alarm will sound when ready
+                                    ⏳ Alarm will sound when ready to add
                                   </p>
                                 </div>
-                              ) : isCompleted ? (
-                                // Dish completed
+                              ) : isInOven ? (
+                                // Dish is in oven cooking
                                 <div className="text-center py-3">
-                                  <Badge className="bg-green-500 text-white text-base py-2 px-4">
-                                    ✓ Completed
+                                  <Badge className="bg-orange-500 text-white text-base py-2 px-4">
+                                    🔥 Cooking in Oven
                                   </Badge>
+                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-2">
+                                    Will finish with all other dishes
+                                  </p>
                                 </div>
-                              ) : (
-                                // Show Start Timer button
+                              ) : isNextToStart && !finishedDishIds.length ? (
+                                // Show Start Timer button for next dish(es)
                                 <Button
-                                  onClick={() => startDishTimer(dish.id)}
-                                  disabled={Object.keys(timers).length > 0 || finishedDishIds.length > 0}
-                                  className={`w-full h-12 text-base font-semibold ${
-                                    Object.keys(timers).length > 0 || finishedDishIds.length > 0
-                                      ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                                      : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
-                                  }`}
+                                  onClick={startNextDishes}
+                                  className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
                                 >
                                   <Play className="w-5 h-5 mr-2" />
-                                  Start Timer
+                                  {isMultipleStart ? `Start ${nextDishes.length} Timers` : 'Start Timer'}
                                 </Button>
-                              )}
-
-                              {/* Show success message if all dishes completed */}
-                              {isCompleted && isLastDish && allDishesCompleted && (
-                                <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-500 rounded-lg p-4">
-                                  <p className="text-green-700 dark:text-green-300 font-bold text-center text-lg">
-                                    🎉 Enjoy Your Meal!
-                                  </p>
-                                  <p className="text-green-600 dark:text-green-400 text-center text-sm mt-1">
-                                    Bon appétit!
-                                  </p>
+                              ) : (
+                                // Waiting to start
+                                <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
+                                  ⏸️ Waiting to start...
                                 </div>
                               )}
                             </div>
