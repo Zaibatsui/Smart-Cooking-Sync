@@ -180,6 +180,28 @@ async def delete_dish(dish_id: str):
     return {"message": "Dish deleted successfully", "id": dish_id}
 
 
+@api_router.patch("/dishes/{dish_id}")
+async def update_dish_time(dish_id: str, cookingTime: int):
+    """Update the cooking time for a specific dish"""
+    if cookingTime < 1:
+        raise HTTPException(status_code=400, detail="Cooking time must be at least 1 minute")
+    
+    result = await db.dishes.update_one(
+        {"id": dish_id},
+        {"$set": {"cookingTime": cookingTime}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Dish not found")
+    
+    # Fetch the updated dish
+    dish = await db.dishes.find_one({"id": dish_id}, {"_id": 0})
+    if dish and isinstance(dish.get('created_at'), str):
+        dish['created_at'] = datetime.fromisoformat(dish['created_at'])
+    
+    return dish
+
+
 @api_router.delete("/dishes")
 async def clear_all_dishes():
     """Clear all dishes"""
