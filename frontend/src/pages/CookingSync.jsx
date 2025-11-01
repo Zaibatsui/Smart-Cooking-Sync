@@ -209,7 +209,6 @@ const CookingSync = () => {
 
   const resetAll = () => {
     setTimers({});
-    setCookingStarted(false);
     stopAllAlarms();
     toast({
       title: 'Reset Complete',
