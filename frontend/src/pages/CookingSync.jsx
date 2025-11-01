@@ -55,49 +55,12 @@ const CookingSync = () => {
     ovenType: 'Fan'
   });
 
-  // Cooking timers state - restore from localStorage with time recalculation
-  const loadSavedTimers = () => {
-    const saved = localStorage.getItem('cookingSyncTimers');
-    if (saved) {
-      try {
-        const savedTimers = JSON.parse(saved);
-        const now = Date.now();
-        const restoredTimers = {};
-        
-        Object.keys(savedTimers).forEach(dishId => {
-          const savedTimer = savedTimers[dishId];
-          if (savedTimer.startTime && savedTimer.total) {
-            // Calculate elapsed time in seconds
-            const elapsedMs = now - savedTimer.startTime;
-            const elapsedSeconds = Math.floor(elapsedMs / 1000);
-            const remaining = Math.max(0, savedTimer.total - elapsedSeconds);
-            
-            restoredTimers[dishId] = {
-              remaining,
-              total: savedTimer.total,
-              isRunning: savedTimer.isRunning && remaining > 0,
-              startTime: savedTimer.startTime
-            };
-          }
-        });
-        
-        return restoredTimers;
-      } catch (error) {
-        console.error('Error loading saved timers:', error);
-        return {};
-      }
-    }
-    return {};
-  };
-
-  const [timers, setTimers] = useState(loadSavedTimers());
-  
-  const [activeAlarms, setActiveAlarms] = useState({}); // Track which timers have active alarms
-  const [alarmIntervals, setAlarmIntervals] = useState({}); // Store alarm interval IDs
+  // Simplified timer state - no localStorage persistence for active timers
+  const [timers, setTimers] = useState({}); // { [dishId]: { remaining: seconds, total: seconds } }
+  const [activeAlarmDishId, setActiveAlarmDishId] = useState(null); // Which dish's alarm is ringing
+  const [alarmIntervalId, setAlarmIntervalId] = useState(null); // Store alarm interval ID
   const [cookingStarted, setCookingStarted] = useState(false); // Has cooking plan been started
-  const [timersPaused, setTimersPaused] = useState(false); // Are all timers paused (waiting for user to start next dish)
-  const [currentlyAlarmingDish, setCurrentlyAlarmingDish] = useState(null); // Which dish is currently alarming
-  const [startedDishIds, setStartedDishIds] = useState([]); // IDs of dishes that have been started
+  const [completedDishIds, setCompletedDishIds] = useState([]); // IDs of dishes that completed their cooking
   const [editingDish, setEditingDish] = useState(null); // Dish being edited
   const [editTime, setEditTime] = useState(''); // Edited time value
 
