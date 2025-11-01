@@ -144,7 +144,7 @@ Add to crontab:
 docker compose logs -f
 
 # Check if ports are in use
-sudo netstat -tlnp | grep -E '3000|8001'
+sudo netstat -tlnp | grep -E '3001|8002'
 
 # Restart Docker
 sudo systemctl restart docker
@@ -153,7 +153,7 @@ sudo systemctl restart docker
 ### Frontend can't reach backend
 1. Check `.env` has correct BACKEND_URL
 2. Ensure backend is running: `docker compose ps`
-3. Test: `curl http://localhost:8001/api/`
+3. Test: `curl http://localhost:8002/api/`
 
 ### Database issues
 ```bash
