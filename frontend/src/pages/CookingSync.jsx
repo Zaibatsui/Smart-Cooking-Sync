@@ -374,7 +374,7 @@ const CookingSync = () => {
     });
   };
 
-  // Stop all alarms - marks finished dishes as started (now in oven)
+  // Stop alarm and add dishes to oven
   const stopAllAlarms = () => {
     // Stop the alarm sound
     stopAlarm();
@@ -382,32 +382,57 @@ const CookingSync = () => {
     // Hide alarm modal
     setShowAlarmModal(false);
     
-    // Mark finished dishes as "started cooking" (remove their timers, they continue cooking)
-    setTimers(prev => {
-      const updated = { ...prev };
-      finishedDishIds.forEach(id => {
-        delete updated[id];
+    // Check if this is the final alarm (all dishes done)
+    const isAllDone = completedDishIds.length + finishedDishIds.length === cookingPlan?.timeline.length;
+    
+    if (isAllDone) {
+      // Final alarm - all dishes done!
+      setFinishedDishIds([]);
+      toast({
+        title: '🎉 Enjoy Your Meal!',
+        description: 'All dishes finished cooking together!'
       });
-      return updated;
-    });
-    
-    // Track which dishes have been added to oven
-    setCompletedDishIds(prev => [...prev, ...finishedDishIds]);
-    
-    // Clear finished dishes list
-    setFinishedDishIds([]);
-    
-    const finishedDishNames = finishedDishIds
-      .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
-      .join(', ');
-    
-    // Check if there are more dishes to start
-    const nextDishes = getNextDishesToStart();
-    
-    toast({
-      title: 'Alarm Stopped',
-      description: `Add ${finishedDishNames} to oven! ${nextDishes.length > 0 ? 'Start next dish when ready.' : ''}`
-    });
+    } else {
+      // Intermediate alarm - add next dishes to oven
+      const finishedDishNames = finishedDishIds
+        .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
+        .join(', ');
+      
+      // Mark finished dishes as in oven (remove their timers)
+      setTimers(prev => {
+        const updated = { ...prev };
+        finishedDishIds.forEach(id => {
+          delete updated[id];
+        });
+        return updated;
+      });
+      
+      // Track which dishes have been added to oven
+      setCompletedDishIds(prev => [...prev, ...finishedDishIds]);
+      
+      // Clear finished dishes list
+      setFinishedDishIds([]);
+      
+      toast({
+        title: 'Dishes Added',
+        description: `${finishedDishNames} now in oven with others`
+      });
+      
+      // Auto-start timer for next dish(es) if any
+      setTimeout(() => {
+        const nextDishes = getNextDishesToStart();
+        if (nextDishes.length > 0) {
+          const newTimers = {};
+          nextDishes.forEach(dish => {
+            newTimers[dish.id] = {
+              remaining: dish.adjustedTime * 60,
+              total: dish.adjustedTime * 60
+            };
+          });
+          setTimers(newTimers);
+        }
+      }, 100);
+    }
   };
 
   // Start timer for next group of dishes that should start together
