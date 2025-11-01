@@ -106,6 +106,7 @@ Optimised for cooking with your phone or tablet:
 - Docker Compose 2.0+
 - 2GB RAM available
 - Ports 3001 and 8002 available
+- **CPU:** No special requirements (MongoDB 4.4 compatible with older CPUs)
 
 ### Installation
 
