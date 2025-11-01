@@ -319,36 +319,21 @@ const CookingSync = () => {
     }
   };
 
-  // Start the cooking plan - starts first dish(es) automatically
+  // Start the cooking plan - just sets started flag, dishes start individually
   const startCookingPlan = () => {
     if (!cookingPlan || cookingPlan.timeline.length === 0) return;
     
     setCookingStarted(true);
     setCompletedDishIds([]);
     setFinishedDishIds([]);
+    setShowAlarmModal(false);
     setTimers({});
     stopAlarm();
     
-    // Find first dishes to start (those with earliest startDelay)
-    const firstDishes = getNextDishesToStart();
-    
-    if (firstDishes.length > 0) {
-      // Start timers for first dish(es)
-      const newTimers = {};
-      firstDishes.forEach(dish => {
-        newTimers[dish.id] = {
-          remaining: dish.adjustedTime * 60, // Convert minutes to seconds
-          total: dish.adjustedTime * 60
-        };
-      });
-      setTimers(newTimers);
-      
-      const dishNames = firstDishes.map(d => d.name).join(', ');
-      toast({
-        title: 'Cooking Plan Started!',
-        description: `Timer started for: ${dishNames}`
-      });
-    }
+    toast({
+      title: 'Cooking Plan Started!',
+      description: 'Click "Start Timer" on first dish to begin'
+    });
   };
 
   // Stop cooking plan
@@ -356,6 +341,7 @@ const CookingSync = () => {
     setCookingStarted(false);
     setCompletedDishIds([]);
     setFinishedDishIds([]);
+    setShowAlarmModal(false);
     setTimers({});
     stopAlarm();
     
@@ -370,6 +356,9 @@ const CookingSync = () => {
     // Stop the alarm sound
     stopAlarm();
     
+    // Hide alarm modal
+    setShowAlarmModal(false);
+    
     // Mark all finished dishes as completed
     setCompletedDishIds(prev => [...prev, ...finishedDishIds]);
     
@@ -382,30 +371,27 @@ const CookingSync = () => {
     
     toast({
       title: 'Alarm Stopped',
-      description: `${finishedDishNames} complete! ${getNextDishesToStart().length > 0 ? 'Start next dish when ready.' : ''}`
+      description: `${finishedDishNames} complete!`
     });
   };
 
-  // Start timer for next dish(es)
-  const startNextDish = () => {
-    const nextDishes = getNextDishesToStart();
+  // Start timer for specific dish
+  const startDishTimer = (dishId) => {
+    const dish = cookingPlan?.timeline.find(d => d.id === dishId);
+    if (!dish) return;
     
-    if (nextDishes.length === 0) return;
-    
-    // Start timers for next dish(es)
-    const newTimers = {};
-    nextDishes.forEach(dish => {
-      newTimers[dish.id] = {
+    // Start timer for this dish
+    setTimers(prev => ({
+      ...prev,
+      [dishId]: {
         remaining: dish.adjustedTime * 60,
         total: dish.adjustedTime * 60
-      };
-    });
-    setTimers(newTimers);
+      }
+    }));
     
-    const dishNames = nextDishes.map(d => d.name).join(', ');
     toast({
       title: 'Timer Started',
-      description: `Cooking: ${dishNames}`
+      description: `Cooking: ${dish.name}`
     });
   };
 
