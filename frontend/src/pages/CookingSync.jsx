@@ -207,31 +207,24 @@ const CookingSync = () => {
     hasLoadedRef.current = true;
   }, []); // Only run once on mount
 
-  // Save to localStorage including timers with timestamps
+  // Save user settings and timers to localStorage (dishes are in backend)
   useEffect(() => {
-    // Only save after initial mount is complete
     if (!hasLoadedRef.current) {
+      hasLoadedRef.current = true;
       return;
     }
-    
-    const dataToSave = {
-      dishes,
+
+    // Save settings separately
+    const settingsToSave = {
       userOvenType,
       theme,
-      alarmEnabled,
-      timers: {}
+      alarmEnabled
     };
+    localStorage.setItem('cookingSyncSettings', JSON.stringify(settingsToSave));
     
-    // Save timer state with timestamps for persistence
-    Object.keys(timers).forEach(dishId => {
-      dataToSave.timers[dishId] = {
-        ...timers[dishId],
-        startTime: timers[dishId].startTime || Date.now()
-      };
-    });
-    
-    localStorage.setItem('cookingSyncData', JSON.stringify(dataToSave));
-  }, [dishes, userOvenType, theme, alarmEnabled, timers]);
+    // Save timers separately
+    localStorage.setItem('cookingSyncTimers', JSON.stringify(timers));
+  }, [userOvenType, theme, alarmEnabled, timers]);
 
   // Apply theme
   useEffect(() => {
