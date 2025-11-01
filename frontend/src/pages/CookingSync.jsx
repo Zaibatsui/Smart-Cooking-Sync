@@ -329,23 +329,8 @@ const CookingSync = () => {
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className={`p-2 sm:p-3 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-                <svg 
-                  className="w-6 h-6 sm:w-8 sm:h-8" 
-                  viewBox="0 0 100 100" 
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <defs>
-                    <linearGradient id="flameGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#10b981', stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: '#14b8a6', stopOpacity: 1 }} />
-                    </linearGradient>
-                  </defs>
-                  <path 
-                    d="M35 25L20 50h20l-5 30 25-38H40l12-19z" 
-                    fill="url(#flameGradient)"
-                  />
-                </svg>
+              <div className={`p-2 sm:p-3 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
+                <Flame className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <div>
                 <h1 className="text-xl sm:text-3xl font-bold text-slate-800 dark:text-white">
