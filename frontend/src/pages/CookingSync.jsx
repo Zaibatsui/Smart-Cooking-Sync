@@ -57,7 +57,8 @@ const CookingSync = () => {
     instructions: [],
     convertFromOven: false,
     ovenTemp: '',
-    ovenTime: ''
+    ovenTime: '',
+    sourceOvenType: 'Fan'
   });
   
   const [instructionInput, setInstructionInput] = useState({ label: '', afterMinutes: '' });
