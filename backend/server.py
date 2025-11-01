@@ -94,7 +94,9 @@ class TimelineItem(BaseModel):
     order: int
 
 class CookingPlanResponse(BaseModel):
-    optimal_temp: float
+    optimal_temp: float  # Main/oven temp for backwards compatibility
+    optimal_oven_temp: Optional[float] = None  # Specific oven temp
+    optimal_airfryer_temp: Optional[float] = None  # Specific air fryer temp
     adjusted_dishes: List[AdjustedDish]
     timeline: List[TimelineItem]  # Expanded timeline with dishes and instructions
     total_time: int
