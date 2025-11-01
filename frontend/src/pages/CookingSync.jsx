@@ -938,34 +938,34 @@ const CookingSync = () => {
                       All finish together • Temp rounded to 10°C
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="px-3 sm:px-6">
+                  <CardContent className="px-3 sm:px-6 py-3 sm:py-6">
                     <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                      <div className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                        <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-1">Oven</p>
-                        <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{userOvenType}</p>
+                      <div className="p-2 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                        <p className="text-xs text-slate-600 dark:text-gray-400 mb-0.5 sm:mb-1">Oven</p>
+                        <p className="text-sm sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{userOvenType}</p>
                       </div>
-                      <div className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                        <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-1">Temp</p>
-                        <p className="text-base sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                          {cookingPlan.commonTemp}°C
+                      <div className="p-2 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                        <p className="text-xs text-slate-600 dark:text-gray-400 mb-0.5 sm:mb-1">Temp</p>
+                        <p className="text-sm sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                          {cookingPlan.commonTemp}°
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-gray-500">{convertToFahrenheit(cookingPlan.commonTemp)}°F</p>
+                        <p className="text-xs text-slate-500 dark:text-gray-500 hidden sm:block">{convertToFahrenheit(cookingPlan.commonTemp)}°F</p>
                       </div>
-                      <div className="p-3 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-                        <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mb-1">Time</p>
-                        <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime} min</p>
+                      <div className="p-2 sm:p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                        <p className="text-xs text-slate-600 dark:text-gray-400 mb-0.5 sm:mb-1">Time</p>
+                        <p className="text-sm sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{cookingPlan.totalTime}m</p>
                       </div>
                     </div>
 
                     {/* Master Timer Controls */}
-                    <div className="mt-4 sm:mt-6 space-y-3">
+                    <div className="mt-3 sm:mt-6 space-y-2 sm:space-y-3">
                       {!cookingStarted ? (
                         <Button
                           onClick={startCookingPlan}
-                          className="w-full h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-base font-semibold"
+                          className="w-full h-10 sm:h-12 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-sm sm:text-base font-semibold"
                         >
-                          <Play className="w-5 h-5 mr-2" />
-                          Start Cooking Plan
+                          <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                          Start Cooking
                         </Button>
                       ) : (
                         <Button
