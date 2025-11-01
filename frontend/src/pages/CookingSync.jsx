@@ -1249,44 +1249,49 @@ const CookingSync = () => {
                     return (
                       <Card key={item.id} className={`${isInstruction ? 'border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/10' : 'border-emerald-200 dark:border-gray-700'} dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart && isNextToStart ? 'ring-2 ring-blue-500' : ''}`}>
                         <CardContent className="p-3 sm:p-6">
-                          <div className="mb-2 sm:mb-4">
-                            <div className="flex items-center justify-between mb-1 sm:mb-2">
-                              <div className="flex items-center gap-1.5 sm:gap-3 flex-wrap">
-                                <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1`}>
-                                  {isInstruction ? '📋' : `Step ${item.order}`}
+                          <div className="mb-2 sm:mb-3">
+                            {/* All Badges Grouped Together */}
+                            <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                              {/* Step Badge */}
+                              <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs px-2 py-1 font-medium`}>
+                                {isInstruction ? '📋 Instruction' : `Step ${item.order}`}
+                              </Badge>
+                              
+                              {/* Cooking Method Badge */}
+                              {isDish && (() => {
+                                const dish = dishes.find(d => d.id === item.id);
+                                const method = dish?.cookingMethod || 'Oven';
+                                const methodConfig = {
+                                  'Oven': { icon: '🔥', label: 'Oven', color: 'bg-orange-500' },
+                                  'Air Fryer': { icon: '💨', label: 'Air Fryer', color: 'bg-blue-500' },
+                                  'Microwave': { icon: '⚡', label: 'Microwave', color: 'bg-yellow-500' }
+                                };
+                                const config = methodConfig[method];
+                                return (
+                                  <Badge className={`${config.color} text-white text-xs px-2 py-1 font-medium`}>
+                                    {config.icon} {config.label}
+                                  </Badge>
+                                );
+                              })()}
+                              
+                              {/* Status Badges */}
+                              {timer && (
+                                <Badge className="bg-blue-500 text-white text-xs px-2 py-1 font-medium">
+                                  ⏳ Countdown
                                 </Badge>
-                                
-                                {/* Cooking Method Badge */}
-                                {isDish && (() => {
-                                  const dish = dishes.find(d => d.id === item.id);
-                                  const method = dish?.cookingMethod || 'Oven';
-                                  const methodConfig = {
-                                    'Oven': { icon: '🔥', label: 'Oven', color: 'bg-orange-500' },
-                                    'Air Fryer': { icon: '💨', label: 'Air Fryer', color: 'bg-blue-500' },
-                                    'Microwave': { icon: '⚡', label: 'Microwave', color: 'bg-yellow-500' }
-                                  };
-                                  const config = methodConfig[method];
-                                  return (
-                                    <Badge className={`${config.color} text-white text-xs px-1.5 py-0.5`}>
-                                      {config.icon}
-                                    </Badge>
-                                  );
-                                })()}
-                                
-                                <h3 className="text-sm sm:text-xl font-semibold text-slate-800 dark:text-white">
-                                  {item.name}
-                                </h3>
-                                {timer && (
-                                  <Badge className="bg-blue-500 text-white text-xs px-1.5 py-0.5">
-                                    ⏳
-                                  </Badge>
-                                )}
-                                {isInOven && isDish && (
-                                  <Badge className="bg-green-500 text-white text-xs px-1.5 py-0.5">
-                                    ✓
-                                  </Badge>
-                                )}
-                              </div>
+                              )}
+                              {isInOven && isDish && (
+                                <Badge className="bg-green-600 text-white text-xs px-2 py-1 font-medium">
+                                  ✓ Cooking
+                                </Badge>
+                              )}
+                            </div>
+                            
+                            {/* Dish Name on Separate Line */}
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-base sm:text-lg font-bold text-slate-800 dark:text-white">
+                                {item.name}
+                              </h3>
                               
                               {/* Edit Time Button - only for dishes */}
                               {isDish && !isEditing && (
