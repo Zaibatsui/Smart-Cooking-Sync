@@ -1085,24 +1085,24 @@ const CookingSync = () => {
 
                     return (
                       <Card key={item.id} className={`${isInstruction ? 'border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/10' : 'border-emerald-200 dark:border-gray-700'} dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart && isNextToStart ? 'ring-2 ring-blue-500' : ''}`}>
-                        <CardContent className="p-4 sm:p-6">
-                          <div className="mb-3 sm:mb-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2 sm:gap-3">
-                                <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs sm:text-sm`}>
-                                  {isInstruction ? '📋 Instruction' : `Step ${item.order}`}
+                        <CardContent className="p-3 sm:p-6">
+                          <div className="mb-2 sm:mb-4">
+                            <div className="flex items-center justify-between mb-1 sm:mb-2">
+                              <div className="flex items-center gap-1.5 sm:gap-3 flex-wrap">
+                                <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs sm:text-sm px-1.5 sm:px-2 py-0.5 sm:py-1`}>
+                                  {isInstruction ? '📋' : `Step ${item.order}`}
                                 </Badge>
-                                <h3 className="text-base sm:text-xl font-semibold text-slate-800 dark:text-white">
+                                <h3 className="text-sm sm:text-xl font-semibold text-slate-800 dark:text-white">
                                   {item.name}
                                 </h3>
                                 {timer && (
-                                  <Badge className="bg-blue-500 text-white text-xs">
-                                    ⏳ Countdown
+                                  <Badge className="bg-blue-500 text-white text-xs px-1.5 py-0.5">
+                                    ⏳
                                   </Badge>
                                 )}
                                 {isInOven && isDish && (
-                                  <Badge className="bg-orange-500 text-white text-xs">
-                                    🔥 In Oven
+                                  <Badge className="bg-orange-500 text-white text-xs px-1.5 py-0.5">
+                                    🔥
                                   </Badge>
                                 )}
                               </div>
