@@ -1086,7 +1086,6 @@ const CookingSync = () => {
                           {hasOven && (
                             <div className="flex-1 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg">
                               <p className="text-xs text-orange-700 dark:text-orange-400 font-medium mb-0.5">🔥 Oven</p>
-                              <p className="text-xs text-slate-600 dark:text-gray-400">{userOvenType}</p>
                               <p className="text-lg font-bold text-orange-600 dark:text-orange-400">
                                 {cookingPlan.optimal_oven_temp || cookingPlan.commonTemp}°
                               </p>
