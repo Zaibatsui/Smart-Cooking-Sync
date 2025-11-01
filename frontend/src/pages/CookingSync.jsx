@@ -476,6 +476,7 @@ const CookingSync = () => {
         // If any timer hit 0, trigger alarm
         if (newlyFinishedDishIds.length > 0) {
           setFinishedDishIds(newlyFinishedDishIds);
+          setShowAlarmModal(true);
           
           // Play alarm sound
           if (alarmEnabled) {
