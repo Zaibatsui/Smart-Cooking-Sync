@@ -25,6 +25,7 @@ const CookingSync = () => {
   const [userOvenType, setUserOvenType] = useState('Fan');
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState('light');
+  const [alarmEnabled, setAlarmEnabled] = useState(true);
   
   // Form state
   const [formData, setFormData] = useState({
