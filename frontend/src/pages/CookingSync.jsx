@@ -896,13 +896,13 @@ const CookingSync = () => {
                                   {dish.name}
                                 </h3>
                                 {timer && (
-                                  <Badge className="bg-orange-500 text-white text-xs">
-                                    🔥 Cooking
+                                  <Badge className="bg-blue-500 text-white text-xs">
+                                    ⏳ Countdown
                                   </Badge>
                                 )}
-                                {isCompleted && (
-                                  <Badge className="bg-green-500 text-white text-xs">
-                                    ✓ Done
+                                {isInOven && (
+                                  <Badge className="bg-orange-500 text-white text-xs">
+                                    🔥 In Oven
                                   </Badge>
                                 )}
                               </div>
