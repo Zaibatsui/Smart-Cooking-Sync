@@ -286,9 +286,62 @@ async def calculate_cooking_plan(request: CookingPlanRequest):
     
     total_time = max(d['adjustedTime'] for d in adjusted_dishes) if adjusted_dishes else 0
     
+    # Build timeline with dishes and instructions
+    timeline = []
+    timeline_order = 1
+    
+    for dish_data in adjusted_dishes:
+        dish_id = dish_data['id']
+        adjusted_time = dish_data['adjustedTime']
+        start_delay = total_time - adjusted_time
+        
+        # Find original dish to get instructions
+        original_dish = next((d for d in dishes if d['id'] == dish_id), None)
+        
+        # Add dish to timeline
+        timeline.append({
+            "id": dish_id,
+            "type": "dish",
+            "name": dish_data['name'],
+            "parentDishId": None,
+            "adjustedTime": adjusted_time,
+            "startDelay": start_delay,
+            "originalTime": dish_data['originalTime'],
+            "order": timeline_order
+        })
+        timeline_order += 1
+        
+        # Add instructions for this dish
+        if original_dish and original_dish.get('instructions'):
+            for instruction in original_dish['instructions']:
+                # Instruction triggers at: dish_start_time + instruction.afterMinutes
+                # In timeline: instruction_delay = start_delay + instruction.afterMinutes
+                instruction_delay = start_delay + instruction['afterMinutes']
+                instruction_time = total_time - instruction_delay
+                
+                timeline.append({
+                    "id": f"{dish_id}_instruction_{instruction['afterMinutes']}",
+                    "type": "instruction",
+                    "name": instruction['label'],
+                    "parentDishId": dish_id,
+                    "adjustedTime": instruction_time,
+                    "startDelay": instruction_delay,
+                    "originalTime": None,
+                    "order": timeline_order
+                })
+                timeline_order += 1
+    
+    # Sort timeline by startDelay (earliest first)
+    timeline.sort(key=lambda x: x['startDelay'])
+    
+    # Update order after sorting
+    for idx, item in enumerate(timeline):
+        item['order'] = idx + 1
+    
     return {
         "optimal_temp": optimal_temp,
         "adjusted_dishes": adjusted_dishes,
+        "timeline": timeline,
         "total_time": total_time
     }
 
