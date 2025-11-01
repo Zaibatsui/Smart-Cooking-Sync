@@ -61,6 +61,7 @@ const CookingSync = () => {
   const [alarmIntervalRef, setAlarmIntervalRef] = useState(null); // Store alarm interval ID
   const [cookingStarted, setCookingStarted] = useState(false); // Has cooking plan been started
   const [completedDishIds, setCompletedDishIds] = useState([]); // IDs of dishes that completed their cooking
+  const [showAlarmModal, setShowAlarmModal] = useState(false); // Show alarm modal popup
   const [editingDish, setEditingDish] = useState(null); // Dish being edited
   const [editTime, setEditTime] = useState(''); // Edited time value
 
