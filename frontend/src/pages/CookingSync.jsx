@@ -324,20 +324,20 @@ const CookingSync = () => {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111827]' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
-                <Flame className="w-8 h-8 text-white" />
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className={`p-2 sm:p-3 rounded-xl shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
+                <Flame className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
+                <h1 className="text-xl sm:text-3xl font-bold text-slate-800 dark:text-white">
                   Smart Cooking Sync
                 </h1>
-                <p className="text-slate-600 dark:text-gray-400 text-sm">
-                  Multi-dish timer & temperature optimizer
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">
+                  Multi-dish timer & optimizer
                 </p>
               </div>
             </div>
@@ -345,7 +345,7 @@ const CookingSync = () => {
               variant="outline"
               size="icon"
               onClick={() => setShowSettings(!showSettings)}
-              className="rounded-full border-slate-300 dark:border-gray-700"
+              className="rounded-full border-slate-300 dark:border-gray-700 h-10 w-10 sm:h-11 sm:w-11"
             >
               <Settings className="w-5 h-5" />
             </Button>
@@ -354,12 +354,12 @@ const CookingSync = () => {
           {/* Settings Panel */}
           {showSettings && (
             <Card className="mb-4 border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <CardContent className="pt-4 sm:pt-6 px-3 sm:px-6">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   <div>
-                    <Label>Your Oven Type</Label>
+                    <Label className="text-sm">Your Oven Type</Label>
                     <Select value={userOvenType} onValueChange={setUserOvenType}>
-                      <SelectTrigger className="mt-1.5">
+                      <SelectTrigger className="mt-1.5 h-11">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -370,9 +370,9 @@ const CookingSync = () => {
                     </Select>
                   </div>
                   <div>
-                    <Label>Appearance</Label>
+                    <Label className="text-sm">Appearance</Label>
                     <Select value={theme} onValueChange={setTheme}>
-                      <SelectTrigger className="mt-1.5">
+                      <SelectTrigger className="mt-1.5 h-11">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -382,9 +382,9 @@ const CookingSync = () => {
                     </Select>
                   </div>
                   <div>
-                    <Label>Timer Alarm</Label>
+                    <Label className="text-sm">Timer Alarm</Label>
                     <Select value={alarmEnabled ? 'on' : 'off'} onValueChange={(value) => setAlarmEnabled(value === 'on')}>
-                      <SelectTrigger className="mt-1.5">
+                      <SelectTrigger className="mt-1.5 h-11">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
