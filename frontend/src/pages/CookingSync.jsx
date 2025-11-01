@@ -456,28 +456,52 @@ const CookingSync = () => {
     }
   };
 
-  // Start timer for next dish(es) after user has added them to oven
+  // Start timer for next item(s) after user has added them
   const startNextDishes = () => {
-    const nextDishes = getNextDishesToStart();
-    if (nextDishes.length === 0) return;
+    const nextItems = getNextDishesToStart();
+    if (nextItems.length === 0) return;
     
-    // Mark these dishes as now in oven
+    // Mark dishes (not instructions) as now in oven
+    const nextDishes = nextItems.filter(item => item.type === 'dish');
     setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id)]);
     
-    // Start countdown timer for these dishes
+    // Find what comes AFTER these items
+    const allItems = cookingPlan.timeline;
+    const currentDelay = nextItems[0].startDelay;
+    const remainingItems = allItems.filter(item => 
+      item.startDelay > currentDelay && !completedDishIds.includes(item.id)
+    );
+    
     const newTimers = {};
-    nextDishes.forEach(dish => {
-      newTimers[dish.id] = {
-        remaining: dish.adjustedTime * 60,
-        total: dish.adjustedTime * 60
-      };
-    });
+    
+    if (remainingItems.length > 0) {
+      // Find next items to trigger
+      const nextEarliestDelay = Math.min(...remainingItems.map(d => d.startDelay));
+      const timeUntilNext = nextEarliestDelay - currentDelay;
+      
+      // Start countdown to NEXT items
+      nextItems.forEach(item => {
+        newTimers[item.id] = {
+          remaining: timeUntilNext * 60,
+          total: timeUntilNext * 60
+        };
+      });
+    } else {
+      // No more items - these are the last ones, use their cooking time
+      nextItems.forEach(item => {
+        newTimers[item.id] = {
+          remaining: item.adjustedTime * 60,
+          total: item.adjustedTime * 60
+        };
+      });
+    }
+    
     setTimers(newTimers);
     
-    const dishNames = nextDishes.map(d => d.name).join(', ');
+    const itemNames = nextItems.map(d => d.name).join(', ');
     toast({
       title: 'Timer Started',
-      description: `${dishNames} now in oven. Timer started.`
+      description: `${itemNames} ${nextItems[0].type === 'instruction' ? 'acknowledged' : 'now in oven'}. Timer started.`
     });
   };
 
