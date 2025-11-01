@@ -1204,37 +1204,37 @@ const CookingSync = () => {
                                 </div>
                               ) : isInOven && isDish ? (
                                 // Dish is in oven, no timer (cooking until all done)
-                                <div className="text-center py-3">
-                                  <Badge className="bg-orange-500 text-white text-base py-2 px-4">
-                                    🔥 Cooking in Oven
+                                <div className="text-center py-2 sm:py-3">
+                                  <Badge className="bg-orange-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
+                                    🔥 In Oven
                                   </Badge>
-                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-2">
-                                    Will finish with all other dishes
+                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                    Finishes with all dishes
                                   </p>
                                 </div>
                               ) : isInstruction && isInOven ? (
                                 // Instruction completed
-                                <div className="text-center py-3">
-                                  <Badge className="bg-purple-500 text-white text-base py-2 px-4">
-                                    ✓ Completed
+                                <div className="text-center py-2 sm:py-3">
+                                  <Badge className="bg-purple-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
+                                    ✓ Done
                                   </Badge>
                                 </div>
                               ) : isNextToStart && !finishedDishIds.length ? (
                                 // Show Start Timer button for next item(s) (dish or instruction) after alarm stopped
                                 <Button
                                   onClick={startNextDishes}
-                                  className={`w-full h-12 text-base font-semibold ${
+                                  className={`w-full h-10 sm:h-12 text-sm sm:text-base font-semibold ${
                                     isInstruction 
                                       ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
                                       : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
                                   }`}
                                 >
-                                  <Play className="w-5 h-5 mr-2" />
-                                  {isInstruction ? 'Continue' : (isMultipleStart ? `Start ${nextDishes.length} Timers` : 'Start Timer')}
+                                  <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                                  {isInstruction ? 'Continue' : (isMultipleStart ? `Start ${nextDishes.length}` : 'Start Timer')}
                                 </Button>
                               ) : (
                                 // Waiting for alarm or previous action
-                                <div className="text-center py-3 text-slate-500 dark:text-gray-500 text-sm">
+                                <div className="text-center py-2 sm:py-3 text-slate-500 dark:text-gray-500 text-xs sm:text-sm">
                                   ⏸️ Waiting...
                                 </div>
                               )}
