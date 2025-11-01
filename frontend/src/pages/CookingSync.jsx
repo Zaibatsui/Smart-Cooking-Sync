@@ -859,36 +859,40 @@ const CookingSync = () => {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="temperature" className="text-sm">Temperature</Label>
-                      <Input
-                        id="temperature"
-                        type="number"
-                        placeholder="200"
-                        value={formData.temperature}
-                        onChange={(e) => setFormData({ ...formData, temperature: e.target.value })}
-                        className="mt-1.5 h-11 text-base"
-                        inputMode="numeric"
-                      />
+                  {/* Temperature - Hidden for Microwave, Auto-filled for Air Fryer with conversion */}
+                  {formData.cookingMethod !== 'Microwave' && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="temperature" className="text-sm">Temperature</Label>
+                        <Input
+                          id="temperature"
+                          type="number"
+                          placeholder="200"
+                          value={formData.temperature}
+                          onChange={(e) => setFormData({ ...formData, temperature: e.target.value })}
+                          className="mt-1.5 h-11 text-base"
+                          inputMode="numeric"
+                          disabled={formData.cookingMethod === 'Air Fryer' && formData.convertFromOven}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="unit" className="text-sm">Unit</Label>
+                        <Select
+                          value={formData.unit}
+                          onValueChange={(value) => setFormData({ ...formData, unit: value })}
+                        >
+                          <SelectTrigger className="mt-1.5 h-11">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {temperatureUnits.map(unit => (
+                              <SelectItem key={unit} value={unit}>°{unit}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                    <div>
-                      <Label htmlFor="unit" className="text-sm">Unit</Label>
-                      <Select
-                        value={formData.unit}
-                        onValueChange={(value) => setFormData({ ...formData, unit: value })}
-                      >
-                        <SelectTrigger className="mt-1.5 h-11">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {temperatureUnits.map(unit => (
-                            <SelectItem key={unit} value={unit}>°{unit}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
+                  )}
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
