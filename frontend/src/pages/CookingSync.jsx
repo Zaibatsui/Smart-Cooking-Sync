@@ -455,50 +455,48 @@ const CookingSync = () => {
 
   // Timer countdown effect - handles all countdown timers
   useEffect(() => {
-    // Don't run if cooking hasn't started or timers are paused
-    if (!cookingStarted || timersPaused) return;
+    // Don't run if cooking hasn't started or if an alarm is already active
+    if (!cookingStarted || activeAlarmDishId) return;
     
     const interval = setInterval(() => {
       setTimers(prev => {
         const updated = { ...prev };
         let hasChanges = false;
-        let alarmTriggered = null;
+        let alarmTriggeredDishId = null;
 
         Object.keys(updated).forEach(dishId => {
           const timer = updated[dishId];
           
-          // Only countdown if timer is running
-          if (timer.isRunning && timer.remaining > 0) {
-            updated[dishId].remaining -= 1;
+          // Countdown if timer has time remaining
+          if (timer.remaining > 0) {
+            updated[dishId] = {
+              ...timer,
+              remaining: timer.remaining - 1
+            };
             hasChanges = true;
 
             // Check if this timer just hit 0
             if (updated[dishId].remaining === 0) {
-              updated[dishId].isRunning = false;
-              alarmTriggered = dishId;
+              alarmTriggeredDishId = dishId;
             }
           }
         });
 
         // If a timer hit 0, trigger alarm
-        if (alarmTriggered && !currentlyAlarmingDish) {
-          const dish = cookingPlan?.timeline.find(d => d.id === alarmTriggered);
+        if (alarmTriggeredDishId) {
+          const dish = cookingPlan?.timeline.find(d => d.id === alarmTriggeredDishId);
+          
+          // Set this as the currently alarming dish
+          setActiveAlarmDishId(alarmTriggeredDishId);
           
           // Play alarm sound
           if (alarmEnabled) {
-            startAlarm(alarmTriggered);
+            startAlarm();
           }
           
-          // Set this as the currently alarming dish
-          setCurrentlyAlarmingDish(alarmTriggered);
-          setActiveAlarms(prev => ({ ...prev, [alarmTriggered]: true }));
-          
-          // Pause all timers
-          setTimersPaused(true);
-          
           toast({
-            title: `Time to add ${dish?.name}! 🔔`,
-            description: 'Click "Stop Alarm" then start cooking',
+            title: `${dish?.name} Ready! 🔔`,
+            description: 'Click "Stop Alarm" to continue',
             variant: 'default'
           });
         }
@@ -508,7 +506,7 @@ const CookingSync = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cookingStarted, timersPaused, currentlyAlarmingDish, cookingPlan, alarmEnabled]);
+  }, [cookingStarted, activeAlarmDishId, cookingPlan, alarmEnabled]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
