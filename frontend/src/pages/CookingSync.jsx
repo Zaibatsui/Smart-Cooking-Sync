@@ -1182,24 +1182,24 @@ const CookingSync = () => {
 
                           {/* Timer Display */}
                           {cookingStarted && (
-                            <div className="space-y-3">
+                            <div className="space-y-2 sm:space-y-3">
                               {timer ? (
                                 // Timer counting down
-                                <div className="space-y-2">
+                                <div className="space-y-1 sm:space-y-2">
                                   <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600 dark:text-gray-400">
-                                      {isInstruction ? 'Time to action:' : (isInOven ? 'Add next in:' : 'Time remaining:')}
+                                    <span className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">
+                                      {isInstruction ? 'Action in:' : (isInOven ? 'Next in:' : 'Time:')}
                                     </span>
-                                    <span className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
+                                    <span className="text-2xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
                                       {formatTime(timer.remaining)}
                                     </span>
                                   </div>
                                   <Progress 
                                     value={100 - (timer.remaining / timer.total) * 100} 
-                                    className="h-2.5 sm:h-2"
+                                    className="h-1.5 sm:h-2"
                                   />
-                                  <p className="text-xs text-slate-500 dark:text-gray-500 text-center">
-                                    {isInstruction ? '⏳ Alarm will sound for instruction' : (isInOven ? '⏳ Alarm will sound when ready to add next' : '⏳ Timer running')}
+                                  <p className="text-xs text-slate-500 dark:text-gray-500 text-center hidden sm:block">
+                                    {isInstruction ? '⏳ Alarm for instruction' : (isInOven ? '⏳ Alarm when ready' : '⏳ Running')}
                                   </p>
                                 </div>
                               ) : isInOven && isDish ? (
