@@ -6,7 +6,7 @@
 - Docker Engine 20.10+
 - Docker Compose 2.0+
 - At least 2GB RAM available
-- Ports 3000, 8001, and 27017 available (or modify in docker-compose.yml)
+- Ports 3001, 8002, and 27017 available (or modify in docker-compose.yml)
 
 ### 2. Setup
 
