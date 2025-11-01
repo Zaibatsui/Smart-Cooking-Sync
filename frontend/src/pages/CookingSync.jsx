@@ -226,12 +226,14 @@ const CookingSync = () => {
     const dish = cookingPlan.timeline.find(d => d.id === dishId);
     if (!dish) return;
 
+    const now = Date.now();
     setTimers(prev => ({
       ...prev,
       [dishId]: {
         remaining: dish.adjustedTime * 60, // Convert to seconds
         total: dish.adjustedTime * 60,
-        isRunning: true
+        isRunning: true,
+        startTime: now // Store start timestamp
       }
     }));
 
