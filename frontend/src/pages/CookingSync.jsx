@@ -323,8 +323,9 @@ const CookingSync = () => {
     
     setCookingStarted(true);
     setCompletedDishIds([]);
-    setActiveAlarmDishId(null);
+    setFinishedDishIds([]);
     setTimers({});
+    stopAlarm();
     
     // Find first dishes to start (those with earliest startDelay)
     const firstDishes = getNextDishesToStart();
@@ -352,7 +353,7 @@ const CookingSync = () => {
   const stopCookingPlan = () => {
     setCookingStarted(false);
     setCompletedDishIds([]);
-    setActiveAlarmDishId(null);
+    setFinishedDishIds([]);
     setTimers({});
     stopAlarm();
     
@@ -362,27 +363,24 @@ const CookingSync = () => {
     });
   };
 
-  // Stop the alarm for a specific dish
-  const stopDishAlarm = (dishId) => {
+  // Stop all alarms - marks all finished dishes as completed
+  const stopAllAlarms = () => {
     // Stop the alarm sound
     stopAlarm();
     
-    // Clear the alarming dish
-    setActiveAlarmDishId(null);
+    // Mark all finished dishes as completed
+    setCompletedDishIds(prev => [...prev, ...finishedDishIds]);
     
-    // Remove timer for this dish and mark as completed
-    setTimers(prev => {
-      const updated = { ...prev };
-      delete updated[dishId];
-      return updated;
-    });
+    // Clear finished dishes list
+    setFinishedDishIds([]);
     
-    setCompletedDishIds(prev => [...prev, dishId]);
+    const finishedDishNames = finishedDishIds
+      .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
+      .join(', ');
     
-    const dish = cookingPlan?.timeline.find(d => d.id === dishId);
     toast({
       title: 'Alarm Stopped',
-      description: `${dish?.name} complete! ${getNextDishesToStart().length > 0 ? 'Start next dish when ready.' : ''}`
+      description: `${finishedDishNames} complete! ${getNextDishesToStart().length > 0 ? 'Start next dish when ready.' : ''}`
     });
   };
 
@@ -393,7 +391,7 @@ const CookingSync = () => {
     if (nextDishes.length === 0) return;
     
     // Start timers for next dish(es)
-    const newTimers = { ...timers };
+    const newTimers = {};
     nextDishes.forEach(dish => {
       newTimers[dish.id] = {
         remaining: dish.adjustedTime * 60,
