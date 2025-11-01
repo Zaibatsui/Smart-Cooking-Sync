@@ -63,9 +63,15 @@ const CookingSync = () => {
   
   const [instructionInput, setInstructionInput] = useState({ label: '', afterMinutes: '' });
   
-  // Air Fryer Conversion (from research: -15°C and ×0.8)
-  const convertOvenToAirFryer = (ovenTemp, ovenTime) => {
-    const airFryerTemp = Math.round(ovenTemp - 15); // Reduce by 15°C
+  // Air Fryer Conversion (from research: -15°C from Fan equivalent and ×0.8 time)
+  const convertOvenToAirFryer = (ovenTemp, ovenTime, sourceOvenType = 'Fan') => {
+    // First normalize to Fan equivalent
+    let fanTemp = ovenTemp;
+    if (sourceOvenType === 'Electric' || sourceOvenType === 'Gas') {
+      fanTemp = ovenTemp - 20; // Convert Electric/Gas to Fan
+    }
+    // Then convert Fan to Air Fryer
+    const airFryerTemp = Math.round(fanTemp - 15); // Reduce by 15°C from Fan
     const airFryerTime = Math.round(ovenTime * 0.8); // Reduce by 20%
     return { airFryerTemp, airFryerTime };
   };
