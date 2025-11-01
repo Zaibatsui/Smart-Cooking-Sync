@@ -79,8 +79,8 @@ class CookingPlanRequest(BaseModel):
 class AdjustedDish(BaseModel):
     id: str
     name: str
-    originalTemp: float
-    adjustedTemp: float
+    originalTemp: Optional[float]  # None for Microwave
+    adjustedTemp: Optional[float]  # None for Microwave
     originalTime: int
     adjustedTime: int
     order: int
