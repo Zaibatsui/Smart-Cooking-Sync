@@ -102,18 +102,26 @@ const CookingSync = () => {
   const [editingDish, setEditingDish] = useState(null); // Dish being edited
   const [editTime, setEditTime] = useState(''); // Edited time value
 
-  // Load dishes from backend on mount
+  // Load data on mount
   useEffect(() => {
-    const fetchDishes = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
+        
+        // Load dishes from API
         const fetchedDishes = await dishesAPI.getAll();
         setDishes(fetchedDishes);
+        
+        // Load tasks from localStorage
+        const savedTasks = localStorage.getItem('cookingSyncTasks');
+        if (savedTasks) {
+          setTasks(JSON.parse(savedTasks));
+        }
       } catch (error) {
-        console.error('Error fetching dishes:', error);
+        console.error('Error loading data:', error);
         toast({
           title: 'Error',
-          description: 'Failed to load dishes from server',
+          description: 'Failed to load data from server',
           variant: 'destructive'
         });
       } finally {
@@ -121,7 +129,7 @@ const CookingSync = () => {
       }
     };
 
-    fetchDishes();
+    loadData();
   }, []);
 
   // Function to play single beep
