@@ -73,8 +73,9 @@ const CookingSync = () => {
   const [taskInstructionInput, setTaskInstructionInput] = useState({ label: '', afterMinutes: '' });
   
   // UI collapse state
-  const [showAdditionalInstructions, setShowAdditionalInstructions] = useState(false);
+  const [showDishInstructions, setShowDishInstructions] = useState(false);
   const [showTaskInstructions, setShowTaskInstructions] = useState(false);
+  const [showTaskAdditionalInstructions, setShowTaskAdditionalInstructions] = useState(false);
   
   // Air Fryer Conversion (from research: -15°C from Fan equivalent and ×0.8 time)
   const convertOvenToAirFryer = (ovenTemp, ovenTime, sourceOvenType = 'Fan') => {
