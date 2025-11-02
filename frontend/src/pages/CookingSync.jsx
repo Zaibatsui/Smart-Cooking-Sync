@@ -507,7 +507,7 @@ const CookingSync = () => {
   };
 
   // Add general task
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (!taskFormData.name) {
       toast({
         title: 'Missing Information',
@@ -530,30 +530,39 @@ const CookingSync = () => {
       return;
     }
 
-    const newTask = {
-      id: `task-${Date.now()}`,
-      name: taskFormData.name,
-      duration: hasDuration ? parseInt(taskFormData.duration) : null,
-      afterMinutes: hasAfterMinutes ? parseInt(taskFormData.afterMinutes) : null,
-      taskType: hasDuration ? 'duration' : 'trigger',
-      instructions: taskFormData.instructions,
-      type: 'task'
-    };
+    try {
+      const taskData = {
+        name: taskFormData.name,
+        duration: hasDuration ? parseInt(taskFormData.duration) : null,
+        afterMinutes: hasAfterMinutes ? parseInt(taskFormData.afterMinutes) : null,
+        taskType: hasDuration ? 'duration' : 'trigger',
+        instructions: taskFormData.instructions
+      };
 
-    setTasks([...tasks, newTask]);
-    setTaskFormData({
-      name: '',
-      duration: '',
-      afterMinutes: '',
-      taskType: 'duration',
-      instructions: []
-    });
-    setShowTaskAdditionalInstructions(false);
+      const newTask = await tasksAPI.create(taskData);
+      setTasks([...tasks, newTask]);
+      
+      setTaskFormData({
+        name: '',
+        duration: '',
+        afterMinutes: '',
+        taskType: 'duration',
+        instructions: []
+      });
+      setShowTaskAdditionalInstructions(false);
 
-    toast({
-      title: 'Task Added',
-      description: `${newTask.name} has been added to your cooking plan`
-    });
+      toast({
+        title: 'Task Added',
+        description: `${newTask.name} has been added to your cooking plan`
+      });
+    } catch (error) {
+      console.error('Error adding task:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add task',
+        variant: 'destructive'
+      });
+    }
   };
 
   // Remove task
