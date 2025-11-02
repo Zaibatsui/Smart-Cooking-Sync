@@ -243,8 +243,9 @@ const CookingSync = () => {
               timeline.push({
                 id: `${task.id}_instruction_${instruction.afterMinutes}`,
                 type: "instruction",
-                name: instruction.label,
+                name: `${task.name} - ${instruction.label}`,
                 parentDishId: task.id,
+                parentName: task.name,
                 adjustedTime: instructionTime,
                 startDelay: instructionDelay >= 0 ? instructionDelay : 0,
                 originalTime: null,
