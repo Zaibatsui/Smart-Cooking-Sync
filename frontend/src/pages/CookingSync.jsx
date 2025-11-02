@@ -566,16 +566,26 @@ const CookingSync = () => {
   };
 
   // Remove task
-  const handleRemoveTask = (id) => {
-    setTasks(tasks.filter(t => t.id !== id));
-    const newTimers = { ...timers };
-    delete newTimers[id];
-    setTimers(newTimers);
-    
-    toast({
-      title: 'Task Removed',
-      description: 'Task has been removed from your plan'
-    });
+  const handleRemoveTask = async (id) => {
+    try {
+      await tasksAPI.delete(id);
+      setTasks(tasks.filter(t => t.id !== id));
+      const newTimers = { ...timers };
+      delete newTimers[id];
+      setTimers(newTimers);
+      
+      toast({
+        title: 'Task Removed',
+        description: 'Task has been removed from your plan'
+      });
+    } catch (error) {
+      console.error('Error removing task:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to remove task',
+        variant: 'destructive'
+      });
+    }
   };
 
   // Get dishes that should start next (not completed, earliest startDelay)
