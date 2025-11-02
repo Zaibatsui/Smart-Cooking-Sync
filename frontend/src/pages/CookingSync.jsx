@@ -550,12 +550,6 @@ const CookingSync = () => {
     });
   };
 
-    toast({
-      title: 'Task Added',
-      description: `${newTask.name} has been added to your cooking plan`
-    });
-  };
-
   // Remove task
   const handleRemoveTask = (id) => {
     setTasks(tasks.filter(t => t.id !== id));
