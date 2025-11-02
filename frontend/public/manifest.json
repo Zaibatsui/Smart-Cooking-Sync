@@ -34,6 +34,29 @@
       "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "screenshot-1.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow",
+      "label": "Add dishes with cooking details"
+    },
+    {
+      "src": "screenshot-2.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow",
+      "label": "View optimised cooking plan"
+    },
+    {
+      "src": "screenshot-3.png",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow",
+      "label": "Air fryer oven conversion"
+    }
+  ],
   "start_url": "/",
   "scope": "/",
   "id": "/",
