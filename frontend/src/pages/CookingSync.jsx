@@ -1840,12 +1840,22 @@ const CookingSync = () => {
                                     Finishes with all items
                                   </p>
                                 </div>
-                              ) : isInstruction && isInOven ? (
-                                // Instruction completed
+                              ) : isInstruction && isInOven && !timer ? (
+                                // Instruction completed (timer finished)
                                 <div className="text-center py-2 sm:py-3">
                                   <Badge className="bg-purple-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
                                     ✓ Done
                                   </Badge>
+                                </div>
+                              ) : isInstruction && isInOven && timer ? (
+                                // Instruction in progress with timer
+                                <div className="text-center py-2 sm:py-3">
+                                  <Badge className="bg-purple-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
+                                    ⏳ In Progress
+                                  </Badge>
+                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                    Timer running
+                                  </p>
                                 </div>
                               ) : isNextToStart && !finishedDishIds.length ? (
                                 // Show Start Timer button for next item(s) (dish, task, or instruction) after alarm stopped
