@@ -1824,6 +1824,16 @@ const CookingSync = () => {
                                     Finishes with all dishes
                                   </p>
                                 </div>
+                              ) : isInOven && isTask ? (
+                                // Task is in progress
+                                <div className="text-center py-2 sm:py-3">
+                                  <Badge className="bg-blue-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
+                                    ✓ In Progress
+                                  </Badge>
+                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                    Finishes with all items
+                                  </p>
+                                </div>
                               ) : isInstruction && isInOven ? (
                                 // Instruction completed
                                 <div className="text-center py-2 sm:py-3">
