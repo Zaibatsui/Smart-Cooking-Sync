@@ -72,6 +72,26 @@ class Dish(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+# Task Models
+class TaskCreate(BaseModel):
+    name: str
+    duration: Optional[int] = None  # Duration in minutes (for duration tasks)
+    afterMinutes: Optional[int] = None  # Trigger time in minutes (for trigger tasks)
+    taskType: str = "duration"  # "duration" or "trigger"
+    instructions: List[Instruction] = []
+
+class Task(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    duration: Optional[int] = None
+    afterMinutes: Optional[int] = None
+    taskType: str = "duration"
+    instructions: List[Instruction] = []
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
 class CookingPlanRequest(BaseModel):
     user_oven_type: str  # The user's actual oven type
 
