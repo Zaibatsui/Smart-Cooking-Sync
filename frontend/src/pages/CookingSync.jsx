@@ -220,44 +220,78 @@ const CookingSync = () => {
           totalTime = planData.total_time;
         }
         
-        // Add tasks to timeline (they finish at the same time as everything else)
+        // Add tasks to timeline
         tasks.forEach((task, index) => {
-          const startDelay = totalTime - task.duration;
-          
-          // Add main task
-          timeline.push({
-            id: task.id,
-            type: "task",
-            name: task.name,
-            parentDishId: null,
-            adjustedTime: task.duration,
-            startDelay: startDelay >= 0 ? startDelay : 0,
-            originalTime: task.duration,
-            order: timeline.length + 1
-          });
-          
-          // Add task instructions
-          if (task.instructions && task.instructions.length > 0) {
-            const taskFinishTime = startDelay + task.duration;  // When the parent task finishes
+          if (task.taskType === 'duration' && task.duration) {
+            // Duration task: finishes at the same time as everything else
+            const startDelay = totalTime - task.duration;
             
-            task.instructions.forEach(instruction => {
-              const instructionDelay = startDelay + instruction.afterMinutes;
-              
-              // Instruction timer should count until parent task finishes
-              const instructionTime = taskFinishTime - instructionDelay;
-              
-              timeline.push({
-                id: `${task.id}_instruction_${instruction.afterMinutes}`,
-                type: "instruction",
-                name: `${task.name} - ${instruction.label}`,
-                parentDishId: task.id,
-                parentName: task.name,
-                adjustedTime: instructionTime > 0 ? instructionTime : 0,
-                startDelay: instructionDelay >= 0 ? instructionDelay : 0,
-                originalTime: null,
-                order: timeline.length + 1
-              });
+            // Add main task
+            timeline.push({
+              id: task.id,
+              type: "task",
+              name: task.name,
+              parentDishId: null,
+              adjustedTime: task.duration,
+              startDelay: startDelay >= 0 ? startDelay : 0,
+              originalTime: task.duration,
+              order: timeline.length + 1
             });
+            
+            // Add task instructions
+            if (task.instructions && task.instructions.length > 0) {
+              const taskFinishTime = startDelay + task.duration;  // When the parent task finishes
+              
+              task.instructions.forEach(instruction => {
+                const instructionDelay = startDelay + instruction.afterMinutes;
+                
+                // Instruction timer should count until parent task finishes
+                const instructionTime = taskFinishTime - instructionDelay;
+                
+                timeline.push({
+                  id: `${task.id}_instruction_${instruction.afterMinutes}`,
+                  type: "instruction",
+                  name: `${task.name} - ${instruction.label}`,
+                  parentDishId: task.id,
+                  parentName: task.name,
+                  adjustedTime: instructionTime > 0 ? instructionTime : 0,
+                  startDelay: instructionDelay >= 0 ? instructionDelay : 0,
+                  originalTime: null,
+                  order: timeline.length + 1
+                });
+              });
+            }
+          } else if (task.taskType === 'trigger' && task.afterMinutes) {
+            // Trigger task: happens at a specific time (like an instruction)
+            timeline.push({
+              id: task.id,
+              type: "task",
+              name: task.name,
+              parentDishId: null,
+              adjustedTime: 0, // Instant action
+              startDelay: task.afterMinutes,
+              originalTime: null,
+              order: timeline.length + 1
+            });
+            
+            // Trigger tasks don't typically have instructions, but support them anyway
+            if (task.instructions && task.instructions.length > 0) {
+              task.instructions.forEach(instruction => {
+                const instructionDelay = task.afterMinutes + instruction.afterMinutes;
+                
+                timeline.push({
+                  id: `${task.id}_instruction_${instruction.afterMinutes}`,
+                  type: "instruction",
+                  name: `${task.name} - ${instruction.label}`,
+                  parentDishId: task.id,
+                  parentName: task.name,
+                  adjustedTime: 0,
+                  startDelay: instructionDelay,
+                  originalTime: null,
+                  order: timeline.length + 1
+                });
+              });
+            }
           }
         });
         
