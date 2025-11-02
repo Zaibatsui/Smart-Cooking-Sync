@@ -69,6 +69,53 @@ export const dishesAPI = {
   },
 };
 
+// Tasks API
+export const tasksAPI = {
+  // Get all tasks
+  getAll: async () => {
+    try {
+      const response = await api.get('/api/tasks');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      throw error;
+    }
+  },
+
+  // Create a new task
+  create: async (taskData) => {
+    try {
+      const response = await api.post('/api/tasks', taskData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw error;
+    }
+  },
+
+  // Delete a specific task
+  delete: async (taskId) => {
+    try {
+      const response = await api.delete(`/api/tasks/${taskId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw error;
+    }
+  },
+
+  // Clear all tasks
+  clearAll: async () => {
+    try {
+      const response = await api.delete('/api/tasks');
+      return response.data;
+    } catch (error) {
+      console.error('Error clearing tasks:', error);
+      throw error;
+    }
+  },
+};
+
 // Cooking Plan API
 export const cookingPlanAPI = {
   // Calculate cooking plan
