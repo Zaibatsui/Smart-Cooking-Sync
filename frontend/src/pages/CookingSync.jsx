@@ -467,6 +467,7 @@ const CookingSync = () => {
     try {
       await dishesAPI.clearAll();
       setDishes([]);
+      setTasks([]);
       setTimers({});
       setCookingStarted(false);
       setCompletedDishIds([]);
@@ -475,7 +476,7 @@ const CookingSync = () => {
       stopAlarm();
       toast({
         title: 'All Cleared',
-        description: 'All dishes and timers have been removed'
+        description: 'All dishes, tasks and timers have been removed'
       });
     } catch (error) {
       console.error('Error clearing dishes:', error);
