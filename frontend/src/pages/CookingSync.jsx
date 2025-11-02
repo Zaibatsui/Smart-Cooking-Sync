@@ -19,7 +19,7 @@ import {
   adjustCookingTime,
   roundToNearestTen 
 } from '../mock';
-import { dishesAPI, cookingPlanAPI } from '../services/api';
+import { dishesAPI, cookingPlanAPI, tasksAPI } from '../services/api';
 
 const CookingSync = () => {
   // Load saved user settings from localStorage (not dishes - those come from backend)
