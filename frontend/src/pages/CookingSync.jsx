@@ -199,22 +199,81 @@ const CookingSync = () => {
 
   useEffect(() => {
     const calculatePlan = async () => {
-      if (dishes.length === 0) {
+      if (dishes.length === 0 && tasks.length === 0) {
         setCookingPlan(null);
         return;
       }
 
       try {
         setCalculatingPlan(true);
-        const planData = await cookingPlanAPI.calculate(userOvenType);
         
-        // Use the timeline from backend (includes dishes and instructions)
-        const timeline = planData.timeline || [];
+        let timeline = [];
+        let totalTime = 0;
+        
+        // Get backend plan for dishes if we have any
+        if (dishes.length > 0) {
+          const planData = await cookingPlanAPI.calculate(userOvenType);
+          timeline = planData.timeline || [];
+          totalTime = planData.total_time;
+        }
+        
+        // Add tasks to timeline (they finish at the same time as everything else)
+        tasks.forEach((task, index) => {
+          const startDelay = totalTime - task.duration;
+          
+          // Add main task
+          timeline.push({
+            id: task.id,
+            type: "task",
+            name: task.name,
+            parentDishId: null,
+            adjustedTime: task.duration,
+            startDelay: startDelay >= 0 ? startDelay : 0,
+            originalTime: task.duration,
+            order: timeline.length + 1
+          });
+          
+          // Add task instructions
+          if (task.instructions && task.instructions.length > 0) {
+            task.instructions.forEach(instruction => {
+              const instructionDelay = startDelay + instruction.afterMinutes;
+              const instructionTime = totalTime - instructionDelay;
+              
+              timeline.push({
+                id: `${task.id}_instruction_${instruction.afterMinutes}`,
+                type: "instruction",
+                name: instruction.label,
+                parentDishId: task.id,
+                adjustedTime: instructionTime,
+                startDelay: instructionDelay >= 0 ? instructionDelay : 0,
+                originalTime: null,
+                order: timeline.length + 1
+              });
+            });
+          }
+        });
+        
+        // Sort timeline by startDelay
+        timeline.sort((a, b) => a.startDelay - b.startDelay);
+        
+        // Update order
+        timeline.forEach((item, idx) => {
+          item.order = idx + 1;
+        });
+        
+        // Update total time if tasks are longer than dishes
+        if (tasks.length > 0) {
+          const maxTaskDuration = Math.max(...tasks.map(t => t.duration), 0);
+          totalTime = Math.max(totalTime, maxTaskDuration);
+        }
 
         setCookingPlan({
-          commonTemp: planData.optimal_temp,
+          commonTemp: dishes.length > 0 ? await (async () => {
+            const planData = await cookingPlanAPI.calculate(userOvenType);
+            return planData.optimal_temp;
+          })().catch(() => 180) : 180,
           timeline,
-          totalTime: planData.total_time
+          totalTime
         });
       } catch (error) {
         console.error('Error calculating cooking plan:', error);
