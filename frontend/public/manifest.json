@@ -17,8 +17,12 @@
     }
   ],
   "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
   "theme_color": "#059669",
   "background_color": "#ffffff",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "categories": ["food", "utilities", "lifestyle", "productivity"],
+  "prefer_related_applications": false
 }
