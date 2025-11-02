@@ -1832,13 +1832,15 @@ const CookingSync = () => {
                                   </Badge>
                                 </div>
                               ) : isNextToStart && !finishedDishIds.length ? (
-                                // Show Start Timer button for next item(s) (dish or instruction) after alarm stopped
+                                // Show Start Timer button for next item(s) (dish, task, or instruction) after alarm stopped
                                 <Button
                                   onClick={startNextDishes}
                                   className={`w-full h-10 sm:h-12 text-sm sm:text-base font-semibold ${
-                                    isInstruction 
-                                      ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
-                                      : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
+                                    isTask
+                                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
+                                      : isInstruction 
+                                        ? 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
+                                        : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
                                   }`}
                                 >
                                   <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
