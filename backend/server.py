@@ -252,9 +252,14 @@ async def update_dish_time(dish_id: str, cookingTime: int):
 
 @api_router.delete("/dishes")
 async def clear_all_dishes():
-    """Clear all dishes"""
-    result = await db.dishes.delete_many({})
-    return {"message": "All dishes cleared", "deleted_count": result.deleted_count}
+    """Clear all dishes and tasks"""
+    dishes_result = await db.dishes.delete_many({})
+    tasks_result = await db.tasks.delete_many({})
+    return {
+        "message": "All dishes and tasks cleared", 
+        "dishes_deleted": dishes_result.deleted_count,
+        "tasks_deleted": tasks_result.deleted_count
+    }
 
 
 # Task Endpoints
