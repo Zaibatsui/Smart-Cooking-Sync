@@ -1143,7 +1143,7 @@ const CookingSync = () => {
                       <div className="flex items-center gap-2">
                         <span className="text-lg">📋</span>
                         <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
-                          General Cooking Tasks ({taskFormData.instructions.length})
+                          General Cooking Tasks
                         </span>
                       </div>
                       <ChevronDown className={`w-5 h-5 text-blue-600 dark:text-blue-400 transition-transform ${showTaskInstructions ? 'rotate-180' : ''}`} />
@@ -1175,6 +1175,78 @@ const CookingSync = () => {
                           />
                         </div>
 
+                        {/* Task Instructions - collapsible */}
+                        <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
+                          <button
+                            type="button"
+                            onClick={() => setShowAdditionalInstructions(!showAdditionalInstructions)}
+                            className="w-full flex items-center justify-between text-left mb-2"
+                          >
+                            <Label className="text-xs font-semibold cursor-pointer text-blue-700 dark:text-blue-300">
+                              Additional Instructions ({taskFormData.instructions.length})
+                            </Label>
+                            <ChevronDown className={`w-3.5 h-3.5 text-blue-600 dark:text-blue-400 transition-transform ${showAdditionalInstructions ? 'rotate-180' : ''}`} />
+                          </button>
+                          
+                          {showAdditionalInstructions && (
+                            <div className="space-y-2">
+                              {/* Show added instructions */}
+                              {taskFormData.instructions.length > 0 && (
+                                <div className="space-y-1.5">
+                                  {taskFormData.instructions.map((instruction, index) => (
+                                    <div key={index} className="flex items-center gap-2 p-2 bg-white dark:bg-gray-700 rounded border border-blue-200 dark:border-blue-600">
+                                      <span className="flex-1 text-xs">
+                                        <strong>After {instruction.afterMinutes} min:</strong> {instruction.label}
+                                      </span>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => handleRemoveTaskInstruction(index)}
+                                        className="h-7 w-7 p-0"
+                                      >
+                                        <X className="w-3.5 h-3.5" />
+                                      </Button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Add instruction input */}
+                              <div className="grid grid-cols-3 gap-1.5">
+                                <div className="col-span-2">
+                                  <Input
+                                    placeholder="e.g., Stir, Check temp"
+                                    value={taskInstructionInput.label}
+                                    onChange={(e) => setTaskInstructionInput(prev => ({ ...prev, label: e.target.value }))}
+                                    className="h-9 text-sm"
+                                  />
+                                </div>
+                                <div>
+                                  <Input
+                                    type="number"
+                                    placeholder="After (min)"
+                                    value={taskInstructionInput.afterMinutes}
+                                    onChange={(e) => setTaskInstructionInput(prev => ({ ...prev, afterMinutes: e.target.value }))}
+                                    className="h-9 text-sm"
+                                    inputMode="numeric"
+                                  />
+                                </div>
+                              </div>
+                              
+                              <Button
+                                type="button"
+                                onClick={handleAddTaskInstruction}
+                                variant="outline"
+                                size="sm"
+                                className="w-full h-8 text-xs"
+                              >
+                                <Plus className="w-3.5 h-3.5 mr-1.5" />
+                                Add Instruction
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
                         <Button
                           type="button"
                           onClick={handleAddTask}
@@ -1190,11 +1262,15 @@ const CookingSync = () => {
 
                   <Separator className="my-4" />
 
-                  {/* Additional Instructions Section - Now Universal */}
+                  {/* Additional Instructions Section - For Dishes */}
                   <div className="space-y-3">
                     <button
                       type="button"
-                      onClick={() => setShowAdditionalInstructions(!showAdditionalInstructions)}
+                      onClick={() => {
+                        // Toggle separate state for dish instructions
+                        const newState = !formData.instructions || formData.instructions.length === 0 ? !showAdditionalInstructions : showAdditionalInstructions;
+                        setShowAdditionalInstructions(!newState);
+                      }}
                       className="w-full flex items-center justify-between text-left"
                     >
                       <Label className="text-sm font-semibold cursor-pointer">
