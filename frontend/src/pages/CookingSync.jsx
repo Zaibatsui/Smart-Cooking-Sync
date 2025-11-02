@@ -230,7 +230,7 @@ const CookingSync = () => {
     };
 
     calculatePlan();
-  }, [dishes, userOvenType]);
+  }, [dishes, tasks, userOvenType]);
 
   // Add instruction to the form
   const handleAddInstruction = () => {
