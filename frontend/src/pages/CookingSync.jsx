@@ -1267,18 +1267,16 @@ const CookingSync = () => {
                   <div className="space-y-3">
                     <button
                       type="button"
-                      onClick={() => {
-                        // Toggle separate state for dish instructions
-                        const newState = !formData.instructions || formData.instructions.length === 0 ? !showAdditionalInstructions : showAdditionalInstructions;
-                        setShowAdditionalInstructions(!newState);
-                      }}
+                      onClick={() => setShowDishInstructions(!showDishInstructions)}
                       className="w-full flex items-center justify-between text-left"
                     >
                       <Label className="text-sm font-semibold cursor-pointer">
                         Additional Instructions ({formData.instructions.length})
                       </Label>
-                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-400 transition-transform ${showAdditionalInstructions ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-400 transition-transform ${showDishInstructions ? 'rotate-180' : ''}`} />
                     </button>
+                    
+                    {showDishInstructions && (
                     
                     {showAdditionalInstructions && (
                       <div className="space-y-3">
