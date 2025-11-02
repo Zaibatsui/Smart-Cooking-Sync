@@ -257,6 +257,46 @@ async def clear_all_dishes():
     return {"message": "All dishes cleared", "deleted_count": result.deleted_count}
 
 
+# Task Endpoints
+@api_router.post("/tasks", response_model=Task)
+async def create_task(task: TaskCreate):
+    """Create a new task"""
+    task_dict = task.model_dump()
+    task_dict['id'] = str(uuid.uuid4())
+    task_dict['created_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.tasks.insert_one(task_dict)
+    return Task(**task_dict)
+
+@api_router.get("/tasks", response_model=List[Task])
+async def get_all_tasks():
+    """Get all tasks"""
+    tasks = await db.tasks.find({}, {"_id": 0}).to_list(1000)
+    return [Task(**task) for task in tasks]
+
+@api_router.get("/tasks/{task_id}", response_model=Task)
+async def get_task(task_id: str):
+    """Get a specific task"""
+    task = await db.tasks.find_one({"id": task_id}, {"_id": 0})
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return Task(**task)
+
+@api_router.delete("/tasks/{task_id}")
+async def delete_task(task_id: str):
+    """Delete a specific task"""
+    result = await db.tasks.delete_one({"id": task_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return {"message": "Task deleted successfully"}
+
+@api_router.delete("/tasks")
+async def clear_all_tasks():
+    """Clear all tasks"""
+    result = await db.tasks.delete_many({})
+    return {"message": "All tasks cleared", "deleted_count": result.deleted_count}
+
+
 @api_router.post("/cooking-plan/calculate", response_model=CookingPlanResponse)
 async def calculate_cooking_plan(request: CookingPlanRequest):
     """Calculate optimal cooking plan based on user's oven type and multiple cooking methods"""
