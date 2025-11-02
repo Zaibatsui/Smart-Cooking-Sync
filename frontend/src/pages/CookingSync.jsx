@@ -913,11 +913,11 @@ const CookingSync = () => {
 
         <Tabs defaultValue="add" className="space-y-4 sm:space-y-6">
           <TabsList className="grid w-full grid-cols-2 h-11 sm:h-10">
-            <TabsTrigger value="add" className="text-sm sm:text-base">Add Dishes</TabsTrigger>
+            <TabsTrigger value="add" className="text-sm sm:text-base">Add Items</TabsTrigger>
             <TabsTrigger value="plan" className="text-sm sm:text-base">Cooking Plan</TabsTrigger>
           </TabsList>
 
-          {/* Add Dish Tab */}
+          {/* Add Items Tab */}
           <TabsContent value="add">
             <Card className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
               <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
