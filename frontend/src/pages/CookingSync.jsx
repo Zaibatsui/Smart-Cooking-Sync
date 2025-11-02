@@ -370,6 +370,81 @@ const CookingSync = () => {
     }
   };
 
+  // Task instruction handlers
+  const handleAddTaskInstruction = () => {
+    if (!taskInstructionInput.label || !taskInstructionInput.afterMinutes) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in instruction label and time',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setTaskFormData(prev => ({
+      ...prev,
+      instructions: [...prev.instructions, {
+        label: taskInstructionInput.label,
+        afterMinutes: parseInt(taskInstructionInput.afterMinutes)
+      }]
+    }));
+
+    setTaskInstructionInput({ label: '', afterMinutes: '' });
+  };
+
+  const handleRemoveTaskInstruction = (index) => {
+    setTaskFormData(prev => ({
+      ...prev,
+      instructions: prev.instructions.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Add general task
+  const handleAddTask = () => {
+    if (!taskFormData.name || !taskFormData.duration) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in task name and duration',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const newTask = {
+      id: `task-${Date.now()}`,
+      name: taskFormData.name,
+      duration: parseInt(taskFormData.duration),
+      instructions: taskFormData.instructions,
+      type: 'task'
+    };
+
+    setTasks([...tasks, newTask]);
+    setTaskFormData({
+      name: '',
+      duration: '',
+      instructions: []
+    });
+    setShowTaskInstructions(false);
+
+    toast({
+      title: 'Task Added',
+      description: `${newTask.name} has been added to your cooking plan`
+    });
+  };
+
+  // Remove task
+  const handleRemoveTask = (id) => {
+    setTasks(tasks.filter(t => t.id !== id));
+    const newTimers = { ...timers };
+    delete newTimers[id];
+    setTimers(newTimers);
+    
+    toast({
+      title: 'Task Removed',
+      description: 'Task has been removed from your plan'
+    });
+  };
+
   // Get dishes that should start next (not completed, earliest startDelay)
   const getNextDishesToStart = () => {
     if (!cookingPlan) return [];
