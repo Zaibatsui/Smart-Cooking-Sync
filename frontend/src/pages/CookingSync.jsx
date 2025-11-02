@@ -1918,14 +1918,24 @@ const CookingSync = () => {
                                   </p>
                                 </div>
                               ) : isInOven && isTask ? (
-                                // Task is in progress
+                                // Task completed or in progress
                                 <div className="text-center py-2 sm:py-3">
-                                  <Badge className="bg-blue-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
-                                    ✓ In Progress
-                                  </Badge>
-                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
-                                    Finishes with all items
-                                  </p>
+                                  {item.adjustedTime === 0 || item.adjustedTime === null ? (
+                                    // Trigger task - instant action, show as done
+                                    <Badge className="bg-blue-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
+                                      ✓ Done
+                                    </Badge>
+                                  ) : (
+                                    // Duration task - in progress
+                                    <>
+                                      <Badge className="bg-blue-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
+                                        ✓ In Progress
+                                      </Badge>
+                                      <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                        Finishes with all items
+                                      </p>
+                                    </>
+                                  )}
                                 </div>
                               ) : isInstruction && isInOven && !timer ? (
                                 // Instruction completed (timer finished)
