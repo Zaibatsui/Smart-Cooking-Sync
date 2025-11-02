@@ -1455,7 +1455,11 @@ const CookingSync = () => {
                         <div className="flex-1 min-w-0 pr-2">
                           <p className="font-semibold text-sm sm:text-base text-blue-800 dark:text-blue-200 truncate">{task.name}</p>
                           <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 mt-0.5">
-                            {task.duration} min
+                            {task.taskType === 'duration' ? (
+                              `Duration: ${task.duration} min`
+                            ) : (
+                              `Trigger at: ${task.afterMinutes} min`
+                            )}
                           </p>
                           {task.instructions.length > 0 && (
                             <p className="text-xs text-blue-500 dark:text-blue-500 mt-1">
