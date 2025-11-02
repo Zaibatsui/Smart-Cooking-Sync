@@ -368,6 +368,7 @@ async def calculate_cooking_plan(request: CookingPlanRequest):
         
         # Add instructions for this dish
         if original_dish and original_dish.get('instructions'):
+            dish_name = original_dish.get('name', 'Dish')
             for instruction in original_dish['instructions']:
                 # Instruction triggers at: dish_start_time + instruction.afterMinutes
                 # In timeline: instruction_delay = start_delay + instruction.afterMinutes
@@ -377,8 +378,9 @@ async def calculate_cooking_plan(request: CookingPlanRequest):
                 timeline.append({
                     "id": f"{dish_id}_instruction_{instruction['afterMinutes']}",
                     "type": "instruction",
-                    "name": instruction['label'],
+                    "name": f"{dish_name} - {instruction['label']}",
                     "parentDishId": dish_id,
+                    "parentName": dish_name,
                     "adjustedTime": instruction_time,
                     "startDelay": instruction_delay,
                     "originalTime": None,
