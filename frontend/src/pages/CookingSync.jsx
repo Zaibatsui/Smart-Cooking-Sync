@@ -670,12 +670,12 @@ const CookingSync = () => {
     const hasDishes = nextItems.some(item => item.type === 'dish');
     const hasTasks = nextItems.some(item => item.type === 'task');
     
-    // Mark dishes and tasks (not instructions) as now in oven/started
-    // Instructions are marked as completed immediately
+    // Mark ALL items (dishes, tasks, AND instructions) as now started
     const nextDishes = nextItems.filter(item => item.type === 'dish');
     const nextTasks = nextItems.filter(item => item.type === 'task');
     const nextInstructions = nextItems.filter(item => item.type === 'instruction');
     
+    // Mark all as started (in oven/in progress)
     setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id), ...nextTasks.map(t => t.id), ...nextInstructions.map(i => i.id)]);
     
     // Find what comes AFTER these items
@@ -692,7 +692,7 @@ const CookingSync = () => {
       const nextEarliestDelay = Math.min(...remainingItems.map(d => d.startDelay));
       const timeUntilNext = nextEarliestDelay - currentDelay;
       
-      // Start countdown to NEXT items
+      // Start countdown to NEXT items - ALL items get timers (dishes, tasks, instructions)
       nextItems.forEach(item => {
         newTimers[item.id] = {
           remaining: timeUntilNext * 60,
@@ -701,12 +701,18 @@ const CookingSync = () => {
       });
     } else {
       // No more items - these are the last ones
-      // For dishes and tasks, use their cooking time; for instructions at the end, use 0
+      // ALL items use their cooking/action time
       nextItems.forEach(item => {
-        if (item.type === 'dish' || item.type === 'task') {
+        if (item.adjustedTime && item.adjustedTime > 0) {
           newTimers[item.id] = {
             remaining: item.adjustedTime * 60,
             total: item.adjustedTime * 60
+          };
+        } else {
+          // If no adjusted time, give a minimal timer (e.g., 1 second for instant actions)
+          newTimers[item.id] = {
+            remaining: 1,
+            total: 1
           };
         }
       });
@@ -715,7 +721,7 @@ const CookingSync = () => {
     setTimers(newTimers);
     
     const itemNames = nextItems.map(d => d.name).join(', ');
-    const actionType = hasInstructions ? 'completed' : (hasTasks ? 'started' : 'now in oven');
+    const actionType = hasInstructions ? 'in progress' : (hasTasks ? 'started' : 'now in oven');
     toast({
       title: 'Timer Started',
       description: `${itemNames} ${actionType}. Timer continues.`
