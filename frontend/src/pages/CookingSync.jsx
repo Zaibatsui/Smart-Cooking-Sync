@@ -236,9 +236,13 @@ const CookingSync = () => {
           
           // Add task instructions
           if (task.instructions && task.instructions.length > 0) {
+            const taskFinishTime = startDelay + task.duration;  // When the parent task finishes
+            
             task.instructions.forEach(instruction => {
               const instructionDelay = startDelay + instruction.afterMinutes;
-              const instructionTime = totalTime - instructionDelay;
+              
+              // Instruction timer should count until parent task finishes
+              const instructionTime = taskFinishTime - instructionDelay;
               
               timeline.push({
                 id: `${task.id}_instruction_${instruction.afterMinutes}`,
@@ -246,7 +250,7 @@ const CookingSync = () => {
                 name: `${task.name} - ${instruction.label}`,
                 parentDishId: task.id,
                 parentName: task.name,
-                adjustedTime: instructionTime,
+                adjustedTime: instructionTime > 0 ? instructionTime : 0,
                 startDelay: instructionDelay >= 0 ? instructionDelay : 0,
                 originalTime: null,
                 order: timeline.length + 1
