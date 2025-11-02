@@ -1314,17 +1314,42 @@ const CookingSync = () => {
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="taskDuration" className="text-sm">Duration (min)</Label>
-                    <Input
-                      id="taskDuration"
-                      type="number"
-                      placeholder="3"
-                      value={taskFormData.duration}
-                      onChange={(e) => setTaskFormData({ ...taskFormData, duration: e.target.value })}
-                      className="mt-1.5 h-11 text-base"
-                      inputMode="numeric"
-                    />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="taskDuration" className="text-sm">
+                        Duration (min) <span className="text-xs text-slate-500">optional</span>
+                      </Label>
+                      <Input
+                        id="taskDuration"
+                        type="number"
+                        placeholder="3"
+                        value={taskFormData.duration}
+                        onChange={(e) => setTaskFormData({ ...taskFormData, duration: e.target.value })}
+                        className="mt-1.5 h-11 text-base"
+                        inputMode="numeric"
+                      />
+                      <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">Task takes X minutes</p>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="taskAfter" className="text-sm">
+                        After (min) <span className="text-xs text-slate-500">optional</span>
+                      </Label>
+                      <Input
+                        id="taskAfter"
+                        type="number"
+                        placeholder="10"
+                        value={taskFormData.afterMinutes}
+                        onChange={(e) => setTaskFormData({ ...taskFormData, afterMinutes: e.target.value })}
+                        className="mt-1.5 h-11 text-base"
+                        inputMode="numeric"
+                      />
+                      <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">Trigger at X minutes</p>
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 p-2 rounded">
+                    <strong>Note:</strong> Fill either Duration OR After - at least one is required
                   </div>
 
                   {/* Task Additional Instructions - collapsible */}
