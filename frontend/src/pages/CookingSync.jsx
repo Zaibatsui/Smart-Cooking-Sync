@@ -1565,6 +1565,7 @@ const CookingSync = () => {
                   {cookingPlan.timeline.map((item, index) => {
                     const isInstruction = item.type === 'instruction';
                     const isDish = item.type === 'dish';
+                    const isTask = item.type === 'task';
                     
                     const timer = timers[item.id];
                     const isInOven = completedDishIds.includes(item.id);
@@ -1575,18 +1576,25 @@ const CookingSync = () => {
                     const isMultipleStart = nextDishes.length > 1;
                     const allDishesInOven = completedDishIds.length === cookingPlan.timeline.filter(t => t.type === 'dish').length;
 
+                    // Determine card styling based on type
+                    const cardBorder = isTask 
+                      ? 'border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/10'
+                      : isInstruction 
+                        ? 'border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/10'
+                        : 'border-emerald-200 dark:border-gray-700';
+
                     return (
-                      <Card key={item.id} className={`${isInstruction ? 'border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/10' : 'border-emerald-200 dark:border-gray-700'} dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart && isNextToStart ? 'ring-2 ring-blue-500' : ''}`}>
+                      <Card key={item.id} className={`${cardBorder} dark:bg-gray-800 overflow-hidden ${isFinished ? 'ring-4 ring-red-500 animate-pulse' : ''} ${isMultipleStart && isNextToStart ? 'ring-2 ring-blue-500' : ''}`}>
                         <CardContent className="p-3 sm:p-6">
                           <div className="mb-2 sm:mb-3">
                             {/* All Badges Grouped Together */}
                             <div className="flex items-center gap-1.5 mb-2 flex-wrap">
                               {/* Step Badge */}
-                              <Badge variant="outline" className={`${isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs px-2 py-1 font-medium`}>
-                                {isInstruction ? '📋 Instruction' : `Step ${item.order}`}
+                              <Badge variant="outline" className={`${isTask ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700' : isInstruction ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700' : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700'} text-xs px-2 py-1 font-medium`}>
+                                {isTask ? '📋 Task' : isInstruction ? '📋 Instruction' : `Step ${item.order}`}
                               </Badge>
                               
-                              {/* Cooking Method Badge */}
+                              {/* Cooking Method Badge - only for dishes */}
                               {isDish && (() => {
                                 const dish = dishes.find(d => d.id === item.id);
                                 const method = dish?.cookingMethod || 'Oven';
