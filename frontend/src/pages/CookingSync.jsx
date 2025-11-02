@@ -1074,64 +1074,132 @@ const CookingSync = () => {
                     )}
                   </div>
 
-                  <Separator className="my-4" />
-
-                  {/* Instructions Section */}
-                  <div className="space-y-3">
-                    <Label className="text-sm font-semibold">Cooking Instructions (Optional)</Label>
+                  {/* General Cooking Tasks Section */}
+                  <div className="border-t border-slate-200 dark:border-gray-700 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowTaskInstructions(!showTaskInstructions)}
+                      className="w-full flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📋</span>
+                        <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+                          General Cooking Tasks ({taskFormData.instructions.length})
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-blue-600 dark:text-blue-400 transition-transform ${showTaskInstructions ? 'rotate-180' : ''}`} />
+                    </button>
                     
-                    {/* Show added instructions */}
-                    {formData.instructions.length > 0 && (
-                      <div className="space-y-2">
-                        {formData.instructions.map((instruction, index) => (
-                          <div key={index} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-gray-700 rounded border border-slate-200 dark:border-gray-600">
-                            <span className="flex-1 text-sm">
-                              <strong>After {instruction.afterMinutes} min:</strong> {instruction.label}
-                            </span>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleRemoveInstruction(index)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <X className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        ))}
+                    {showTaskInstructions && (
+                      <div className="mt-3 space-y-3 p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-800">
+                        <div>
+                          <Label htmlFor="taskName" className="text-sm">Task Name</Label>
+                          <Input
+                            id="taskName"
+                            placeholder="e.g., Heat sauce in hot water"
+                            value={taskFormData.name}
+                            onChange={(e) => setTaskFormData({ ...taskFormData, name: e.target.value })}
+                            className="mt-1.5 h-11 text-base"
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="taskDuration" className="text-sm">Duration (min)</Label>
+                          <Input
+                            id="taskDuration"
+                            type="number"
+                            placeholder="3"
+                            value={taskFormData.duration}
+                            onChange={(e) => setTaskFormData({ ...taskFormData, duration: e.target.value })}
+                            className="mt-1.5 h-11 text-base"
+                            inputMode="numeric"
+                          />
+                        </div>
+
+                        <Button
+                          type="button"
+                          onClick={handleAddTask}
+                          variant="outline"
+                          className="w-full h-10 border-blue-300 text-blue-700 hover:bg-blue-100 dark:border-blue-700 dark:text-blue-300 dark:hover:bg-blue-900/30"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Task
+                        </Button>
                       </div>
                     )}
+                  </div>
 
-                    {/* Add instruction input */}
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="col-span-2">
-                        <Input
-                          placeholder="e.g., Turn over, Add sauce"
-                          value={instructionInput.label}
-                          onChange={(e) => setInstructionInput(prev => ({ ...prev, label: e.target.value }))}
-                          className="h-10"
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="number"
-                          placeholder="After (min)"
-                          value={instructionInput.afterMinutes}
-                          onChange={(e) => setInstructionInput(prev => ({ ...prev, afterMinutes: e.target.value }))}
-                          className="h-10"
-                          inputMode="numeric"
-                        />
-                      </div>
-                    </div>
-                    
-                    <Button
+                  <Separator className="my-4" />
+
+                  {/* Additional Instructions Section - Now Universal */}
+                  <div className="space-y-3">
+                    <button
                       type="button"
-                      onClick={handleAddInstruction}
-                      variant="outline"
-                      className="w-full h-10"
+                      onClick={() => setShowAdditionalInstructions(!showAdditionalInstructions)}
+                      className="w-full flex items-center justify-between text-left"
                     >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Instruction
-                    </Button>
+                      <Label className="text-sm font-semibold cursor-pointer">
+                        Additional Instructions ({formData.instructions.length})
+                      </Label>
+                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-400 transition-transform ${showAdditionalInstructions ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {showAdditionalInstructions && (
+                      <div className="space-y-3">
+                        {/* Show added instructions */}
+                        {formData.instructions.length > 0 && (
+                          <div className="space-y-2">
+                            {formData.instructions.map((instruction, index) => (
+                              <div key={index} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-gray-700 rounded border border-slate-200 dark:border-gray-600">
+                                <span className="flex-1 text-sm">
+                                  <strong>After {instruction.afterMinutes} min:</strong> {instruction.label}
+                                </span>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => handleRemoveInstruction(index)}
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Add instruction input */}
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="col-span-2">
+                            <Input
+                              placeholder="e.g., Turn over, Add sauce"
+                              value={instructionInput.label}
+                              onChange={(e) => setInstructionInput(prev => ({ ...prev, label: e.target.value }))}
+                              className="h-10"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              placeholder="After (min)"
+                              value={instructionInput.afterMinutes}
+                              onChange={(e) => setInstructionInput(prev => ({ ...prev, afterMinutes: e.target.value }))}
+                              className="h-10"
+                              inputMode="numeric"
+                            />
+                          </div>
+                        </div>
+                        
+                        <Button
+                          type="button"
+                          onClick={handleAddInstruction}
+                          variant="outline"
+                          className="w-full h-10"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Add Instruction
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   <Button
@@ -1144,6 +1212,48 @@ const CookingSync = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Current Tasks List */}
+            {tasks.length > 0 && (
+              <Card className="mt-4 sm:mt-6 border-blue-200 dark:border-blue-700 dark:bg-gray-800">
+                <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
+                  <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                    <span>📋</span>
+                    <span>Your Tasks ({tasks.length})</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-3 sm:px-6">
+                  <div className="space-y-3">
+                    {tasks.map(task => (
+                      <div
+                        key={task.id}
+                        className="flex items-center justify-between p-3 sm:p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700"
+                      >
+                        <div className="flex-1 min-w-0 pr-2">
+                          <p className="font-semibold text-sm sm:text-base text-blue-800 dark:text-blue-200 truncate">{task.name}</p>
+                          <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 mt-0.5">
+                            {task.duration} min
+                          </p>
+                          {task.instructions.length > 0 && (
+                            <p className="text-xs text-blue-500 dark:text-blue-500 mt-1">
+                              {task.instructions.length} instruction{task.instructions.length !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleRemoveTask(task.id)}
+                          className="hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 transition-colors flex-shrink-0 h-10 w-10"
+                        >
+                          <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Current Dishes List */}
             {dishes.length > 0 && (
