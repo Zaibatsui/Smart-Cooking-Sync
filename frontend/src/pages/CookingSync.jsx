@@ -112,11 +112,9 @@ const CookingSync = () => {
         const fetchedDishes = await dishesAPI.getAll();
         setDishes(fetchedDishes);
         
-        // Load tasks from localStorage
-        const savedTasks = localStorage.getItem('cookingSyncTasks');
-        if (savedTasks) {
-          setTasks(JSON.parse(savedTasks));
-        }
+        // Load tasks from API
+        const tasksData = await tasksAPI.getAll();
+        setTasks(tasksData);
       } catch (error) {
         console.error('Error loading data:', error);
         toast({
