@@ -193,14 +193,6 @@ const CookingSync = () => {
     localStorage.setItem('cookingSyncSettings', JSON.stringify(settingsToSave));
   }, [userOvenType, theme, alarmEnabled]);
 
-  // Save tasks to localStorage
-  useEffect(() => {
-    if (!hasLoadedRef.current) {
-      return;
-    }
-    localStorage.setItem('cookingSyncTasks', JSON.stringify(tasks));
-  }, [tasks]);
-
   // Apply theme
   useEffect(() => {
     if (theme === 'dark') {
