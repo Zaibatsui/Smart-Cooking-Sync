@@ -1180,16 +1180,16 @@ const CookingSync = () => {
                         <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
                           <button
                             type="button"
-                            onClick={() => setShowAdditionalInstructions(!showAdditionalInstructions)}
+                            onClick={() => setShowTaskAdditionalInstructions(!showTaskAdditionalInstructions)}
                             className="w-full flex items-center justify-between text-left mb-2"
                           >
                             <Label className="text-xs font-semibold cursor-pointer text-blue-700 dark:text-blue-300">
                               Additional Instructions ({taskFormData.instructions.length})
                             </Label>
-                            <ChevronDown className={`w-3.5 h-3.5 text-blue-600 dark:text-blue-400 transition-transform ${showAdditionalInstructions ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-3.5 h-3.5 text-blue-600 dark:text-blue-400 transition-transform ${showTaskAdditionalInstructions ? 'rotate-180' : ''}`} />
                           </button>
                           
-                          {showAdditionalInstructions && (
+                          {showTaskAdditionalInstructions && (
                             <div className="space-y-2">
                               {/* Show added instructions */}
                               {taskFormData.instructions.length > 0 && (
