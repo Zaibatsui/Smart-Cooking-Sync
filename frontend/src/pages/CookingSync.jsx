@@ -1277,8 +1277,6 @@ const CookingSync = () => {
                     </button>
                     
                     {showDishInstructions && (
-                    
-                    {showAdditionalInstructions && (
                       <div className="space-y-3">
                         {/* Show added instructions */}
                         {formData.instructions.length > 0 && (
