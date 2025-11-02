@@ -68,6 +68,8 @@ const CookingSync = () => {
   const [taskFormData, setTaskFormData] = useState({
     name: '',
     duration: '',
+    afterMinutes: '',
+    taskType: 'duration', // 'duration' or 'trigger'
     instructions: []
   });
   const [taskInstructionInput, setTaskInstructionInput] = useState({ label: '', afterMinutes: '' });
