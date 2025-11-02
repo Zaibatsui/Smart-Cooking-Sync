@@ -668,13 +668,15 @@ const CookingSync = () => {
     
     const hasInstructions = nextItems.some(item => item.type === 'instruction');
     const hasDishes = nextItems.some(item => item.type === 'dish');
+    const hasTasks = nextItems.some(item => item.type === 'task');
     
-    // Mark dishes (not instructions) as now in oven
+    // Mark dishes and tasks (not instructions) as now in oven/started
     // Instructions are marked as completed immediately
     const nextDishes = nextItems.filter(item => item.type === 'dish');
+    const nextTasks = nextItems.filter(item => item.type === 'task');
     const nextInstructions = nextItems.filter(item => item.type === 'instruction');
     
-    setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id), ...nextInstructions.map(i => i.id)]);
+    setCompletedDishIds(prev => [...prev, ...nextDishes.map(d => d.id), ...nextTasks.map(t => t.id), ...nextInstructions.map(i => i.id)]);
     
     // Find what comes AFTER these items
     const allItems = cookingPlan.timeline;
@@ -699,9 +701,9 @@ const CookingSync = () => {
       });
     } else {
       // No more items - these are the last ones
-      // For dishes, use their cooking time; for instructions at the end, use 0
+      // For dishes and tasks, use their cooking time; for instructions at the end, use 0
       nextItems.forEach(item => {
-        if (item.type === 'dish') {
+        if (item.type === 'dish' || item.type === 'task') {
           newTimers[item.id] = {
             remaining: item.adjustedTime * 60,
             total: item.adjustedTime * 60
@@ -713,7 +715,7 @@ const CookingSync = () => {
     setTimers(newTimers);
     
     const itemNames = nextItems.map(d => d.name).join(', ');
-    const actionType = hasInstructions ? 'completed' : 'now in oven';
+    const actionType = hasInstructions ? 'completed' : (hasTasks ? 'started' : 'now in oven');
     toast({
       title: 'Timer Started',
       description: `${itemNames} ${actionType}. Timer continues.`
