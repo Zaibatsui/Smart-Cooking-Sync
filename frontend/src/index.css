@@ -121,8 +121,8 @@ textarea::placeholder {
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-    color: #6b7280;
-    opacity: 0.5;
+    color: #9ca3af;
+    opacity: 0.8;
 }
 
 /* Allow text selection for inputs */
