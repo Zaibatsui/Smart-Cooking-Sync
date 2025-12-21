@@ -344,13 +344,13 @@ async def delete_dish(dish_id: str, current_user: dict = Depends(get_current_use
 
 
 @api_router.patch("/dishes/{dish_id}")
-async def update_dish_time(dish_id: str, cookingTime: int):
-    """Update the cooking time for a specific dish"""
+async def update_dish_time(dish_id: str, cookingTime: int, current_user: dict = Depends(get_current_user)):
+    """Update the cooking time for a specific dish (only if owned by user)"""
     if cookingTime < 1:
         raise HTTPException(status_code=400, detail="Cooking time must be at least 1 minute")
     
     result = await db.dishes.update_one(
-        {"id": dish_id},
+        {"id": dish_id, "userId": current_user['userId']},
         {"$set": {"cookingTime": cookingTime}}
     )
     
@@ -358,7 +358,7 @@ async def update_dish_time(dish_id: str, cookingTime: int):
         raise HTTPException(status_code=404, detail="Dish not found")
     
     # Fetch the updated dish
-    dish = await db.dishes.find_one({"id": dish_id}, {"_id": 0})
+    dish = await db.dishes.find_one({"id": dish_id, "userId": current_user['userId']}, {"_id": 0})
     if dish and isinstance(dish.get('created_at'), str):
         dish['created_at'] = datetime.fromisoformat(dish['created_at'])
     
