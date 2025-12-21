@@ -484,6 +484,102 @@ async def clear_all_tasks(current_user: dict = Depends(get_current_user)):
     return {"message": "All tasks cleared", "deleted_count": result.deleted_count}
 
 
+# Saved Dishes Endpoints (Dish Library)
+@api_router.get("/saved-dishes", response_model=List[SavedDish])
+async def get_saved_dishes(current_user: dict = Depends(get_current_user)):
+    """Get all saved dishes for the authenticated user, sorted by favorites first, then by lastUsed"""
+    saved_dishes = await db.saved_dishes.find(
+        {"userId": current_user['userId']}, 
+        {"_id": 0}
+    ).sort([("isFavorite", -1), ("lastUsed", -1)]).to_list(100)
+    return [SavedDish(**dish) for dish in saved_dishes]
+
+@api_router.post("/saved-dishes", response_model=SavedDish)
+async def save_dish(dish_data: SavedDishCreate, current_user: dict = Depends(get_current_user)):
+    """Save a dish to the library. If dish with same name exists, update it."""
+    user_id = current_user['userId']
+    
+    # Check if dish with same name already exists for this user
+    existing = await db.saved_dishes.find_one({
+        "userId": user_id,
+        "name": {"$regex": f"^{dish_data.name}$", "$options": "i"}  # Case-insensitive match
+    })
+    
+    if existing:
+        # Update existing dish
+        update_data = dish_data.model_dump()
+        update_data['lastUsed'] = datetime.now(timezone.utc).isoformat()
+        update_data['useCount'] = existing.get('useCount', 0) + 1
+        
+        await db.saved_dishes.update_one(
+            {"id": existing['id']},
+            {"$set": update_data}
+        )
+        
+        updated = await db.saved_dishes.find_one({"id": existing['id']}, {"_id": 0})
+        return SavedDish(**updated)
+    else:
+        # Create new saved dish
+        dish_dict = dish_data.model_dump()
+        dish_dict['id'] = str(uuid.uuid4())
+        dish_dict['userId'] = user_id
+        dish_dict['useCount'] = 1
+        dish_dict['lastUsed'] = datetime.now(timezone.utc).isoformat()
+        dish_dict['created_at'] = datetime.now(timezone.utc).isoformat()
+        
+        await db.saved_dishes.insert_one(dish_dict)
+        return SavedDish(**dish_dict)
+
+@api_router.patch("/saved-dishes/{dish_id}/favorite")
+async def toggle_favorite(dish_id: str, current_user: dict = Depends(get_current_user)):
+    """Toggle favorite status of a saved dish"""
+    dish = await db.saved_dishes.find_one({
+        "id": dish_id, 
+        "userId": current_user['userId']
+    }, {"_id": 0})
+    
+    if not dish:
+        raise HTTPException(status_code=404, detail="Saved dish not found")
+    
+    new_favorite_status = not dish.get('isFavorite', False)
+    
+    await db.saved_dishes.update_one(
+        {"id": dish_id},
+        {"$set": {"isFavorite": new_favorite_status}}
+    )
+    
+    return {"id": dish_id, "isFavorite": new_favorite_status}
+
+@api_router.delete("/saved-dishes/{dish_id}")
+async def delete_saved_dish(dish_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a saved dish from the library"""
+    result = await db.saved_dishes.delete_one({
+        "id": dish_id, 
+        "userId": current_user['userId']
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Saved dish not found")
+    
+    return {"message": "Saved dish deleted successfully"}
+
+@api_router.patch("/saved-dishes/{dish_id}/use")
+async def mark_dish_used(dish_id: str, current_user: dict = Depends(get_current_user)):
+    """Mark a saved dish as used (updates lastUsed and increments useCount)"""
+    result = await db.saved_dishes.update_one(
+        {"id": dish_id, "userId": current_user['userId']},
+        {
+            "$set": {"lastUsed": datetime.now(timezone.utc).isoformat()},
+            "$inc": {"useCount": 1}
+        }
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Saved dish not found")
+    
+    return {"message": "Dish usage recorded"}
+
+
 @api_router.post("/cooking-plan/calculate", response_model=CookingPlanResponse)
 async def calculate_cooking_plan(request: CookingPlanRequest, current_user: dict = Depends(get_current_user)):
     """Calculate optimal cooking plan based on user's oven type and multiple cooking methods"""
