@@ -918,12 +918,14 @@ const CookingSync = () => {
     setEditTime('');
   };
 
-  // Timer countdown effect - handles all countdown timers
+  // Timer countdown effect - handles all countdown timers with time-based calculation
   useEffect(() => {
     // Don't run if cooking hasn't started or if an alarm is already active
     if (!cookingStarted || finishedDishIds.length > 0) return;
     
     const interval = setInterval(() => {
+      const now = Date.now();
+      
       setTimers(prev => {
         const updated = { ...prev };
         let hasChanges = false;
@@ -932,22 +934,26 @@ const CookingSync = () => {
         Object.keys(updated).forEach(dishId => {
           const timer = updated[dishId];
           
-          // Countdown if timer has time remaining
-          if (timer.remaining > 0) {
-            updated[dishId] = {
-              ...timer,
-              remaining: timer.remaining - 1
-            };
-            hasChanges = true;
+          // Calculate remaining time based on end time (prevents drift)
+          if (timer.endTime) {
+            const remaining = Math.max(0, Math.floor((timer.endTime - now) / 1000));
+            
+            if (remaining !== timer.remaining) {
+              updated[dishId] = {
+                ...timer,
+                remaining
+              };
+              hasChanges = true;
+            }
 
             // Check if this timer just hit 0
-            if (updated[dishId].remaining === 0) {
+            if (remaining === 0 && timer.remaining > 0) {
               newlyFinishedDishIds.push(dishId);
             }
           }
         });
 
-        // If any timer hit 0, trigger alarm
+        // If any timer hit 0, trigger alarm and notification
         if (newlyFinishedDishIds.length > 0) {
           setFinishedDishIds(newlyFinishedDishIds);
           setShowAlarmModal(true);
@@ -961,6 +967,17 @@ const CookingSync = () => {
             .map(id => cookingPlan?.timeline.find(d => d.id === id)?.name)
             .join(', ');
           
+          // Send browser notification if enabled and permission granted
+          if (notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+            new Notification('🔔 Cooking Timer Complete!', {
+              body: `${dishNames} is ready!`,
+              icon: '/icon-192.png',
+              badge: '/icon-192.png',
+              requireInteraction: true,
+              tag: 'cooking-timer'
+            });
+          }
+          
           toast({
             title: `${dishNames} Ready! 🔔`,
             description: 'Click "Stop Alarm" to continue',
@@ -973,7 +990,7 @@ const CookingSync = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cookingStarted, finishedDishIds, cookingPlan, alarmEnabled]);
+  }, [cookingStarted, finishedDishIds, cookingPlan, alarmEnabled, notificationsEnabled]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
