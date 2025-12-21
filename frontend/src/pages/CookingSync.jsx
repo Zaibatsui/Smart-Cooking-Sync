@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Plus, Clock, Flame, Settings, Trash2, Play, Pause, RotateCcw, Edit2, Check, X, ChevronDown } from 'lucide-react';
+import { Plus, Clock, Flame, Settings, Trash2, Play, Pause, RotateCcw, Edit2, Check, X, ChevronDown, LogOut, User } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -20,6 +20,7 @@ import {
   roundToNearestTen 
 } from '../mock';
 import { dishesAPI, cookingPlanAPI, tasksAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const CookingSync = () => {
   // Load saved user settings from localStorage (not dishes - those come from backend)
