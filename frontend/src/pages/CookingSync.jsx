@@ -1511,7 +1511,7 @@ const CookingSync = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label htmlFor="taskDuration" className="text-sm">
-                        Duration (min) <span className="text-xs text-slate-500">optional</span>
+                        Duration (min) <span className="text-xs text-slate-500 dark:text-gray-400">optional</span>
                       </Label>
                       <Input
                         id="taskDuration"
