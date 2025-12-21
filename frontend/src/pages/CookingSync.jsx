@@ -48,6 +48,57 @@ const CookingSync = () => {
   const [wakeLockEnabled, setWakeLockEnabled] = useState(savedSettings?.wakeLockEnabled !== undefined ? savedSettings.wakeLockEnabled : false);
   const hasLoadedRef = useRef(false);
   const wakeLockRef = useRef(null);
+
+  // Request notification permission
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        setNotificationsEnabled(true);
+        toast({
+          title: 'Notifications Enabled',
+          description: 'You will receive alerts when timers complete, even in background'
+        });
+      }
+    }
+  };
+
+  // Wake Lock functions
+  const requestWakeLock = async () => {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLockRef.current = await navigator.wakeLock.request('screen');
+        console.log('Wake Lock acquired');
+        
+        wakeLockRef.current.addEventListener('release', () => {
+          console.log('Wake Lock released');
+        });
+      }
+    } catch (err) {
+      console.error('Wake Lock error:', err);
+    }
+  };
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current) {
+      await wakeLockRef.current.release();
+      wakeLockRef.current = null;
+    }
+  };
+
+  // Request wake lock when cooking starts and enabled
+  useEffect(() => {
+    if (cookingStarted && wakeLockEnabled) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+
+    return () => {
+      releaseWakeLock();
+    };
+  }, [cookingStarted, wakeLockEnabled]);
+  const wakeLockRef = useRef(null);
   
   // Form state
   const [formData, setFormData] = useState({
