@@ -1152,7 +1152,7 @@ const CookingSync = () => {
                         <SelectItem value="off">Disabled</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-gray-300 mt-1">
                       Alert when app is in background
                     </p>
                   </div>
@@ -1167,7 +1167,7 @@ const CookingSync = () => {
                         <SelectItem value="off">Disabled</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-gray-300 mt-1">
                       Prevent screen from sleeping while cooking
                     </p>
                   </div>
@@ -1522,7 +1522,7 @@ const CookingSync = () => {
                         className="mt-1.5 h-11 text-base"
                         inputMode="numeric"
                       />
-                      <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">Task takes X minutes</p>
+                      <p className="text-xs text-slate-500 dark:text-gray-300 mt-1">Task takes X minutes</p>
                     </div>
                     
                     <div>
@@ -1538,7 +1538,7 @@ const CookingSync = () => {
                         className="mt-1.5 h-11 text-base"
                         inputMode="numeric"
                       />
-                      <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">Trigger at X minutes</p>
+                      <p className="text-xs text-slate-500 dark:text-gray-300 mt-1">Trigger at X minutes</p>
                     </div>
                   </div>
 
@@ -1732,7 +1732,7 @@ const CookingSync = () => {
                   <h3 className="text-lg sm:text-xl font-semibold text-slate-700 dark:text-gray-300 mb-2">
                     No dishes added yet
                   </h3>
-                  <p className="text-sm sm:text-base text-slate-500 dark:text-gray-400">
+                  <p className="text-sm sm:text-base text-slate-500 dark:text-gray-300">
                     Add some dishes to generate your cooking plan
                   </p>
                 </CardContent>
