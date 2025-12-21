@@ -145,6 +145,19 @@ const CookingSync = () => {
   const [editingDish, setEditingDish] = useState(null); // Dish being edited
   const [editTime, setEditTime] = useState(''); // Edited time value
 
+  // Request wake lock when cooking starts and enabled
+  useEffect(() => {
+    if (cookingStarted && wakeLockEnabled) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+
+    return () => {
+      releaseWakeLock();
+    };
+  }, [cookingStarted, wakeLockEnabled]);
+
   // Load data on mount
   useEffect(() => {
     const loadData = async () => {
