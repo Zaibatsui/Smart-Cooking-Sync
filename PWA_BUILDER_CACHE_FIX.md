@@ -15,7 +15,7 @@ PWA Builder has cached the old version of your manifest before screenshots were 
 2. **Open a new browser window/tab**
 3. **Clear your browser cache** (or use Incognito/Private mode)
 4. Go to https://pwabuilder.com
-5. Enter URL: `https://dish-harmony.preview.emergentagent.com`
+5. Enter URL: `https://culinary-login.preview.emergentagent.com`
 6. Click "Start"
 7. PWA Builder should now detect the screenshots
 
@@ -28,8 +28,8 @@ PWA Builder has cached the old version of your manifest before screenshots were 
 
 ### Option C: Add Cache Buster
 Add a query parameter to force a fresh scan:
-- Instead of: `https://dish-harmony.preview.emergentagent.com`
-- Use: `https://dish-harmony.preview.emergentagent.com?v=2`
+- Instead of: `https://culinary-login.preview.emergentagent.com`
+- Use: `https://culinary-login.preview.emergentagent.com?v=2`
 
 The `?v=2` forces PWA Builder to fetch a fresh copy.
 
@@ -39,7 +39,7 @@ The `?v=2` forces PWA Builder to fetch a fresh copy.
 
 Open your browser and visit:
 ```
-https://dish-harmony.preview.emergentagent.com/manifest.json
+https://culinary-login.preview.emergentagent.com/manifest.json
 ```
 
 You should see the `screenshots` array with 3 entries:
@@ -78,20 +78,20 @@ PWA Builder sometimes takes 5-10 minutes to clear its cache.
 
 ### 1. Check Manifest is Live ✅
 ```bash
-curl https://dish-harmony.preview.emergentagent.com/manifest.json | grep screenshots
+curl https://culinary-login.preview.emergentagent.com/manifest.json | grep screenshots
 ```
 **Expected:** Should return the screenshots array
 
 ### 2. Check Screenshots are Accessible ✅
 Visit these URLs in your browser:
-- https://dish-harmony.preview.emergentagent.com/screenshot-1.png ✅
-- https://dish-harmony.preview.emergentagent.com/screenshot-2.png ✅
-- https://dish-harmony.preview.emergentagent.com/screenshot-3.png ✅
+- https://culinary-login.preview.emergentagent.com/screenshot-1.png ✅
+- https://culinary-login.preview.emergentagent.com/screenshot-2.png ✅
+- https://culinary-login.preview.emergentagent.com/screenshot-3.png ✅
 
 All should load and display mobile screenshots.
 
 ### 3. Check Manifest in Browser DevTools
-1. Open your app: https://dish-harmony.preview.emergentagent.com
+1. Open your app: https://culinary-login.preview.emergentagent.com
 2. Press **F12** (DevTools)
 3. Go to **Application** tab
 4. Click **Manifest** in the left sidebar
@@ -115,12 +115,12 @@ If the website keeps showing cached data:
 
 2. **Run Local Analysis**
    ```bash
-   pwa-builder https://dish-harmony.preview.emergentagent.com
+   pwa-builder https://culinary-login.preview.emergentagent.com
    ```
 
 3. **Generate Package**
    ```bash
-   pwa-builder pack https://dish-harmony.preview.emergentagent.com -p android
+   pwa-builder pack https://culinary-login.preview.emergentagent.com -p android
    ```
 
 This bypasses PWA Builder's web cache completely.
@@ -188,7 +188,7 @@ This bypasses PWA Builder's web cache completely.
 1. **Close all PWA Builder tabs**
 2. **Open a new Incognito/Private browser window**
 3. Go to https://pwabuilder.com
-4. Enter: `https://dish-harmony.preview.emergentagent.com?v=2`
+4. Enter: `https://culinary-login.preview.emergentagent.com?v=2`
 5. Click "Start"
 
 **PWA Builder should now detect all 3 screenshots!**

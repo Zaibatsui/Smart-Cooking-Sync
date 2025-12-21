@@ -36,7 +36,7 @@ Your app is now PWA-ready! All requirements for PWA Builder have been implemente
 
 1. **Go to PWA Builder**
    - Visit: https://pwabuilder.com
-   - Enter URL: `https://dish-harmony.preview.emergentagent.com`
+   - Enter URL: `https://culinary-login.preview.emergentagent.com`
    - Click "Start"
 
 2. **Review PWA Score**
@@ -78,7 +78,7 @@ If you prefer command-line:
 npm install -g @pwabuilder/cli
 
 # Generate Android package
-pwa-builder pack https://dish-harmony.preview.emergentagent.com -p android
+pwa-builder pack https://culinary-login.preview.emergentagent.com -p android
 
 # Follow prompts to configure
 # Output will be an APK or AAB file
@@ -105,7 +105,7 @@ pwa-builder pack https://dish-harmony.preview.emergentagent.com -p android
 ## Testing Your PWA (Before Building APK)
 
 ### Test 1: Install on Your Phone
-1. Open https://dish-harmony.preview.emergentagent.com on Chrome (Android)
+1. Open https://culinary-login.preview.emergentagent.com on Chrome (Android)
 2. Tap the menu (3 dots)
 3. Select "Add to Home Screen"
 4. Icon appears on home screen like a real app!
@@ -155,7 +155,7 @@ Once you have your `.aab` or `.apk` from PWA Builder:
 
 **Issue**: Manifest not found
 - Solution: Clear cache, try again in 5 minutes
-- Verify: https://dish-harmony.preview.emergentagent.com/manifest.json loads
+- Verify: https://culinary-login.preview.emergentagent.com/manifest.json loads
 
 **Issue**: Service Worker not detected
 - Solution: Wait 2-3 minutes after deployment

@@ -182,7 +182,7 @@ https://cook.zaibatsui.co.uk
 
 ### Option 2: Use Preview Domain
 ```
-https://dish-harmony.preview.emergentagent.com
+https://culinary-login.preview.emergentagent.com
 ```
 **Use case:**
 - Testing only

@@ -96,7 +96,7 @@ defines an array of screenshots intended to showcase your app.
 Now you can return to PWA Builder and re-test:
 
 1. Go to https://pwabuilder.com
-2. Enter: `https://dish-harmony.preview.emergentagent.com`
+2. Enter: `https://culinary-login.preview.emergentagent.com`
 3. Click "Start" to re-analyze
 
 **Expected Results:**
@@ -111,17 +111,17 @@ Now you can return to PWA Builder and re-test:
 
 Check manifest is valid:
 ```bash
-curl https://dish-harmony.preview.emergentagent.com/manifest.json | jq
+curl https://culinary-login.preview.emergentagent.com/manifest.json | jq
 ```
 
 Check icons exist:
 ```bash
-curl -I https://dish-harmony.preview.emergentagent.com/icon-192.png
+curl -I https://culinary-login.preview.emergentagent.com/icon-192.png
 ```
 
 Check screenshots exist:
 ```bash
-curl -I https://dish-harmony.preview.emergentagent.com/screenshot-1.png
+curl -I https://culinary-login.preview.emergentagent.com/screenshot-1.png
 ```
 
 ---

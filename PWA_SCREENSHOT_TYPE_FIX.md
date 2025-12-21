@@ -3,7 +3,7 @@
 ## Problem
 ```
 Error: Your web manifest declares 
-https://dish-harmony.preview.emergentagent.com/screenshot-1.png 
+https://culinary-login.preview.emergentagent.com/screenshot-1.png 
 to be of type image/png, but it's actually image/jpeg.
 ```
 
@@ -62,16 +62,16 @@ screenshot-3.png: PNG 540x720 (109 KB) ✅
 ## Testing
 
 ### Access Screenshots:
-- https://dish-harmony.preview.emergentagent.com/screenshot-1.png ✅
-- https://dish-harmony.preview.emergentagent.com/screenshot-2.png ✅
-- https://dish-harmony.preview.emergentagent.com/screenshot-3.png ✅
+- https://culinary-login.preview.emergentagent.com/screenshot-1.png ✅
+- https://culinary-login.preview.emergentagent.com/screenshot-2.png ✅
+- https://culinary-login.preview.emergentagent.com/screenshot-3.png ✅
 
 All now serve as actual PNG files with correct MIME type.
 
 ### PWA Builder Re-test:
 1. Clear browser cache or use incognito mode
 2. Visit: https://pwabuilder.com
-3. Enter: `https://dish-harmony.preview.emergentagent.com?v=3`
+3. Enter: `https://culinary-login.preview.emergentagent.com?v=3`
 4. Click "Start"
 
 **Expected:** All screenshot type errors should be resolved.
