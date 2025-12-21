@@ -1527,7 +1527,7 @@ const CookingSync = () => {
                     
                     <div>
                       <Label htmlFor="taskAfter" className="text-sm">
-                        After (min) <span className="text-xs text-slate-500">optional</span>
+                        After (min) <span className="text-xs text-slate-500 dark:text-gray-400">optional</span>
                       </Label>
                       <Input
                         id="taskAfter"
