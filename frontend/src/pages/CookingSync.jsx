@@ -825,17 +825,20 @@ const CookingSync = () => {
     );
     
     const newTimers = {};
+    const now = Date.now();
     
     if (remainingItems.length > 0) {
       // Find next items to trigger
       const nextEarliestDelay = Math.min(...remainingItems.map(d => d.startDelay));
       const timeUntilNext = nextEarliestDelay - currentDelay;
       
-      // Start countdown to NEXT items - ALL items get timers (dishes, tasks, instructions)
+      // Start countdown to NEXT items - ALL items get timers with end times
       nextItems.forEach(item => {
+        const durationSeconds = timeUntilNext * 60;
         newTimers[item.id] = {
-          remaining: timeUntilNext * 60,
-          total: timeUntilNext * 60
+          remaining: durationSeconds,
+          total: durationSeconds,
+          endTime: now + (durationSeconds * 1000) // Store absolute end time
         };
       });
     } else {
@@ -843,15 +846,18 @@ const CookingSync = () => {
       // ALL items use their cooking/action time
       nextItems.forEach(item => {
         if (item.adjustedTime && item.adjustedTime > 0) {
+          const durationSeconds = item.adjustedTime * 60;
           newTimers[item.id] = {
-            remaining: item.adjustedTime * 60,
-            total: item.adjustedTime * 60
+            remaining: durationSeconds,
+            total: durationSeconds,
+            endTime: now + (durationSeconds * 1000)
           };
         } else {
           // If no adjusted time, give a minimal timer (e.g., 1 second for instant actions)
           newTimers[item.id] = {
             remaining: 1,
-            total: 1
+            total: 1,
+            endTime: now + 1000
           };
         }
       });
