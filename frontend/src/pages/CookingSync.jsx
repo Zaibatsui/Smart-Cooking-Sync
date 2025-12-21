@@ -88,19 +88,6 @@ const CookingSync = () => {
       wakeLockRef.current = null;
     }
   };
-
-  // Request wake lock when cooking starts and enabled
-  useEffect(() => {
-    if (cookingStarted && wakeLockEnabled) {
-      requestWakeLock();
-    } else {
-      releaseWakeLock();
-    }
-
-    return () => {
-      releaseWakeLock();
-    };
-  }, [cookingStarted, wakeLockEnabled]);
   
   // Form state
   const [formData, setFormData] = useState({
