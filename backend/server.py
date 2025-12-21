@@ -231,6 +231,82 @@ async def get_status_checks():
     return status_checks
 
 
+# Auth Models
+class GoogleAuthRequest(BaseModel):
+    credential: str  # Google ID token
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: dict
+
+# Auth Endpoints
+@api_router.post("/auth/google", response_model=AuthResponse)
+async def google_auth(auth_request: GoogleAuthRequest):
+    """Authenticate user with Google OAuth"""
+    try:
+        # Verify the Google ID token
+        idinfo = id_token.verify_oauth2_token(
+            auth_request.credential, 
+            google_requests.Request(), 
+            GOOGLE_CLIENT_ID
+        )
+
+        # Extract user info
+        user_id = idinfo['sub']
+        email = idinfo['email']
+        name = idinfo.get('name', email)
+        picture = idinfo.get('picture', '')
+
+        # Check if user exists, if not create
+        existing_user = await db.users.find_one({"googleId": user_id})
+        
+        if not existing_user:
+            user_doc = {
+                "id": str(uuid.uuid4()),
+                "googleId": user_id,
+                "email": email,
+                "name": name,
+                "picture": picture,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.users.insert_one(user_doc)
+        else:
+            # Update last login
+            await db.users.update_one(
+                {"googleId": user_id},
+                {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+            )
+            user_doc = existing_user
+
+        # Create JWT token
+        token_data = {
+            "userId": user_doc.get("id") or user_doc.get("_id"),
+            "email": email,
+            "name": name
+        }
+        access_token = create_access_token(token_data)
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": token_data["userId"],
+                "email": email,
+                "name": name,
+                "picture": picture
+            }
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid Google token: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Authentication failed: {str(e)}")
+
+@api_router.get("/auth/me")
+async def get_current_user_info(current_user: dict = Depends(get_current_user)):
+    """Get current authenticated user info"""
+    return current_user
+
 # Dishes CRUD endpoints
 @api_router.post("/dishes", response_model=Dish)
 async def create_dish(dish_data: DishCreate):
