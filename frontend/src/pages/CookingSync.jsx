@@ -1705,7 +1705,7 @@ const CookingSync = () => {
                           <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mt-0.5">
                             {dish.temperature}°{dish.unit} ({convertToFahrenheit(dish.unit === 'C' ? dish.temperature : convertToCelsius(dish.temperature))}°F) • {dish.cookingTime} min
                           </p>
-                          <p className="text-xs text-slate-500 dark:text-gray-500">{dish.ovenType}</p>
+                          <p className="text-xs text-slate-500 dark:text-gray-400">{dish.ovenType}</p>
                         </div>
                         <Button
                           variant="ghost"
@@ -2091,7 +2091,7 @@ const CookingSync = () => {
                                     value={100 - (timer.remaining / timer.total) * 100} 
                                     className="h-1.5 sm:h-2"
                                   />
-                                  <p className="text-xs text-slate-500 dark:text-gray-500 text-center hidden sm:block">
+                                  <p className="text-xs text-slate-500 dark:text-gray-400 text-center hidden sm:block">
                                     {isInstruction ? '⏳ Alarm for instruction' : (isInOven ? '⏳ Alarm when ready' : '⏳ Running')}
                                   </p>
                                 </div>
@@ -2113,7 +2113,7 @@ const CookingSync = () => {
                                       </Badge>
                                     );
                                   })()}
-                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-1 hidden sm:block">
                                     Finishes with all dishes
                                   </p>
                                 </div>
@@ -2131,7 +2131,7 @@ const CookingSync = () => {
                                       <Badge className="bg-blue-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
                                         ✓ In Progress
                                       </Badge>
-                                      <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                      <p className="text-xs text-slate-500 dark:text-gray-400 mt-1 hidden sm:block">
                                         Finishes with all items
                                       </p>
                                     </>
@@ -2150,7 +2150,7 @@ const CookingSync = () => {
                                   <Badge className="bg-purple-500 text-white text-sm sm:text-base py-1.5 sm:py-2 px-3 sm:px-4">
                                     ⏳ In Progress
                                   </Badge>
-                                  <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 hidden sm:block">
+                                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-1 hidden sm:block">
                                     Timer running
                                   </p>
                                 </div>
@@ -2171,7 +2171,7 @@ const CookingSync = () => {
                                 </Button>
                               ) : (
                                 // Waiting for alarm or previous action
-                                <div className="text-center py-2 sm:py-3 text-slate-500 dark:text-gray-500 text-xs sm:text-sm">
+                                <div className="text-center py-2 sm:py-3 text-slate-500 dark:text-gray-400 text-xs sm:text-sm">
                                   ⏸️ Waiting...
                                 </div>
                               )}
@@ -2180,7 +2180,7 @@ const CookingSync = () => {
 
                           {/* Not Started Yet Message */}
                           {!cookingStarted && (
-                            <div className="text-center py-2 sm:py-3 text-slate-500 dark:text-gray-500 text-xs sm:text-sm">
+                            <div className="text-center py-2 sm:py-3 text-slate-500 dark:text-gray-400 text-xs sm:text-sm">
                               Start cooking plan to begin
                             </div>
                           )}
