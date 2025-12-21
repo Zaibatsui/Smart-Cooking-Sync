@@ -3,16 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Flame, Loader2 } from 'lucide-react';
+import { Flame, Loader2, UserCircle } from 'lucide-react';
 import { toast } from '../hooks/use-toast';
 
 const GOOGLE_CLIENT_ID = '290192977244-s10usgacsfmi5abkm3o8hm6evje8bi92.apps.googleusercontent.com';
+const PREVIEW_URL = 'culinary-login.preview.emergentagent.com';
 
 const Login = () => {
   const navigate = useNavigate();
   const { isAuthenticated, loginWithGoogle, loading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
+  
+  // Check if we're on the preview URL
+  const isPreviewMode = window.location.hostname === PREVIEW_URL || 
+                        window.location.hostname === 'localhost' ||
+                        window.location.hostname.includes('preview.emergentagent.com');
   
   // Check for dark mode from localStorage
   const getSavedTheme = () => {
@@ -63,11 +69,14 @@ const Login = () => {
     };
     script.onerror = () => {
       console.error('Failed to load Google Identity Services');
-      toast({
-        title: 'Error',
-        description: 'Failed to load Google Sign-In. Please refresh the page.',
-        variant: 'destructive'
-      });
+      // Don't show error toast on preview - demo login is available
+      if (!isPreviewMode) {
+        toast({
+          title: 'Error',
+          description: 'Failed to load Google Sign-In. Please refresh the page.',
+          variant: 'destructive'
+        });
+      }
     };
     document.body.appendChild(script);
 
@@ -77,7 +86,7 @@ const Login = () => {
         document.body.removeChild(script);
       }
     };
-  }, []);
+  }, [isPreviewMode]);
 
   // Initialize Google Sign-In when script loads
   useEffect(() => {
@@ -91,18 +100,21 @@ const Login = () => {
     });
 
     // Render the Google button with theme-aware styling
-    window.google.accounts.id.renderButton(
-      document.getElementById('google-signin-button'),
-      {
-        type: 'standard',
-        theme: theme === 'dark' ? 'filled_black' : 'outline',
-        size: 'large',
-        text: 'signin_with',
-        shape: 'rectangular',
-        logo_alignment: 'left',
-        width: 300,
-      }
-    );
+    const buttonContainer = document.getElementById('google-signin-button');
+    if (buttonContainer) {
+      window.google.accounts.id.renderButton(
+        buttonContainer,
+        {
+          type: 'standard',
+          theme: theme === 'dark' ? 'filled_black' : 'outline',
+          size: 'large',
+          text: 'signin_with',
+          shape: 'rectangular',
+          logo_alignment: 'left',
+          width: 300,
+        }
+      );
+    }
   }, [googleScriptLoaded, theme]);
 
   // Handle Google callback
@@ -132,6 +144,54 @@ const Login = () => {
         variant: 'destructive'
       });
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Demo login for preview mode
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    try {
+      // Create a demo user session
+      const demoUser = {
+        id: 'demo-user-' + Date.now(),
+        email: 'demo@cookingsync.app',
+        name: 'Demo User',
+        picture: ''
+      };
+      
+      // Create a simple demo token (this is just for preview testing)
+      // In production, this would go through proper Google OAuth
+      const demoToken = btoa(JSON.stringify({
+        userId: demoUser.id,
+        email: demoUser.email,
+        name: demoUser.name,
+        exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+      }));
+      
+      // Store in localStorage (same as real auth)
+      localStorage.setItem('auth_token', demoToken);
+      localStorage.setItem('auth_user', JSON.stringify(demoUser));
+      
+      // Manually set the auth state by triggering a page reload
+      // This ensures AuthContext picks up the new token
+      toast({
+        title: 'Demo Mode Active',
+        description: 'Logged in as Demo User for testing'
+      });
+      
+      // Small delay then reload to let AuthContext verify the token
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
+      
+    } catch (error) {
+      console.error('Demo login error:', error);
+      toast({
+        title: 'Error',
+        description: 'Demo login failed',
+        variant: 'destructive'
+      });
       setIsLoading(false);
     }
   };
@@ -172,10 +232,39 @@ const Login = () => {
               )}
             </div>
 
-            {!googleScriptLoaded && (
+            {!googleScriptLoaded && !isPreviewMode && (
               <div className="flex justify-center">
                 <Loader2 className={`w-6 h-6 animate-spin ${theme === 'dark' ? 'text-gray-400' : 'text-slate-400'}`} />
               </div>
+            )}
+
+            {/* Demo Login Button - Only on Preview URL */}
+            {isPreviewMode && !isLoading && (
+              <>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className={`w-full border-t ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className={`px-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
+                      Preview Mode
+                    </span>
+                  </div>
+                </div>
+                
+                <Button
+                  onClick={handleDemoLogin}
+                  variant="outline"
+                  className={`w-full h-11 ${theme === 'dark' ? 'border-emerald-600 text-emerald-400 hover:bg-emerald-900/30' : 'border-emerald-500 text-emerald-600 hover:bg-emerald-50'}`}
+                >
+                  <UserCircle className="w-5 h-5 mr-2" />
+                  Continue as Demo User
+                </Button>
+                
+                <p className={`text-xs text-center ${theme === 'dark' ? 'text-amber-400' : 'text-amber-600'}`}>
+                  ⚠️ Demo mode - Data will not persist across sessions
+                </p>
+              </>
             )}
 
             <p className={`text-xs text-center mt-4 ${theme === 'dark' ? 'text-gray-400' : 'text-slate-500'}`}>
