@@ -709,6 +709,7 @@ const CookingSync = () => {
     
     // Find NEXT item in timeline after first items
     const remainingItems = allItems.filter(item => !firstItems.some(f => f.id === item.id));
+    const now = Date.now();
     
     if (remainingItems.length > 0) {
       // Find next earliest item
@@ -718,12 +719,14 @@ const CookingSync = () => {
       // Calculate time until next items (nextDelay - currentDelay)
       const timeUntilNext = nextEarliestDelay - earliestDelay;
       
-      // Start timer for first items - counting down to NEXT items
+      // Start timer for first items - counting down to NEXT items with end times
       const newTimers = {};
       firstItems.forEach(item => {
+        const durationSeconds = timeUntilNext * 60;
         newTimers[item.id] = {
-          remaining: timeUntilNext * 60,
-          total: timeUntilNext * 60
+          remaining: durationSeconds,
+          total: durationSeconds,
+          endTime: now + (durationSeconds * 1000)
         };
       });
       setTimers(newTimers);
@@ -731,9 +734,11 @@ const CookingSync = () => {
       // No more items - just these ones, use their cooking time
       const newTimers = {};
       firstItems.forEach(item => {
+        const durationSeconds = item.adjustedTime * 60;
         newTimers[item.id] = {
-          remaining: item.adjustedTime * 60,
-          total: item.adjustedTime * 60
+          remaining: durationSeconds,
+          total: durationSeconds,
+          endTime: now + (durationSeconds * 1000)
         };
       });
       setTimers(newTimers);
