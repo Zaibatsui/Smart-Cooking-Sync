@@ -18,6 +18,39 @@ from google.auth.transport import requests as google_requests
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# JWT Configuration
+JWT_SECRET = os.getenv('JWT_SECRET', 'your-secret-key-change-in-production')
+JWT_ALGORITHM = os.getenv('JWT_ALGORITHM', 'HS256')
+JWT_EXPIRATION_HOURS = int(os.getenv('JWT_EXPIRATION_HOURS', '720'))
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
+# Security
+security = HTTPBearer()
+
+# JWT Helper Functions
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return encoded_jwt
+
+def verify_token(token: str) -> dict:
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+
+# Dependency to get current user from JWT
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    token = credentials.credentials
+    payload = verify_token(token)
+    return payload
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
