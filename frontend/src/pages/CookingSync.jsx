@@ -544,6 +544,99 @@ const CookingSync = () => {
     }
   };
 
+  // Quick Add - Add a saved dish to the current cooking plan
+  const handleQuickAddDish = async (savedDish) => {
+    try {
+      const dishData = {
+        name: savedDish.name,
+        cookingMethod: savedDish.cookingMethod,
+        temperature: savedDish.temperature,
+        unit: savedDish.unit,
+        cookingTime: savedDish.cookingTime,
+        ovenType: savedDish.ovenType,
+        instructions: savedDish.instructions || [],
+        convertedFromOven: savedDish.convertedFromOven,
+        originalOvenTemp: savedDish.originalOvenTemp,
+        originalOvenTime: savedDish.originalOvenTime,
+        sourceOvenType: savedDish.sourceOvenType
+      };
+
+      const newDish = await dishesAPI.create(dishData);
+      setDishes([...dishes, newDish]);
+      
+      // Mark saved dish as used
+      try {
+        await savedDishesAPI.markUsed(savedDish.id);
+        // Update local state to reflect usage
+        setSavedDishes(prev => prev.map(d => 
+          d.id === savedDish.id 
+            ? { ...d, useCount: (d.useCount || 0) + 1, lastUsed: new Date().toISOString() }
+            : d
+        ));
+      } catch (err) {
+        console.error('Error marking dish as used:', err);
+      }
+      
+      toast({
+        title: 'Dish Added',
+        description: `${savedDish.name} has been added from your library`
+      });
+    } catch (error) {
+      console.error('Error quick adding dish:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add dish',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  // Toggle favorite status of a saved dish
+  const handleToggleFavorite = async (dishId) => {
+    try {
+      const result = await savedDishesAPI.toggleFavorite(dishId);
+      setSavedDishes(prev => prev.map(d => 
+        d.id === dishId ? { ...d, isFavorite: result.isFavorite } : d
+      ));
+      
+      toast({
+        title: result.isFavorite ? 'Added to Favorites' : 'Removed from Favorites',
+        description: result.isFavorite ? 'Dish will appear at the top of your library' : 'Dish removed from favorites'
+      });
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update favorite status',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  // Delete a saved dish from the library
+  const handleDeleteSavedDish = async (dishId) => {
+    try {
+      await savedDishesAPI.delete(dishId);
+      setSavedDishes(prev => prev.filter(d => d.id !== dishId));
+      
+      toast({
+        title: 'Dish Removed',
+        description: 'Dish has been removed from your library'
+      });
+    } catch (error) {
+      console.error('Error deleting saved dish:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to remove dish from library',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  // Get favorites and recent dishes for quick add
+  const favoriteDishes = savedDishes.filter(d => d.isFavorite);
+  const recentDishes = savedDishes.filter(d => !d.isFavorite).slice(0, 5);
+
   const handleRemoveDish = async (id) => {
     try {
       await dishesAPI.delete(id);
