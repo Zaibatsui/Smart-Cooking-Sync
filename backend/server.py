@@ -321,16 +321,10 @@ async def create_dish(dish_data: DishCreate, current_user: dict = Depends(get_cu
 
 
 @api_router.get("/dishes", response_model=List[Dish])
-async def get_dishes():
-    """Retrieve all dishes"""
-    dishes = await db.dishes.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for dish in dishes:
-        if isinstance(dish.get('created_at'), str):
-            dish['created_at'] = datetime.fromisoformat(dish['created_at'])
-    
-    return dishes
+async def get_all_dishes(current_user: dict = Depends(get_current_user)):
+    """Get all dishes for the authenticated user"""
+    dishes = await db.dishes.find({"userId": current_user['userId']}, {"_id": 0}).to_list(1000)
+    return [Dish(**dish) for dish in dishes]
 
 
 @api_router.delete("/dishes/{dish_id}")
