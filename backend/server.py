@@ -305,7 +305,22 @@ async def google_auth(auth_request: GoogleAuthRequest):
 @api_router.get("/auth/me")
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):
     """Get current authenticated user info"""
-    return current_user
+    # Fetch full user data from database
+    user = await db.users.find_one({"id": current_user['userId']}, {"_id": 0})
+    if not user:
+        # Fall back to JWT payload if user not found
+        return {
+            "id": current_user.get('userId'),
+            "email": current_user.get('email'),
+            "name": current_user.get('name'),
+            "picture": ""
+        }
+    return {
+        "id": user.get("id"),
+        "email": user.get("email"),
+        "name": user.get("name"),
+        "picture": user.get("picture", "")
+    }
 
 # Dishes CRUD endpoints
 @api_router.post("/dishes", response_model=Dish)
