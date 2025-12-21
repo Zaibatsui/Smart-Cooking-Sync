@@ -148,6 +148,64 @@ export const tasksAPI = {
   },
 };
 
+// Saved Dishes API (Dish Library)
+export const savedDishesAPI = {
+  // Get all saved dishes
+  getAll: async () => {
+    try {
+      const response = await api.get('/api/saved-dishes');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching saved dishes:', error);
+      throw error;
+    }
+  },
+
+  // Save a dish to library
+  save: async (dishData) => {
+    try {
+      const response = await api.post('/api/saved-dishes', dishData);
+      return response.data;
+    } catch (error) {
+      console.error('Error saving dish:', error);
+      throw error;
+    }
+  },
+
+  // Toggle favorite status
+  toggleFavorite: async (dishId) => {
+    try {
+      const response = await api.patch(`/api/saved-dishes/${dishId}/favorite`);
+      return response.data;
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      throw error;
+    }
+  },
+
+  // Mark dish as used
+  markUsed: async (dishId) => {
+    try {
+      const response = await api.patch(`/api/saved-dishes/${dishId}/use`);
+      return response.data;
+    } catch (error) {
+      console.error('Error marking dish as used:', error);
+      throw error;
+    }
+  },
+
+  // Delete saved dish
+  delete: async (dishId) => {
+    try {
+      const response = await api.delete(`/api/saved-dishes/${dishId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting saved dish:', error);
+      throw error;
+    }
+  },
+};
+
 // Cooking Plan API
 export const cookingPlanAPI = {
   // Calculate cooking plan
