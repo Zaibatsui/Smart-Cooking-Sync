@@ -1051,7 +1051,7 @@ const CookingSync = () => {
                   {user.picture ? (
                     <img 
                       src={user.picture} 
-                      alt={user.name} 
+                      alt={user.name || 'User'} 
                       className="w-8 h-8 rounded-full border-2 border-emerald-200"
                     />
                   ) : (
@@ -1060,7 +1060,7 @@ const CookingSync = () => {
                     </div>
                   )}
                   <span className="text-sm text-slate-700 dark:text-gray-300 max-w-[120px] truncate">
-                    {user.name}
+                    {user.name || user.email || 'User'}
                   </span>
                 </div>
               )}
