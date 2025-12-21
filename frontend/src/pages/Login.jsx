@@ -13,6 +13,31 @@ const Login = () => {
   const { isAuthenticated, loginWithGoogle, loading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
+  
+  // Check for dark mode from localStorage
+  const getSavedTheme = () => {
+    const saved = localStorage.getItem('cookingSyncSettings');
+    if (saved) {
+      try {
+        const settings = JSON.parse(saved);
+        return settings?.theme || 'light';
+      } catch {
+        return 'light';
+      }
+    }
+    return 'light';
+  };
+  
+  const [theme] = useState(getSavedTheme());
+  
+  // Apply theme on mount
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -65,12 +90,12 @@ const Login = () => {
       cancel_on_tap_outside: true,
     });
 
-    // Render the Google button
+    // Render the Google button with theme-aware styling
     window.google.accounts.id.renderButton(
       document.getElementById('google-signin-button'),
       {
         type: 'standard',
-        theme: 'outline',
+        theme: theme === 'dark' ? 'filled_black' : 'outline',
         size: 'large',
         text: 'signin_with',
         shape: 'rectangular',
@@ -78,7 +103,7 @@ const Login = () => {
         width: 300,
       }
     );
-  }, [googleScriptLoaded]);
+  }, [googleScriptLoaded, theme]);
 
   // Handle Google callback
   const handleGoogleCallback = async (response) => {
@@ -113,23 +138,23 @@ const Login = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#111827]' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
         <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 px-4">
-      <Card className="w-full max-w-md border-emerald-200 shadow-xl">
+    <div className={`min-h-screen flex items-center justify-center px-4 ${theme === 'dark' ? 'bg-[#111827]' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
+      <Card className={`w-full max-w-md shadow-xl ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'border-emerald-200'}`}>
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto mb-4 p-3 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 w-fit shadow-lg">
+          <div className={`mx-auto mb-4 p-3 rounded-xl w-fit shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
             <Flame className="w-10 h-10 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold text-slate-800">
+          <CardTitle className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-slate-800'}`}>
             Smart Cooking Sync
           </CardTitle>
-          <CardDescription className="text-slate-600">
+          <CardDescription className={theme === 'dark' ? 'text-gray-300' : 'text-slate-600'}>
             Sign in to sync your cooking plans across devices
           </CardDescription>
         </CardHeader>
@@ -149,11 +174,11 @@ const Login = () => {
 
             {!googleScriptLoaded && (
               <div className="flex justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                <Loader2 className={`w-6 h-6 animate-spin ${theme === 'dark' ? 'text-gray-400' : 'text-slate-400'}`} />
               </div>
             )}
 
-            <p className="text-xs text-center text-slate-500 mt-4">
+            <p className={`text-xs text-center mt-4 ${theme === 'dark' ? 'text-gray-400' : 'text-slate-500'}`}>
               By signing in, you agree to our Terms of Service and Privacy Policy.
               Your cooking data will be synced securely.
             </p>
