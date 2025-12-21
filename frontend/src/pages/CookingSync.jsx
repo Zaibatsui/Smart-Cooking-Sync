@@ -1030,14 +1030,50 @@ const CookingSync = () => {
                 </p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setShowSettings(!showSettings)}
-              className="rounded-full border-slate-300 dark:border-gray-700 h-10 w-10 sm:h-11 sm:w-11"
-            >
-              <Settings className="w-5 h-5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* User Info */}
+              {user && (
+                <div className="hidden sm:flex items-center gap-2 mr-2">
+                  {user.picture ? (
+                    <img 
+                      src={user.picture} 
+                      alt={user.name} 
+                      className="w-8 h-8 rounded-full border-2 border-emerald-200"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
+                      <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                  )}
+                  <span className="text-sm text-slate-700 dark:text-gray-300 max-w-[120px] truncate">
+                    {user.name}
+                  </span>
+                </div>
+              )}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setShowSettings(!showSettings)}
+                className="rounded-full border-slate-300 dark:border-gray-700 h-10 w-10 sm:h-11 sm:w-11"
+              >
+                <Settings className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  logout();
+                  toast({
+                    title: 'Signed Out',
+                    description: 'You have been logged out successfully'
+                  });
+                }}
+                className="rounded-full border-slate-300 dark:border-gray-700 h-10 w-10 sm:h-11 sm:w-11 hover:bg-red-50 hover:border-red-300 dark:hover:bg-red-900/20"
+                title="Sign Out"
+              >
+                <LogOut className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
 
           {/* Settings Panel */}
