@@ -52,12 +52,14 @@ class DishCreate(BaseModel):
     originalOvenTemp: Optional[float] = None  # Original oven temp if converted
     originalOvenTime: Optional[int] = None  # Original oven time if converted
     sourceOvenType: Optional[str] = None  # Source oven type when converting to Air Fryer (Fan, Electric, Gas)
+    # userId will be added by the backend from the JWT token
 
 
 class Dish(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str  # Owner of this dish
     name: str
     cookingMethod: str = "Oven"
     temperature: Optional[float] = None
