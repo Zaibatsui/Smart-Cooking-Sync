@@ -242,10 +242,12 @@ const CookingSync = () => {
     const settingsToSave = {
       userOvenType,
       theme,
-      alarmEnabled
+      alarmEnabled,
+      notificationsEnabled,
+      wakeLockEnabled
     };
     localStorage.setItem('cookingSyncSettings', JSON.stringify(settingsToSave));
-  }, [userOvenType, theme, alarmEnabled]);
+  }, [userOvenType, theme, alarmEnabled, notificationsEnabled, wakeLockEnabled]);
 
   // Apply theme
   useEffect(() => {
