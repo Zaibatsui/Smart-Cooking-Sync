@@ -1080,6 +1080,45 @@ const CookingSync = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div>
+                    <Label className="text-sm">Background Notifications</Label>
+                    <Select 
+                      value={notificationsEnabled ? 'on' : 'off'} 
+                      onValueChange={(value) => {
+                        if (value === 'on') {
+                          requestNotificationPermission();
+                        } else {
+                          setNotificationsEnabled(false);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="mt-1.5 h-11">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="on">Enabled</SelectItem>
+                        <SelectItem value="off">Disabled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
+                      Alert when app is in background
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm">Keep Screen Awake</Label>
+                    <Select value={wakeLockEnabled ? 'on' : 'off'} onValueChange={(value) => setWakeLockEnabled(value === 'on')}>
+                      <SelectTrigger className="mt-1.5 h-11">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="on">Enabled</SelectItem>
+                        <SelectItem value="off">Disabled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
+                      Prevent screen from sleeping while cooking
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
