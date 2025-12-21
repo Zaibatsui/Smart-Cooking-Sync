@@ -147,6 +147,43 @@ class Task(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+# Saved Dish Models (for dish library/templates)
+class SavedDishCreate(BaseModel):
+    name: str
+    cookingMethod: str = "Oven"
+    temperature: Optional[float] = None
+    unit: str = "C"
+    cookingTime: int
+    ovenType: Optional[str] = None
+    instructions: List[Instruction] = []
+    convertedFromOven: bool = False
+    originalOvenTemp: Optional[float] = None
+    originalOvenTime: Optional[int] = None
+    sourceOvenType: Optional[str] = None
+    isFavorite: bool = False
+
+class SavedDish(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    name: str
+    cookingMethod: str = "Oven"
+    temperature: Optional[float] = None
+    unit: str = "C"
+    cookingTime: int
+    ovenType: Optional[str] = None
+    instructions: List[Instruction] = []
+    convertedFromOven: bool = False
+    originalOvenTemp: Optional[float] = None
+    originalOvenTime: Optional[int] = None
+    sourceOvenType: Optional[str] = None
+    isFavorite: bool = False
+    useCount: int = 0
+    lastUsed: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
 class CookingPlanRequest(BaseModel):
     user_oven_type: str  # The user's actual oven type
 
