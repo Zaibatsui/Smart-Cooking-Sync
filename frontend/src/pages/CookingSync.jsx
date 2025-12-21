@@ -1011,6 +1011,20 @@ const CookingSync = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Show loading state while fetching data
+  if (loading) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#111827]' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
+        <div className="text-center">
+          <div className={`p-3 rounded-xl shadow-lg mx-auto w-fit mb-4 ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
+            <Flame className="w-8 h-8 text-white animate-pulse" />
+          </div>
+          <p className="text-slate-600 dark:text-gray-400">Loading your cooking plans...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111827]' : 'bg-gradient-to-br from-emerald-50 via-white to-teal-50'}`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
