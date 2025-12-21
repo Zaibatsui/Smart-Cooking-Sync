@@ -98,7 +98,6 @@ const CookingSync = () => {
       releaseWakeLock();
     };
   }, [cookingStarted, wakeLockEnabled]);
-  const wakeLockRef = useRef(null);
   
   // Form state
   const [formData, setFormData] = useState({
