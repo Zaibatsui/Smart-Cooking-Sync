@@ -1309,6 +1309,138 @@ const CookingSync = () => {
 
           {/* Add Items Tab */}
           <TabsContent value="add">
+            {/* Quick Add Section - Saved Dishes Library */}
+            {savedDishes.length > 0 && (
+              <Card className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800 mb-4">
+                <CardHeader className="px-3 sm:px-6 py-3 sm:py-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      <CardTitle className="text-lg sm:text-xl">Quick Add</CardTitle>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowQuickAdd(!showQuickAdd)}
+                      className="text-slate-500 dark:text-gray-400"
+                    >
+                      {showQuickAdd ? 'Hide' : 'Show'}
+                      <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${showQuickAdd ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </div>
+                  <CardDescription className="text-xs sm:text-sm">
+                    Add dishes from your library with one click
+                  </CardDescription>
+                </CardHeader>
+                
+                {showQuickAdd && (
+                  <CardContent className="px-3 sm:px-6 pb-4">
+                    {/* Favorites Section */}
+                    {favoriteDishes.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                          <span className="text-sm font-medium text-slate-700 dark:text-gray-300">Favorites</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {favoriteDishes.map(dish => (
+                            <div
+                              key={dish.id}
+                              className="group relative flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg px-3 py-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
+                            >
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleQuickAddDish(dish)}
+                                className="h-auto p-0 font-medium text-slate-800 dark:text-gray-200 hover:bg-transparent"
+                              >
+                                <Plus className="w-4 h-4 mr-1 text-emerald-600 dark:text-emerald-400" />
+                                {dish.name}
+                              </Button>
+                              <span className="text-xs text-slate-500 dark:text-gray-400 ml-1">
+                                {dish.cookingTime}min
+                              </span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleToggleFavorite(dish.id)}
+                                className="h-6 w-6 p-0 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteSavedDish(dish.id)}
+                                className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-600"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Recent Section */}
+                    {recentDishes.length > 0 && (
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <History className="w-4 h-4 text-slate-500 dark:text-gray-400" />
+                          <span className="text-sm font-medium text-slate-700 dark:text-gray-300">Recent</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {recentDishes.map(dish => (
+                            <div
+                              key={dish.id}
+                              className="group relative flex items-center gap-1 bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-600 rounded-lg px-3 py-2 hover:bg-slate-100 dark:hover:bg-gray-600 transition-colors"
+                            >
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleQuickAddDish(dish)}
+                                className="h-auto p-0 font-medium text-slate-800 dark:text-gray-200 hover:bg-transparent"
+                              >
+                                <Plus className="w-4 h-4 mr-1 text-emerald-600 dark:text-emerald-400" />
+                                {dish.name}
+                              </Button>
+                              <span className="text-xs text-slate-500 dark:text-gray-400 ml-1">
+                                {dish.cookingTime}min
+                              </span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleToggleFavorite(dish.id)}
+                                className="h-6 w-6 p-0 ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="Add to favorites"
+                              >
+                                <Star className="w-3 h-3 text-slate-400 hover:text-amber-500" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteSavedDish(dish.id)}
+                                className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-600"
+                                title="Remove from library"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {favoriteDishes.length === 0 && recentDishes.length === 0 && (
+                      <p className="text-sm text-slate-500 dark:text-gray-400 text-center py-2">
+                        No saved dishes yet. Add a dish below and it will appear here!
+                      </p>
+                    )}
+                  </CardContent>
+                )}
+              </Card>
+            )}
+
             <Card className="border-emerald-200 dark:border-gray-700 dark:bg-gray-800">
               <CardHeader className="px-3 sm:px-6 py-4 sm:py-6">
                 <CardTitle className="text-lg sm:text-xl">Add New Dish</CardTitle>
