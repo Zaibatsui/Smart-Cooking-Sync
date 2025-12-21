@@ -175,6 +175,15 @@ const CookingSync = () => {
         // Load tasks from API
         const tasksData = await tasksAPI.getAll();
         setTasks(tasksData);
+        
+        // Load saved dishes (dish library)
+        try {
+          const savedDishesData = await savedDishesAPI.getAll();
+          setSavedDishes(savedDishesData);
+        } catch (err) {
+          console.error('Error loading saved dishes:', err);
+          // Don't fail if saved dishes can't be loaded
+        }
       } catch (error) {
         console.error('Error loading data:', error);
         toast({
