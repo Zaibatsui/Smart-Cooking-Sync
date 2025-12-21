@@ -1019,7 +1019,7 @@ const CookingSync = () => {
           <div className={`p-3 rounded-xl shadow-lg mx-auto w-fit mb-4 ${theme === 'dark' ? 'bg-gradient-to-br from-emerald-600 to-emerald-700' : 'bg-gradient-to-br from-emerald-500 to-teal-600'}`}>
             <Flame className="w-8 h-8 text-white animate-pulse" />
           </div>
-          <p className="text-slate-600 dark:text-gray-400">Loading your cooking plans...</p>
+          <p className="text-slate-600 dark:text-gray-300">Loading your cooking plans...</p>
         </div>
       </div>
     );
@@ -1039,7 +1039,7 @@ const CookingSync = () => {
                 <h1 className="text-xl sm:text-3xl font-bold text-slate-800 dark:text-white">
                   Smart Cooking Sync
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-300">
                   Multi-dish timer & optimiser
                 </p>
               </div>
@@ -1412,7 +1412,7 @@ const CookingSync = () => {
                       <Label className="text-sm font-semibold cursor-pointer">
                         Additional Instructions ({formData.instructions.length})
                       </Label>
-                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-400 transition-transform ${showDishInstructions ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-300 transition-transform ${showDishInstructions ? 'rotate-180' : ''}`} />
                     </button>
                     
                     {showDishInstructions && (
@@ -1556,7 +1556,7 @@ const CookingSync = () => {
                       <Label className="text-sm font-semibold cursor-pointer">
                         Additional Instructions ({taskFormData.instructions.length})
                       </Label>
-                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-400 transition-transform ${showTaskAdditionalInstructions ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-gray-300 transition-transform ${showTaskAdditionalInstructions ? 'rotate-180' : ''}`} />
                     </button>
                     
                     {showTaskAdditionalInstructions && (
@@ -1702,7 +1702,7 @@ const CookingSync = () => {
                       >
                         <div className="flex-1 min-w-0 pr-2">
                           <p className="font-semibold text-sm sm:text-base text-slate-800 dark:text-white truncate">{dish.name}</p>
-                          <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-400 mt-0.5">
+                          <p className="text-xs sm:text-sm text-slate-600 dark:text-gray-300 mt-0.5">
                             {dish.temperature}°{dish.unit} ({convertToFahrenheit(dish.unit === 'C' ? dish.temperature : convertToCelsius(dish.temperature))}°F) • {dish.cookingTime} min
                           </p>
                           <p className="text-xs text-slate-500 dark:text-gray-400">{dish.ovenType}</p>
@@ -1779,7 +1779,7 @@ const CookingSync = () => {
                           {hasMicrowave && (
                             <div className="flex-1 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
                               <p className="text-xs text-yellow-700 dark:text-yellow-400 font-medium">⚡ Microwave</p>
-                              <p className="text-xs text-slate-600 dark:text-gray-400">Time only</p>
+                              <p className="text-xs text-slate-600 dark:text-gray-300">Time only</p>
                             </div>
                           )}
                           
@@ -1883,7 +1883,7 @@ const CookingSync = () => {
                                                 {!isInstruction && `${config.icon} `}{item.name}
                                               </p>
                                               {!isInstruction && (
-                                                <p className="text-sm text-slate-600 dark:text-gray-400 mt-1">
+                                                <p className="text-sm text-slate-600 dark:text-gray-300 mt-1">
                                                   → {config.label}
                                                 </p>
                                               )}
@@ -1891,7 +1891,7 @@ const CookingSync = () => {
                                           );
                                         })}
                                       </div>
-                                      <p className="text-sm text-slate-600 dark:text-gray-400">
+                                      <p className="text-sm text-slate-600 dark:text-gray-300">
                                         {isInstruction ? 'Complete this instruction then continue' : `Add to ${nextItems[0].type === 'dish' ? dishes.find(d => d.id === nextItems[0].id)?.cookingMethod || 'oven' : 'appliance'} with other dishes`}
                                       </p>
                                     </>
@@ -2037,7 +2037,7 @@ const CookingSync = () => {
                                 </Button>
                               </div>
                             ) : (
-                              <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-gray-400">
+                              <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-gray-300">
                                 {isDish && (() => {
                                   const dish = dishes.find(d => d.id === item.id);
                                   const method = dish?.cookingMethod || 'Oven';
@@ -2080,7 +2080,7 @@ const CookingSync = () => {
                                 // Timer counting down
                                 <div className="space-y-1 sm:space-y-2">
                                   <div className="flex items-center justify-between">
-                                    <span className="text-xs sm:text-sm text-slate-600 dark:text-gray-400">
+                                    <span className="text-xs sm:text-sm text-slate-600 dark:text-gray-300">
                                       {isInstruction ? 'Action in:' : (isInOven ? 'Next in:' : 'Time:')}
                                     </span>
                                     <span className="text-2xl sm:text-4xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
