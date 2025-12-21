@@ -81,11 +81,13 @@ class TaskCreate(BaseModel):
     afterMinutes: Optional[int] = None  # Trigger time in minutes (for trigger tasks)
     taskType: str = "duration"  # "duration" or "trigger"
     instructions: List[Instruction] = []
+    # userId will be added by the backend from the JWT token
 
 class Task(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str  # Owner of this task
     name: str
     duration: Optional[int] = None
     afterMinutes: Optional[int] = None
