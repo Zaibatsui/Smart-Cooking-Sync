@@ -335,14 +335,12 @@ async def get_dish(dish_id: str, current_user: dict = Depends(get_current_user))
     return Dish(**dish)
 
 @api_router.delete("/dishes/{dish_id}")
-async def delete_dish(dish_id: str):
-    """Delete a specific dish"""
-    result = await db.dishes.delete_one({"id": dish_id})
-    
+async def delete_dish(dish_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a specific dish (only if owned by user)"""
+    result = await db.dishes.delete_one({"id": dish_id, "userId": current_user['userId']})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Dish not found")
-    
-    return {"message": "Dish deleted successfully", "id": dish_id}
+    return {"message": "Dish deleted successfully"}
 
 
 @api_router.patch("/dishes/{dish_id}")
