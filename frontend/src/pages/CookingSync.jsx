@@ -1364,17 +1364,19 @@ const CookingSync = () => {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleToggleFavorite(dish.id)}
-                                className="h-6 w-6 p-0 ml-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                                className="h-6 w-6 p-0 ml-1"
+                                title="Remove from favorites"
                               >
-                                <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleDeleteSavedDish(dish.id)}
-                                className="h-6 w-6 p-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-600"
+                                className="h-6 w-6 p-0 text-slate-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
+                                title="Remove from library"
                               >
-                                <Trash2 className="w-3 h-3" />
+                                <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
                           ))}
