@@ -2058,7 +2058,7 @@ const CookingSync = () => {
                                       {!cookingStarted && item.startDelay > 0 && (
                                         <>
                                           <span>•</span>
-                                          <span className="text-slate-500">Starts +{item.startDelay}min</span>
+                                          <span className="text-slate-500 dark:text-gray-400">Starts +{item.startDelay}min</span>
                                         </>
                                       )}
                                     </>
