@@ -309,16 +309,15 @@ async def get_current_user_info(current_user: dict = Depends(get_current_user)):
 
 # Dishes CRUD endpoints
 @api_router.post("/dishes", response_model=Dish)
-async def create_dish(dish_data: DishCreate):
-    """Add a new dish"""
-    dish_obj = Dish(**dish_data.model_dump())
+async def create_dish(dish_data: DishCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new dish for the authenticated user"""
+    dish_dict = dish_data.model_dump()
+    dish_dict['id'] = str(uuid.uuid4())
+    dish_dict['userId'] = current_user['userId']  # Add userId from JWT
+    dish_dict['created_at'] = datetime.now(timezone.utc).isoformat()
     
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = dish_obj.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    
-    await db.dishes.insert_one(doc)
-    return dish_obj
+    await db.dishes.insert_one(dish_dict)
+    return Dish(**dish_dict)
 
 
 @api_router.get("/dishes", response_model=List[Dish])
