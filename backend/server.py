@@ -419,11 +419,11 @@ async def clear_all_tasks(current_user: dict = Depends(get_current_user)):
 
 
 @api_router.post("/cooking-plan/calculate", response_model=CookingPlanResponse)
-async def calculate_cooking_plan(request: CookingPlanRequest):
+async def calculate_cooking_plan(request: CookingPlanRequest, current_user: dict = Depends(get_current_user)):
     """Calculate optimal cooking plan based on user's oven type and multiple cooking methods"""
     
-    # Fetch all dishes
-    dishes = await db.dishes.find({}, {"_id": 0}).to_list(1000)
+    # Fetch all dishes for the authenticated user
+    dishes = await db.dishes.find({"userId": current_user['userId']}, {"_id": 0}).to_list(1000)
     
     if not dishes:
         raise HTTPException(status_code=400, detail="No dishes found")
