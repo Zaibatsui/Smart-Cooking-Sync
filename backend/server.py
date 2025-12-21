@@ -366,10 +366,10 @@ async def update_dish_time(dish_id: str, cookingTime: int):
 
 
 @api_router.delete("/dishes")
-async def clear_all_dishes():
-    """Clear all dishes and tasks"""
-    dishes_result = await db.dishes.delete_many({})
-    tasks_result = await db.tasks.delete_many({})
+async def clear_all_dishes(current_user: dict = Depends(get_current_user)):
+    """Clear all dishes and tasks for the authenticated user"""
+    dishes_result = await db.dishes.delete_many({"userId": current_user['userId']})
+    tasks_result = await db.tasks.delete_many({"userId": current_user['userId']})
     return {
         "message": "All dishes and tasks cleared", 
         "dishes_deleted": dishes_result.deleted_count,
