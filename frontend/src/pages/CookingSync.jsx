@@ -496,6 +496,24 @@ const CookingSync = () => {
       const newDish = await dishesAPI.create(dishData);
       setDishes([...dishes, newDish]);
       
+      // Also save to dish library (for future quick-add)
+      try {
+        const savedDish = await savedDishesAPI.save(dishData);
+        // Update local saved dishes state
+        setSavedDishes(prev => {
+          const existingIndex = prev.findIndex(d => d.id === savedDish.id);
+          if (existingIndex >= 0) {
+            const updated = [...prev];
+            updated[existingIndex] = savedDish;
+            return updated;
+          }
+          return [savedDish, ...prev];
+        });
+      } catch (err) {
+        console.error('Error saving to dish library:', err);
+        // Don't fail the main operation if saving to library fails
+      }
+      
       setFormData({
         name: '',
         cookingMethod: 'Oven',
