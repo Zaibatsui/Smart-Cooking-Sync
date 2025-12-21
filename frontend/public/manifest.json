@@ -1,7 +1,7 @@
 {
+  "name": "Smart Cooking Sync - Multi-Dish Timer & Optimizer",
   "short_name": "Cooking Sync",
-  "name": "Smart Cooking Sync - Multi-Dish Timer",
-  "description": "Optimise cooking times for multiple dishes in one oven",
+  "description": "Optimise cooking times for multiple dishes in one oven. Features include dish library, timers, temperature conversion, and cooking plan optimization.",
   "icons": [
     {
       "src": "icon-96.png",
@@ -61,9 +61,64 @@
   "scope": "/",
   "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "theme_color": "#059669",
   "background_color": "#ffffff",
   "orientation": "portrait",
   "categories": ["food", "utilities", "lifestyle", "productivity"],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "lang": "en",
+  "dir": "ltr",
+  "iarc_rating_id": "",
+  "shortcuts": [
+    {
+      "name": "Add New Dish",
+      "short_name": "Add Dish",
+      "description": "Quickly add a new dish to your cooking plan",
+      "url": "/?action=add-dish",
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "View Cooking Plan",
+      "short_name": "Plan",
+      "description": "View your optimized cooking schedule",
+      "url": "/?action=view-plan",
+      "icons": [
+        {
+          "src": "icon-96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link"
+    }
+  },
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "handle_links": "preferred",
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "related_applications": [],
+  "protocol_handlers": [
+    {
+      "protocol": "web+cookingsync",
+      "url": "/?recipe=%s"
+    }
+  ]
 }
