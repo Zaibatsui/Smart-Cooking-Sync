@@ -51,6 +51,10 @@ const CookingSync = () => {
   const [wakeLockEnabled, setWakeLockEnabled] = useState(savedSettings?.wakeLockEnabled !== undefined ? savedSettings.wakeLockEnabled : false);
   const hasLoadedRef = useRef(false);
   const wakeLockRef = useRef(null);
+  
+  // Saved dishes state (dish library)
+  const [savedDishes, setSavedDishes] = useState([]);
+  const [showQuickAdd, setShowQuickAdd] = useState(true);
 
   // Request notification permission
   const requestNotificationPermission = async () => {
