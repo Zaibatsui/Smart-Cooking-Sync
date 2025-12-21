@@ -9,6 +9,38 @@ const api = axios.create({
   },
 });
 
+// Request interceptor - adds auth token to all requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor - handles 401 errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear auth data on 401
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      
+      // Redirect to login if not already there
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Dishes API
 export const dishesAPI = {
   // Get all dishes
@@ -127,6 +159,31 @@ export const cookingPlanAPI = {
       return response.data;
     } catch (error) {
       console.error('Error calculating cooking plan:', error);
+      throw error;
+    }
+  },
+};
+
+// Auth API
+export const authAPI = {
+  // Login with Google
+  loginWithGoogle: async (credential) => {
+    try {
+      const response = await api.post('/api/auth/google', { credential });
+      return response.data;
+    } catch (error) {
+      console.error('Error logging in with Google:', error);
+      throw error;
+    }
+  },
+
+  // Get current user
+  getCurrentUser: async () => {
+    try {
+      const response = await api.get('/api/auth/me');
+      return response.data;
+    } catch (error) {
+      console.error('Error getting current user:', error);
       throw error;
     }
   },
