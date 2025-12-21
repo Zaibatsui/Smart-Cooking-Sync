@@ -326,6 +326,13 @@ async def get_all_dishes(current_user: dict = Depends(get_current_user)):
     dishes = await db.dishes.find({"userId": current_user['userId']}, {"_id": 0}).to_list(1000)
     return [Dish(**dish) for dish in dishes]
 
+@api_router.get("/dishes/{dish_id}", response_model=Dish)
+async def get_dish(dish_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a specific dish (only if owned by user)"""
+    dish = await db.dishes.find_one({"id": dish_id, "userId": current_user['userId']}, {"_id": 0})
+    if not dish:
+        raise HTTPException(status_code=404, detail="Dish not found")
+    return Dish(**dish)
 
 @api_router.delete("/dishes/{dish_id}")
 async def delete_dish(dish_id: str):
