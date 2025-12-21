@@ -44,7 +44,10 @@ const CookingSync = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState(savedSettings?.theme || 'light');
   const [alarmEnabled, setAlarmEnabled] = useState(savedSettings?.alarmEnabled !== undefined ? savedSettings.alarmEnabled : true);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(savedSettings?.notificationsEnabled !== undefined ? savedSettings.notificationsEnabled : false);
+  const [wakeLockEnabled, setWakeLockEnabled] = useState(savedSettings?.wakeLockEnabled !== undefined ? savedSettings.wakeLockEnabled : false);
   const hasLoadedRef = useRef(false);
+  const wakeLockRef = useRef(null);
   
   // Form state
   const [formData, setFormData] = useState({
