@@ -23,6 +23,8 @@ import { dishesAPI, cookingPlanAPI, tasksAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const CookingSync = () => {
+  const { user, logout } = useAuth();
+  
   // Load saved user settings from localStorage (not dishes - those come from backend)
   const loadSavedSettings = () => {
     const saved = localStorage.getItem('cookingSyncSettings');
